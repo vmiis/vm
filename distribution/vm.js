@@ -12,51 +12,6 @@ $vm.init=function(callback){
     })
 }
 //-----------------------------------------------------------------
-$vm.request=function(req,callback){
-    $vm.sys_N++;
-    $vm.sys_token="guest|where|when|scode";
-    if($vm.debug_message===true){
-        console.log(' ');
-        console.log(req.cmd+'('+$vm.sys_N+') TO ');
-        console.dir(req);
-    }
-    var dt1=new Date().getTime();
-    $vm.ajax_server_error=0;
-    $.ajax({
-        headers:{'Authorization':'Bearer ' + $vm.sys_token},
-        type: "POST",
-        url: $vm.api_address,
-        contentType: "application/json",
-        charset:"utf-8",
-        dataType: "json",
-        error: function(jqXHR,error, errorThrown){ if(jqXHR.status) {alert(jqXHR.responseText);} else {alert("Something went wrong");}},
-        data: JSON.stringify(req),
-        success: function(c,textStatus, request){
-            var dt2=new Date().getTime();
-            if($vm.debug_message===true){
-                console.log(' ');
-                console.log(req.cmd+'('+$vm.sys_N+') FROM '+" --- "+(dt2-dt1).toString()+"ms");
-                console.dir(c);
-            }
-            if($vm.ajax_server_error==1) return;
-            try{
-                if(callback!==undefined) callback(c);
-            }catch(err){
-                alert(err.toString());
-            }
-        },
-        dataFilter: $vm.request_filter,
-    })
-};
-//-----------------------------------------------------------------
-$vm.request_filter=function(c){
-    var a=$.parseJSON(c);
-    if(a.Error!=undefined){
-        alert(a.Error);
-        $vm.ajax_server_error=1;
-    }
-    return c;
-}
 //-----------------------------------------------------------------
 $vm._id=-1;
 $vm.id=function(txt){
@@ -290,14 +245,14 @@ $vm.process_first_include=function(txt,pid,slot,url_0,m_name){
 	for(var i=0;i<lines.length;i++){
 		if(lines[i].length>10){
 			if(lines[i].indexOf('VmInclude:')!==-1){
-				$vm.load_include(lines,i,pid,slot,callback,url_0,m_name); //find the first include and process
+				$vm.load_include(lines,i,pid,slot,url_0,m_name); //find the first include and process
 				return;
 			}
 		}
 	}
 }
 //-----------------------------------
-$vm.load_include=function(lines,i,pid,slot,callback,url_0,m_name){
+$vm.load_include=function(lines,i,pid,slot,url_0,m_name){
 	var name=lines[i].replace('VmInclude:','').trim();
 	var items=name.split('|');
 	var url=$vm.url(items[0]);
@@ -360,3 +315,59 @@ $vm.load_include=function(lines,i,pid,slot,callback,url_0,m_name){
 	}
 }
 //-----------------------------------
+$vm.replace_and_recreate_content=function(lines,I,replace){
+	lines[I]=replace;
+	var all="";
+	for(var j=0;j<lines.length;j++){
+		all+=lines[j]+'\n';
+	}
+	return all;
+}
+//-----------------------------------
+//-----------------------------------------------------------------
+$vm.request=function(req,callback){
+    $vm.sys_N++;
+    $vm.sys_token="guest|where|when|scode";
+    if($vm.debug_message===true){
+        console.log(' ');
+        console.log(req.cmd+'('+$vm.sys_N+') TO ');
+        console.dir(req);
+    }
+    var dt1=new Date().getTime();
+    $vm.ajax_server_error=0;
+    $.ajax({
+        headers:{'Authorization':'Bearer ' + $vm.sys_token},
+        type: "POST",
+        url: $vm.api_address,
+        contentType: "application/json",
+        charset:"utf-8",
+        dataType: "json",
+        error: function(jqXHR,error, errorThrown){ if(jqXHR.status) {alert(jqXHR.responseText);} else {alert("Something went wrong");}},
+        data: JSON.stringify(req),
+        success: function(c,textStatus, request){
+            var dt2=new Date().getTime();
+            if($vm.debug_message===true){
+                console.log(' ');
+                console.log(req.cmd+'('+$vm.sys_N+') FROM '+" --- "+(dt2-dt1).toString()+"ms");
+                console.dir(c);
+            }
+            if($vm.ajax_server_error==1) return;
+            try{
+                if(callback!==undefined) callback(c);
+            }catch(err){
+                alert(err.toString());
+            }
+        },
+        dataFilter: $vm.request_filter,
+    })
+};
+//-----------------------------------------------------------------
+$vm.request_filter=function(c){
+    var a=$.parseJSON(c);
+    if(a.Error!=undefined){
+        alert(a.Error);
+        $vm.ajax_server_error=1;
+    }
+    return c;
+}
+//-----------------------------------------------------------------
