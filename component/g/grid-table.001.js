@@ -286,7 +286,7 @@ m.modify=function(record,dbv){
 */
 m.delete=function(rid){
     var query={_id:rid}
-    $vm.request({cmd:"delete",query:query},function(res){
+    $vm.request({cmd:"delete-table",query:query},function(res){
         var after_delete=function(){
             if(m.after_update!=undefined){
                 m.after_modify(query,res); return;

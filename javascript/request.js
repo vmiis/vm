@@ -9,8 +9,10 @@ $vm.request=function(req,callback){
     }
     var dt1=new Date().getTime();
     $vm.ajax_server_error=0;
+    var token=sessionStorage.getItem("vm_token");
+    if(token==undefined) token="";
     $.ajax({
-        headers:{'Authorization':'Bearer ' + $vm.sys_token},
+        headers:{'Authorization':'Bearer ' + token},
         type: "POST",
         url: $vm.api_address,
         contentType: "application/json",
@@ -44,4 +46,11 @@ $vm.request_filter=function(c){
     }
     return c;
 }
+//-----------------------------------------------------------------
+$vm.set_token=function(token){
+    sessionStorage.setItem("vm_token",token);
+};
+$vm.clear_token=function(token){
+    sessionStorage.setItem("vm_token","");
+};
 //-----------------------------------------------------------------

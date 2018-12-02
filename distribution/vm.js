@@ -1,13 +1,126 @@
+window.onpopstate=function(event) {
+    //new ==========================================
+    var W_index=event.state.index;
+    var V_index=0;
+    var L=$vm.page_stack.length;
+    if(L>1){
+        var previous=$vm.page_stack[L-2];
+        V_index=previous.index;
+    }
+    if(W_index==V_index){
+        //back
+        var top=$vm.page_stack.pop();
+        if(top!=undefined){
+			$('#D'+top.ID).css('display','none');
+			$('#D'+top.ID).triggerHandler('hide');
+		}
+        if($vm.page_stack.length==0){
+            window.history.back(-1);
+        }
+        else{
+            var L=$vm.page_stack.length;
+            var top=$vm.page_stack[L-1];
+            $('#D'+top.ID).css('display','block');
+			$('#D'+top.ID).triggerHandler('show');
+			//if($vm.change_meta!=undefined){ $vm.change_meta(top.ID); }
+			if($vm.show!=undefined){ $vm.show(top.ID); }
+        }
+    }
+    else if(W_index>V_index){
+        //forword
+        var L=$vm.page_stack.length;
+        var top=$vm.page_stack[L-1];
+        $('#D'+top.ID).css('display','none');
+		$('#D'+top.ID).triggerHandler('hide');
+        $('#D'+event.state.ID).css('display','block');
+		$('#D'+event.state.ID).triggerHandler('show');
+        $vm.page_stack.push(event.state);
+		//if($vm.change_meta!=undefined){ $vm.change_meta(event.state.ID); }
+		if($vm.show!=undefined){ $vm.show(event.state.ID); }
+    }
+    console.log($vm.page_stack);
+    //new ==========================================
+    return;
+
+    //old ==========================================
+    if(event.state==null){
+		window.history.back(-1);
+	}
+	else{
+		var slot=$vm.root_layout_content_slot;
+		var current_ID=$('#'+slot).data("current_state").ID;
+		var last_ID=event.state.ID;
+		if(last_ID!=undefined){
+			$('#D'+last_ID).css('display','block');
+            $('#D'+last_ID).triggerHandler('show');
+			if(current_ID!=last_ID){
+				$('#D'+current_ID).css('display','none');
+                $('#D'+last_ID).triggerHandler('hide');
+			}
+		}
+		$('#'+slot).data("current_state",event.state);
+        console.log('popstate'+event.state.ID+'   last:'+current_ID+" --- current:"+event.state.ID)
+	}
+    //old ==========================================
+}
+//------------------------------------
+$vm.push_back_to_park=function(options){
+	var div=options.div;
+	if( $('#D'+div).length>0){
+		var scroll=$('#vm_body').scrollTop();
+		$('#D'+div).data('scroll',scroll);
+
+		//$('#D'+div).appendTo('#vm_park');
+		$('#D'+div).css('display','none');
+
+		$('#D'+div).triggerHandler('hide');
+	}
+}
+$vm.push_to_slot=function(options){
+	var div	=options.div;
+	var slot=options.slot;
+
+	//$('#'+slot).html('');
+   	//$('#D'+div).appendTo('#'+slot);
+	$('#D'+div).css('display','block');
+
+	$('#D'+div).triggerHandler('show');
+	var scroll=$('#D'+div).data('scroll');
+	if(scroll==undefined) scroll=0;
+	$('#vm_body').scrollTop(scroll)
+}
+$vm.back=function(options){
+	var div=options.div;
+	var back_module=$('#D'+div).data('back_module');
+	var back_slot=$('#D'+div).data('back_slot');
+	$vm.push_back_to_park({div:div});
+	$vm.push_to_slot({div:back_module,slot:back_slot});
+	$('#'+back_slot).data("current",back_module);
+	var form=options.form;
+	var refresh_back=options.refresh_back;
+	if(form!==undefined){
+		if(refresh_back===undefined) $('#D'+back_module).triggerHandler('form_back'); //without save on form
+		else if(refresh_back!==undefined) $('#D'+back_module).triggerHandler('refresh_back'); //with save on form
+	}
+	else $('#D'+back_module).triggerHandler('back');
+}
+$vm.back_and_refresh=function(options){
+	var div=options.div;
+	var back_module=$('#D'+div).data('back_module');
+	var back_slot=$('#D'+div).data('back_slot');
+	$vm.push_back_to_park({div:div});
+	$vm.push_to_slot({div:back_module,slot:back_slot});
+	$('#'+back_slot).data("current",back_module);
+	$('#D'+back_module).triggerHandler('refresh_back');
+}
 //-----------------------------------------------------------------
 $vm.init=function(callback){
     $vm.user_name="guest";
     $vm.user_id="-";
     $vm.user_ip="0";
     $vm.sys_N=0;
-    $vm.request({cmd:'user_info'},function(res){
+    $vm.request({cmd:'user-info'},function(res){
         $vm.user_name=res.records[0].user_name;
-        $vm.user_id=res.records[0].user_id;
-        $vm.user_ip=res.records[0].user_ip;
         if(callback!==undefined) callback(res);
     })
 }
@@ -335,8 +448,10 @@ $vm.request=function(req,callback){
     }
     var dt1=new Date().getTime();
     $vm.ajax_server_error=0;
+    var token=sessionStorage.getItem("vm_token");
+    if(token==undefined) token="";
     $.ajax({
-        headers:{'Authorization':'Bearer ' + $vm.sys_token},
+        headers:{'Authorization':'Bearer ' + token},
         type: "POST",
         url: $vm.api_address,
         contentType: "application/json",
@@ -371,3 +486,84 @@ $vm.request_filter=function(c){
     return c;
 }
 //-----------------------------------------------------------------
+$vm.set_token=function(token){
+    sessionStorage.setItem("vm_token",token);
+};
+$vm.clear_token=function(token){
+    sessionStorage.setItem("vm_token","");
+};
+//-----------------------------------------------------------------
+//--------------------------------------------------------
+$vm.deserialize=function(record,form_id){
+    if(record==undefined || record.Data==undefined) return;
+    $.each(record.Data, function(name, value){
+        if(name!=''){
+            var $els = $(form_id+' *[name='+name+']');
+            $els.each(function(){
+                var $el=$(this);
+                var type = $el.attr('type');
+                switch(type){
+                    case 'checkbox':
+                        if(value=='off' || value=='0' || value=='' ) $el.prop('checked', false);
+                        else $el.prop('checked', true);
+                        break;
+                    case 'radio':
+                        if($el.attr('value')==value){
+                             $el.prop('checked', true);
+                        }
+                        break;
+                    case 'file':
+                        break;
+                    case 'text':
+                    case 'email':
+                    case 'textarea':
+                    case 'select':
+                        $el.val(value);
+                        break;
+                    case 'undefined':
+                        break;
+                    default:
+                        $el.val(value);
+                        break;
+
+                }
+            });
+        }
+    });
+}
+$vm.serialize=function(form_id){
+    var data={};
+    var a=$(form_id).serializeArray();
+    $.each(a, function () { data[this.name]=this.value || '';});
+    $(form_id+" input:checkbox:not(:checked)").each(function(){
+		data[this.name]="off";
+	})
+    $(form_id+" input:file").each(function(){
+        if(this.files.length==1){
+            data[this.name]=this.files[0].name;
+        }
+	})
+    return data;
+}
+$vm.serialize_file=function(form_id){
+    var data={};
+    $(form_id+" input:file").each(function(){
+        if(this.files.length==1){
+            data[this.name]=this.files[0].name+'|'+this.files[0].type;
+        }
+	})
+    return data;
+}
+//---------------------------------------------
+$vm.signin=function(){
+	if($vm.user_name=='guest'){
+		window.open($vm.api_address+"/signin.html","Sign In","width=600, height=700");
+	}
+}
+//---------------------------------------------
+$vm.signout=function(){
+	$vm.clear_token();
+	sessionStorage["signinout"]=1;
+	location.reload(true);
+}
+//---------------------------------------------
