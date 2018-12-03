@@ -34,8 +34,13 @@ m.submit=function(event){
     //--------------------------------------------------------
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
-        var record={App:m.module.App,Table:m.module.Table,Data:data}
-        $vm.request({cmd:"insert",record:record},function(res){
+        var record={Data:data}
+        $vm.request({cmd:"insert-table",record:record},function(res){
+            if(res.sys.exist!=undefined){
+                alert("The table is existed.");
+                $('#submit__ID').show();
+                return;
+            }
             var after_submit=function(){
                 if(m.after_insert!=undefined){
                     m.after_insert(record,res); return;
@@ -48,8 +53,13 @@ m.submit=function(event){
         });
     }
     else if(rid!=undefined){
-        var record={_id:rid,data:data}
-        $vm.request({cmd:"update",record:record},function(res){
+        var record={_id:rid,Data:data}
+        $vm.request({cmd:"update-table",record:record},function(res){
+            if(res.sys.exist!=undefined){
+                alert("The table is existed.");
+                $('#submit__ID').show();
+                return;
+            }
             var after_submit=function(){
                 if(m.after_update!=undefined){
                     m.after_modify(record,res); return;
@@ -73,7 +83,7 @@ $('#delete__ID').on('click', function(){
         return;
     }
     if(confirm("Are you sure to delete?\n")){
-        var req={cmd:"delete",qid:m.qid,db_pid:m.db_pid,rid:rid,dbv:{}};
+        var req={cmd:"delete-table",qid:m.qid,db_pid:m.db_pid,rid:rid,dbv:{}};
         $VmAPI.request({data:req,callback:function(res){
             //-------------------------------
             if(res.Error!==undefined) return false;
