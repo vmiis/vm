@@ -20,6 +20,26 @@ m.load=function(){
     $vm.deserialize(grid_record,'#F__ID');
 }
 //-------------------------------
+m.set_file_link=function(tag){
+    var record=m.input.record;
+    var filename=record.Data[tag]; if(filename==undefined) filename=""; $('#link_'+tag+'__ID').html(filename);
+    var url=record.App+"/"+record.Table+"/"+record.UID+"-"+tag+"-"+filename;
+    $('#link_'+tag+'__ID').on('click',function(){
+        if(record._id!==undefined){
+            if(filename!="") $vm.open_s3_url(filename,url);
+        }
+        else alert("No file was found on server.")
+    });
+    $('#x_'+tag+'__ID').on('click',function(){
+        $('#link_'+tag+'__ID').html('');
+        $('#x_'+tag+'__ID').html('');
+        record.Date[tag]="";
+    })
+    //$('#'+tag).on('change',function(){
+
+    //})
+}
+//-------------------------------
 m.submit=function(event){
     //--------------------------------------------------------
     event.preventDefault();
@@ -27,6 +47,7 @@ m.submit=function(event){
     //--------------------------------------------------------
     var data=$vm.serialize('#F__ID');
     var file=$vm.serialize_file('#F__ID');
+    var FN=0; $('#F__ID').find('input[type=file]').each(function(evt){ if(this.files.length==1) FN++; });
     var dbv={}
     var r=true;
     if(m.before_submit!=undefined) r=m.before_submit(data,dbv);
@@ -34,7 +55,7 @@ m.submit=function(event){
     //--------------------------------------------------------
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
-        var record={App:m.module.App,Table:m.module.Table,Data:data}
+        var record={App:m.module.App,Table:m.module.Table,Data:data,File:file}
         $vm.request({cmd:"insert",record:record},function(res){
             var after_submit=function(){
                 if(m.after_insert!=undefined){
@@ -48,8 +69,9 @@ m.submit=function(event){
         });
     }
     else if(rid!=undefined){
-        var record={_id:rid,Data:data}
+        var record={_id:rid,App:m.module.App,Table:m.module.Table,UID:m.input.record.UID,Data:data,File:file}
         $vm.request({cmd:"update",record:record},function(res){
+            //-----------------------------
             var after_submit=function(){
                 if(m.after_update!=undefined){
                     m.after_modify(record,res); return;
@@ -57,7 +79,16 @@ m.submit=function(event){
                 $vm.refresh=1;
                 if(rid!=undefined) window.history.go(-1);                       //modify
             }
-            after_submit();
+            //-----------------------------
+            if(FN==0) after_submit();
+            else{
+                open_model__ID();
+                $vm.upload_form_files(res,$('#F__ID'),"msg__ID",function(){
+                    close_model__ID();
+                    after_submit();
+                })
+            }
+            //-----------------------------
         });
     }
 }

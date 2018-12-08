@@ -37,7 +37,7 @@ m.submit=function(event){
         var record={Data:data}
         $vm.request({cmd:"insert-table",record:record},function(res){
             if(res.sys.exist!=undefined){
-                alert("The table is existed.");
+                alert("The app or app/table is existed.");
                 $('#submit__ID').show();
                 return;
             }
@@ -56,7 +56,7 @@ m.submit=function(event){
         var record={_id:rid,Data:data}
         $vm.request({cmd:"update-table",record:record},function(res){
             if(res.sys.exist!=undefined){
-                alert("The table is existed.");
+                alert("The app or app/table is existed.");
                 $('#submit__ID').show();
                 return;
             }
