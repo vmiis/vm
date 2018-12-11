@@ -1,7 +1,7 @@
 //---------------------------------------------
 $vm.signin=function(){
 	if($vm.user_name=='guest'){
-		window.open($vm.api_address+"/signin.html","Sign In","width=600, height=700");
+		window.open($vm.api_address+"/signin.html?db=dev","Sign In","width=600, height=700");
 	}
 }
 //---------------------------------------------
