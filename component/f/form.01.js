@@ -48,15 +48,15 @@ m.submit=function(event){
     var data=$vm.serialize('#F__ID');
     var file=$vm.serialize_file('#F__ID');
     var FN=0; $('#F__ID').find('input[type=file]').each(function(evt){ if(this.files.length==1) FN++; });
-    var dbv={}
     var r=true;
-    if(m.before_submit!=undefined) r=m.before_submit(data,dbv);
+    if(m.before_submit!=undefined) r=m.before_submit(data);
     if(r==false){$('#submit__ID').show(); return;}
     //--------------------------------------------------------
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
-        var record={App:m.module.App,Table:m.module.Table,Data:data,File:file}
-        $vm.request({cmd:"insert",record:record},function(res){
+        var query={App:m.module.App,Table:m.module.Table}
+        var record={Data:data,File:file}
+        $vm.request({cmd:"insert",query:query,record:record},function(res){
             var after_submit=function(){
                 if(m.after_insert!=undefined){
                     m.after_insert(record,res); return;
