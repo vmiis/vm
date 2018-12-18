@@ -52,11 +52,19 @@ m.submit=function(event){
     if(m.before_submit!=undefined) r=m.before_submit(data);
     if(r==false){$('#submit__ID').show(); return;}
     //--------------------------------------------------------
+    var query={App:m.module.App,Table:m.module.Table}
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
-        var query={App:m.module.App,Table:m.module.Table}
         var record={Data:data,File:file}
         $vm.request({cmd:"insert",query:query,record:record},function(res){
+            if(res.permission==false){
+                alert("No permission to insert a new record in to the database.");
+                if(m.input.goback!=undefined){
+                    $vm.refresh=1;
+                    window.history.go(-1);       //from grid
+                }
+                return;
+            }
             var after_submit=function(){
                 if(m.after_insert!=undefined){
                     m.after_insert(record,res); return;
@@ -65,12 +73,25 @@ m.submit=function(event){
                 if(m.input.goback!=undefined) window.history.go(-1);       //from grid
                 else $vm.alert('Your data has been successfully submitted');    //standalone
             }
-            after_submit();
+            if(FN==0) after_submit();
+            else{
+                open_model__ID();
+                $vm.upload_form_files(res,$('#F__ID'),"msg__ID",function(){
+                    close_model__ID();
+                    after_submit();
+                })
+            }
+            //-----------------------------
         });
     }
     else if(rid!=undefined){
-        var record={_id:rid,App:m.module.App,Table:m.module.Table,UID:m.input.record.UID,Data:data,File:file}
+        var record={_id:rid,Data:data,File:file}
         $vm.request({cmd:"update",record:record},function(res){
+            //-----------------------------
+            if(res.permission==false){
+                alert("No permission to update this record.");
+                return;
+            }
             //-----------------------------
             var after_submit=function(){
                 if(m.after_update!=undefined){

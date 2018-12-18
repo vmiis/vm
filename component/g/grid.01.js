@@ -43,7 +43,6 @@ m.request_data=function(){
             alert("No permission");
             return;
         }
-        //m.form_I=-1;
         var mt2=new Date().getTime();
         var tt_all=mt2-mt1;
         var tt_server=parseInt(res.sys.elapsed_time);
@@ -295,14 +294,20 @@ m.modify=function(record,dbv){
 //-------------------------------
 */
 m.delete=function(rid){
-    var query={_id:rid}
-    $vm.request({cmd:"delete",query:query},function(res){
-        var after_delete=function(){
-            if(m.after_update!=undefined){
-                m.after_modify(query,res); return;
-            }
+    var record={_id:rid}
+    $vm.request({cmd:"delete",record:record},function(res){
+        //-----------------------------
+        if(res.permission==false){
+            alert("No permission to delete this record.");
+            return;
         }
-        m.request_data();
+        //-----------------------------
+        var after_delete=function(){
+            if(m.after_delete!=undefined){
+                m.after_delete(query,res); return;
+            }
+            m.request_data();
+        }
         after_delete();
     });
 };
