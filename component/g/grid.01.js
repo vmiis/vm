@@ -96,7 +96,7 @@ m.render=function(){
             var value="";
             if(m.records[i][b]!==undefined){
                 value=m.records[i][b];
-                if(b=="Submit_date") value=value.substring(0,10);
+                if(b=="Submit_date") value=$vm.date_to_ddmmyyyy(value.substring(0,10));
             }
             else{
                 if(m.records[i]['Data']!=undefined && m.records[i]['Data'][b]!==undefined){

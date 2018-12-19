@@ -1,3 +1,4 @@
+//----------------------------------------------
 $vm.source=function(module_id,event){
 	if (event.altKey) {
 		if($vm.vm[module_id].url!==undefined){
@@ -29,3 +30,13 @@ $vm.source=function(module_id,event){
 	else if(event.shiftKey){
 	}
 }
+//----------------------------------------------
+$vm.date_to_ddmmyyyy=function(d){
+	if(d==undefined || d==null || d=="" )  return '';
+	var ds=d.toString().split('-');
+	var year = ds[0];
+	var month =ds[1];
+	var day = ds[2];
+	return day+'/'+month+'/'+year;
+}
+//----------------------------------------------
