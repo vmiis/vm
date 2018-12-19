@@ -21,7 +21,6 @@ $vm.load_module=function(name,slot,input){
 		alert("The module '"+name+"' is not in the module list.");
 		return;
 	}
-	var mid=$vm.module_list[name]['table_id'];
     var url=$vm.module_list[name]['url'];
     if(url===undefined) return;
     url=$vm.url(url);
@@ -29,18 +28,19 @@ $vm.load_module=function(name,slot,input){
 	if(id==undefined) id=$vm.id();
 	$vm.module_list[name].id=id;
 	var m_name=name;
-	var pid	=id;
+	var module_id	=id;
 	if(url[0]=='/') url=$vm.hosting_path+url;
 	var last_part=url.split('/').pop();
     _g_current_path=url.replace(last_part,'');
-	if($('#D'+pid).length===0){
-		$vm.vm[pid]={};
+	if($('#D'+module_id).length===0){
+		$vm.vm[module_id]={};
 	}
-	$vm.vm[pid].current_path=_g_current_path;
-    $vm.vm[pid].input=input;
-    $vm.vm[pid].name=name;
+	$vm.vm[module_id].current_path=_g_current_path;
+    $vm.vm[module_id].input=input;
+    $vm.vm[module_id].name=name;
+    $vm.vm[module_id].url=url;
 	//------------------------------
-	if($('#D'+pid).length==0){
+	if($('#D'+module_id).length==0){
 		var apppath=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
         var storage_url=url;
 		var ver=localStorage.getItem(apppath+storage_url+"_ver");
@@ -68,11 +68,11 @@ $vm.load_module=function(name,slot,input){
 				localStorage.setItem(apppath+storage_url+"_ver",$vm.ver[0]);
 				var current_all=data;
 				if(current_all.indexOf('VmInclude:')==-1){
-					$vm.create_module_and_run_code(current_all,pid,url,slot,m_name);
-					$vm.insert_and_trigger_load(pid,slot);
+					$vm.create_module_and_run_code(current_all,module_id,url,slot,m_name);
+					$vm.insert_and_trigger_load(module_id,slot);
 				}
 				else{
-					$vm.process_first_include(current_all,pid,slot,url,m_name);
+					$vm.process_first_include(current_all,module_id,slot,url,m_name);
 				}
 			}).fail(function() {
 			    alert( "The file '"+url+"' doesn't exist!" );
@@ -82,20 +82,20 @@ $vm.load_module=function(name,slot,input){
 			console.log('loading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
 			var current_all=txt;
 			if(current_all.indexOf('VmInclude:')==-1){
-				$vm.create_module_and_run_code(current_all,pid,url,slot,m_name);
-				$vm.insert_and_trigger_load(pid,slot);
+				$vm.create_module_and_run_code(current_all,module_id,url,slot,m_name);
+				$vm.insert_and_trigger_load(module_id,slot);
 			}
 			else{
-				$vm.process_first_include(current_all,pid,slot,url,m_name);
+				$vm.process_first_include(current_all,module_id,slot,url,m_name);
 			}
 		}
 	}
-	else $vm.insert_and_trigger_load(pid,slot);
+	else $vm.insert_and_trigger_load(module_id,slot);
 };
 //---------------------------------------------
-$vm.create_module_and_run_code=function(txt,pid,url,slot,m_name){
+$vm.create_module_and_run_code=function(txt,module_id,url,slot,m_name){
 	//txt=txt.replace(/__CURRENT_PATH__/g,_g_current_path);
-	txt=txt.replace(/__CURRENT_PATH__/g,$vm.vm[pid].current_path);
+	txt=txt.replace(/__CURRENT_PATH__/g,$vm.vm[module_id].current_path);
 	var content=txt;
 	if(m_name!=undefined && $vm.module_list[m_name]!=undefined){
 		if($vm.module_list[m_name].full_content!=='1'){
@@ -109,12 +109,12 @@ $vm.create_module_and_run_code=function(txt,pid,url,slot,m_name){
         	content=$vm.module_list[m_name].html_filter(content);
 		}
     }
-	content=content.replace(/__ID/g, pid);
+	content=content.replace(/__ID/g, module_id);
 	content=content.replace(/<!--([\s\S]*?)-->/mig, '');
 	//-----------------
 	if(slot!='body'){
-		content="<div id=D"+pid+" module='"+m_name+"' class=vm_module style='display:none'><!--"+url+"-->"+content+"</div>"
-		$("#D"+pid).remove();
+		content="<div id=D"+module_id+" module='"+m_name+"' class=vm_module style='display:none'><!--"+url+"-->"+content+"</div>"
+		$("#D"+module_id).remove();
 		if(slot=='' || slot==undefined) slot=$vm.root_layout_content_slot;
 		$("#"+slot).append($(content));
 	}
@@ -122,20 +122,20 @@ $vm.create_module_and_run_code=function(txt,pid,url,slot,m_name){
 		$("body").append($(content));
 	}
 	//-----------------
-	if (typeof window['F'+pid] == 'function') {
+	if (typeof window['F'+module_id] == 'function') {
 		try{
-			eval('F'+pid+"()");
+			eval('F'+module_id+"()");
 		}
 		catch(err){
 			var module=url;
-			if(module===undefined) module=pid;
+			if(module===undefined) module=module_id;
 			alert(err+"\r\nThis error happend in the module\r\n"+module);
 		}
 	}
 	//-----------------------------------------
-	$('#D'+pid).on('dblclick',function(event){
+	$('#D'+module_id).on('dblclick',function(event){
 		event.stopPropagation();
-		$vm.source(''+pid,event);
+		$vm.source(''+module_id,event);
 	});
 	//-------------------------------------
 	if($vm.vm_module_border!==undefined){
@@ -144,10 +144,10 @@ $vm.create_module_and_run_code=function(txt,pid,url,slot,m_name){
 	//-------------------------------------
 }
 //-----------------------------------
-$vm.insert_and_trigger_load=function(pid,slot){
+$vm.insert_and_trigger_load=function(module_id,slot){
 	if(slot!="body"){
-		$vm.insert_module({pid:pid,slot:slot});
-		$('#D'+pid).triggerHandler('load');
+		$vm.insert_module({module_id:module_id,slot:slot});
+		$('#D'+module_id).triggerHandler('load');
 	}
 	$('#vm_loader').hide();
 }
@@ -157,9 +157,9 @@ $vm.insert_module=function(options){
         $vm.page_stack=[];
         $vm.page_stack_index=0;
     }
-	var pid		=options.pid;
+	var module_id		=options.module_id;
 	var slot	=options.slot;
-    if(pid===undefined) return;
+    if(module_id===undefined) return;
 	if(slot===undefined || slot=="") return;
     //new =================================
     var L=$vm.page_stack.length;
@@ -170,11 +170,11 @@ $vm.insert_module=function(options){
             $('#D'+top.ID).triggerHandler('hide');
         }
     }
-    //$vm.push_to_slot({div:pid,slot:slot});
-	$('#D'+pid).css('display','block');
-	$('#D'+pid).triggerHandler('show');
+    //$vm.push_to_slot({div:module_id,slot:slot});
+	$('#D'+module_id).css('display','block');
+	$('#D'+module_id).triggerHandler('show');
     $vm.page_stack_index++;
-    $vm.page_stack.push({ID:pid,slot:slot,index:$vm.page_stack_index});
+    $vm.page_stack.push({ID:module_id,slot:slot,index:$vm.page_stack_index});
 	var pp=null;
 	if($vm.vm_router!=undefined){
 		var dd="";
@@ -203,48 +203,48 @@ $vm.insert_module=function(options){
 			}
 		}
 		var ext=q[0].split('.').pop();
-		if(ext=='html') pp=q[0]+"?/"+$vm.vm[pid].name.replace(/_/g,'\/')+dd;
-		else            pp=$vm.hosting_path+"/?/"+$vm.vm[pid].name.replace(/_/g,'\/')+dd;
+		if(ext=='html') pp=q[0]+"?/"+$vm.vm[module_id].name.replace(/_/g,'\/')+dd;
+		else            pp=$vm.hosting_path+"/?/"+$vm.vm[module_id].name.replace(/_/g,'\/')+dd;
 	}
-    window.history.pushState({ID:pid,slot:slot,index:$vm.page_stack_index}, null, pp);
-	//if($vm.change_meta!=undefined){ $vm.change_meta(pid); }
-	if($vm.show!=undefined){ $vm.show(pid); }
+    window.history.pushState({ID:module_id,slot:slot,index:$vm.page_stack_index}, null, pp);
+	//if($vm.change_meta!=undefined){ $vm.change_meta(module_id); }
+	if($vm.show!=undefined){ $vm.show(module_id); }
     console.log($vm.page_stack)
     //=====================================
     return;
 };
 //------------------------------------
 /*
-$vm.show_module=function(pid,slot,op){
-	if($vm.vm[pid].op!=undefined && op!=undefined){
+$vm.show_module=function(module_id,slot,op){
+	if($vm.vm[module_id].op!=undefined && op!=undefined){
 		for (var a in op){
-			$vm.vm[pid].op[a]=op[a];
+			$vm.vm[module_id].op[a]=op[a];
 		};
 	}
-	$vm.insert_module({pid:pid,slot:slot});
-	$('#D'+pid).triggerHandler('load');
+	$vm.insert_module({module_id:module_id,slot:slot});
+	$('#D'+module_id).triggerHandler('load');
 }
 */
 //-----------------------------------
-$vm.process_first_include=function(txt,pid,slot,url_0,m_name){
+$vm.process_first_include=function(txt,module_id,slot,url_0,m_name){
 	var lines=txt.split('\n');
 	for(var i=0;i<lines.length;i++){
 		if(lines[i].length>10){
 			if(lines[i].indexOf('VmInclude:')!==-1){
-				$vm.load_include(lines,i,pid,slot,url_0,m_name); //find the first include and process
+				$vm.load_include(lines,i,module_id,slot,url_0,m_name); //find the first include and process
 				return;
 			}
 		}
 	}
 }
 //-----------------------------------
-$vm.load_include=function(lines,i,pid,slot,url_0,m_name){
+$vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
 	var name=lines[i].replace('VmInclude:','').trim();
 	var items=name.split('|');
 	var url=$vm.url(items[0]);
 	if(url[0]=='/') url=$vm.hosting_path+url;
 	//url=url.replace('__CURRENT_PATH__',_g_current_path);
-	url=url.replace('__CURRENT_PATH__',$vm.vm[pid].current_path);
+	url=url.replace('__CURRENT_PATH__',$vm.vm[module_id].current_path);
 	//------------------------------
 	var apppath=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
 	var ver=localStorage.getItem(apppath+url+"_ver");
@@ -279,11 +279,11 @@ $vm.load_include=function(lines,i,pid,slot,url_0,m_name){
 			localStorage.setItem(apppath+url+"_ver",$vm.version);
 			var current_all=$vm.replace_and_recreate_content(lines,i,data)
 			if(current_all.indexOf('VmInclude:')==-1){
-				$vm.create_module_and_run_code(current_all,pid,url_0,slot,m_name);
-				$vm.insert_and_trigger_load(pid,slot);
+				$vm.create_module_and_run_code(current_all,module_id,url_0,slot,m_name);
+				$vm.insert_and_trigger_load(module_id,slot);
 			}
 			else{
-				$vm.process_first_include(current_all,pid,slot,url_0,m_name);
+				$vm.process_first_include(current_all,module_id,slot,url_0,m_name);
 			}
 		},'text');
 
@@ -292,11 +292,11 @@ $vm.load_include=function(lines,i,pid,slot,url_0,m_name){
 		console.log('loading from stotage. '+url+" "+ver+"/"+$vm.version+" 127:"+http127_i+" re:"+$vm.reload)
 		var current_all=$vm.replace_and_recreate_content(lines,i,txt)
 		if(current_all.indexOf('VmInclude:')==-1){
-			$vm.create_module_and_run_code(current_all,pid,url_0,slot,m_name);
-			$vm.insert_and_trigger_load(pid,slot);
+			$vm.create_module_and_run_code(current_all,module_id,url_0,slot,m_name);
+			$vm.insert_and_trigger_load(module_id,slot);
 		}
 		else{
-			$vm.process_first_include(current_all,pid,slot,url_0,m_name);
+			$vm.process_first_include(current_all,module_id,slot,url_0,m_name);
 		}
 	}
 }

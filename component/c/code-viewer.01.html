@@ -1,0 +1,51 @@
+<section style='height:100%'>
+    <div id=toolbar__ID>
+        <span id=name__ID></span>, url:<span id=url__ID></span> <!--<button type=button id=reload__ID>Reload</button>-->
+    </div>
+    <textarea id=code__ID style='border:0 solid;overflow-y: scroll;'></textarea>
+</section>
+<script>
+    function F__ID(){
+        //--------------------------------------------------------
+        $('#D__ID').on('load',function(){
+            $('#name__ID').text($vm.vm['__ID'].input.name);
+            $('#url__ID').text($vm.vm['__ID'].input.url);
+            var top1=$('#code__ID').offset().top;
+            $('#code__ID').css("height",$('body').height()-top1-$('#'+$vm.root_layout_footer).outerHeight()-8);
+            //alert($('body').height()-top1-$('#'+$vm.root_layout_footer).outerHeight()-8);
+
+            $('#code__ID').css("width",$(window).width()-5);
+            var code=$vm.vm['__ID'].input.code;
+            $('#code__ID').val(code)
+        })
+        //--------------------------------------------------------
+        $('#reload__ID').on('click',function(){
+            var url=$('#url__ID').text();
+            var s_url=url+'_txt';
+            var txt=localStorage.getItem(s_url);
+            console.log('re-loading from url. '+url)
+            $.get(url+'?_='+new Date().getTime(),function(new_txt){
+                localStorage.setItem(s_url,new_txt);
+                alert("Reloaded.");
+            },'text');
+        })
+        //--------------------------------------------------------
+    }
+</script>
+<style>
+    #toolbar__ID{
+        padding:6px;
+        background-color:#ddd;
+		color:#000;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size:11pt;
+        border-bottom: 1px solid #aaa;
+    }
+    #code__ID{
+        white-space:nowrap;
+		color:#000;
+	    font-size:12px;
+		line-height:15px;
+	    font-family: Courier;
+    }
+</style>
