@@ -303,7 +303,8 @@ $vm.insert_module=function(options){
     $vm.page_stack_index++;
     $vm.page_stack.push({ID:module_id,slot:slot,index:$vm.page_stack_index});
 	var pp=null;
-	if($vm.vm_router!=undefined){
+	//if($vm.vm_router!=undefined){
+    if($vm.module_list[$vm.vm[module_id].name].router!=undefined){
 		var dd="";
 		var q=window.location.href.split('?');
 		if(q.length==2){
