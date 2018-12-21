@@ -1,6 +1,6 @@
 <section style='height:100%'>
     <div id=toolbar__ID>
-        <span id=name__ID></span>, url:<span id=url__ID></span> <!--<button type=button id=reload__ID>Reload</button>-->
+        <span id=msg__ID></span>
     </div>
     <textarea id=code__ID style='border:0 solid;overflow-y: scroll;'></textarea>
 </section>
@@ -8,26 +8,12 @@
     function F__ID(){
         //--------------------------------------------------------
         $('#D__ID').on('load',function(){
-            $('#name__ID').text($vm.vm['__ID'].input.name);
-            $('#url__ID').text($vm.vm['__ID'].input.url);
+            $('#msg__ID').text($vm.vm['__ID'].input.msg);
             var top1=$('#code__ID').offset().top;
             $('#code__ID').css("height",$('body').height()-top1-$('#'+$vm.root_layout_footer).outerHeight()-8);
-            //alert($('body').height()-top1-$('#'+$vm.root_layout_footer).outerHeight()-8);
-
             $('#code__ID').css("width",$(window).width()-5);
             var code=$vm.vm['__ID'].input.code;
             $('#code__ID').val(code)
-        })
-        //--------------------------------------------------------
-        $('#reload__ID').on('click',function(){
-            var url=$('#url__ID').text();
-            var s_url=url+'_txt';
-            var txt=localStorage.getItem(s_url);
-            console.log('re-loading from url. '+url)
-            $.get(url+'?_='+new Date().getTime(),function(new_txt){
-                localStorage.setItem(s_url,new_txt);
-                alert("Reloaded.");
-            },'text');
         })
         //--------------------------------------------------------
     }

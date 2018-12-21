@@ -16,11 +16,14 @@ $vm.source=function(module_id,event){
                     if($vm.module_list[nm].html_filter!=undefined){
                         data=$vm.module_list[nm].html_filter(data);
                     }
-					var msg='module name: '+nm+', App: '+$vm.module_list[nm]['App']+', Table: '+$vm.module_list[nm]['Table'];
 					if($vm.module_list["sys_code_viewer"]==undefined){
 						$vm.module_list["sys_code_viewer"]={url:url}
 					}
-					$vm.load_module("sys_code_viewer",'',{code:data,name:msg,url:module_url});
+					var msg=module_url;
+					if($vm.module_list[nm]['App']!=undefined && $vm.module_list[nm]['Table']!=undefined){
+						msg=msg+ " - "+$vm.module_list[nm]['App']+"/"+$vm.module_list[nm]['Table'];
+					}
+					$vm.load_module("sys_code_viewer",'',{code:data,msg:msg});
 				}
 			})
 		}
