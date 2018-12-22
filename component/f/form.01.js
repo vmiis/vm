@@ -21,8 +21,17 @@ m.load=function(){
 }
 //-------------------------------
 m.set_file_link=function(tag){
+    $('#link_'+tag+'__ID').html("");
+    $('#x_'+tag+'__ID').hide();
     var record=m.input.record;
-    var filename=record.Data[tag]; if(filename==undefined) filename=""; $('#link_'+tag+'__ID').html(filename);
+    var filename=record.Data[tag];
+    if(filename==undefined){
+        filename="";
+    }
+    else{
+        $('#x_'+tag+'__ID').show();
+    }
+    $('#link_'+tag+'__ID').html(filename);
     var url=record.App+"/"+record.Table+"/"+record.UID+"-"+tag+"-"+filename;
     $('#link_'+tag+'__ID').on('click',function(){
         if(record._id!==undefined){
@@ -32,12 +41,9 @@ m.set_file_link=function(tag){
     });
     $('#x_'+tag+'__ID').on('click',function(){
         $('#link_'+tag+'__ID').html('');
-        $('#x_'+tag+'__ID').html('');
-        record.Date[tag]="";
+        $('#x_'+tag+'__ID').hide();
+        record.Data[tag]="";
     })
-    //$('#'+tag).on('change',function(){
-
-    //})
 }
 //-------------------------------
 m.submit=function(event){
@@ -86,7 +92,7 @@ m.submit=function(event){
     }
     else if(rid!=undefined){
         var record={_id:rid,Data:data,File:file}
-        $vm.request({cmd:"update",record:record},function(res){
+        $vm.request({cmd:"update",query:query,record:record},function(res){
             //-----------------------------
             if(res.permission==false){
                 alert("No permission to update this record.");
