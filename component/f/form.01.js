@@ -51,13 +51,27 @@ m.submit=function(event){
     event.preventDefault();
     $('#submit__ID').hide();
     //--------------------------------------------------------
-    var data=$vm.serialize('#F__ID');
+    var data={};
+    var data_new=$vm.serialize('#F__ID');
+    if(m.input.record!=undefined){
+        for(k in m.input.record.Data){
+            data[k]=m.input.record.Data[k];
+        }
+    }
+    if(data_new!=undefined){
+        for(k in data_new){
+            data[k]=data_new[k];
+        }
+    }
+    delete data[""];
     var file=$vm.serialize_file('#F__ID');
     var FN=0; $('#F__ID').find('input[type=file]').each(function(evt){ if(this.files.length==1) FN++; });
     var r=true;
     if(m.before_submit!=undefined) r=m.before_submit(data);
     if(r==false){$('#submit__ID').show(); return;}
     //--------------------------------------------------------
+//alert(JSON.stringify(data))
+//return;
     var query={App:m.module.App,Table:m.module.Table}
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){

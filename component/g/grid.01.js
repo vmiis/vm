@@ -176,6 +176,7 @@ m.cell_process=function(){
         }
     })
     //------------------------------------
+    /*
     //cell value process
     if($vm.edge==0) $('#grid__ID td').blur(function(){
         var col = $(this).parent().children().index($(this));
@@ -188,10 +189,12 @@ m.cell_process=function(){
         var value=$('<div/>').html(value).text();
 
         if(m.cell_value_process!==undefined) value=m.cell_value_process(value,column_name);
-        m.set_value(value,m.records,row,column_name);
-        if(m.after_change!==undefined){ m.after_change(m.records,row,column_name,$(this),m.set_value,'grid'); }
+        //m.set_value(value,m.records,row,column_name);
+        //if(m.after_change!==undefined){ m.after_change(m.records,row,column_name,$(this),m.set_value,'grid'); }
     })
+    */
     //------------------------------------
+    /*
     if($vm.edge==1) $('#grid__ID td').find('div:first').blur(function(){
         var col = $(this).parent().parent().children().index($(this).parent()); //edge
         var row = $(this).parent().parent().parent().children().index($(this).parent().parent())-1; //edge
@@ -206,6 +209,7 @@ m.cell_process=function(){
         if(m.after_change!==''){ m.after_change(m.records,row,column_name,$(this),m.set_value,'grid'); }
     })
     //------------------------------------
+    */
 }
 //-------------------------------------
 m.create_header=function(){
@@ -223,9 +227,10 @@ m.create_header=function(){
         m.field_id.push(thB);
     }
     //-------------------------
-    m.form_create_header();
+    //m.form_create_header();
 }
 //-------------------------------------
+/*
 m.form_create_header=function(){
     var cols=m.form_fields.split(',');
     m.form_field_header=[];
@@ -242,7 +247,9 @@ m.form_create_header=function(){
     }
     //-------------------------
 }
+*/
 //-------------------------------------
+/*
 m.set_value=function(value,records,I,column_name){
     if(value==="" && records[I][column_name]===undefined) return;
     if(value!==records[I][column_name]){
@@ -261,7 +268,6 @@ m.row_data=function(record){
     return data;
 }
 //-----------------------------------------------
-/*
 m.add=function(record,dbv){
     var req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv};
     if(m.xml==1 || m.xml==true)  req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv,xml:"1"};
