@@ -698,3 +698,40 @@ $vm.vm_password=function(length, special) {
     return password;
 }
 //---------------------------------------------
+$vm.autocomplete=function($input,req,autocomplete_list,callback){
+    var field=$input.attr('data-id');
+    $input.focus(function(){$input.autocomplete("search","");});
+    return $input.autocomplete({
+        minLength:0,
+        source:function(request,response){
+            req.search=request.term;
+            $vm.request(req,function(res){
+                if(res.permission==false){
+                    console.log("No permission");
+                    return;
+                }
+                response(autocomplete_list(res.records));
+            })
+        },
+        select: function(event,ui){
+            if(callback!=undefined){
+                callback(ui.item);
+            }
+        }
+    })
+}
+//-------------------------------------
+$vm.status_of_data=function(data){
+    var N1=0,N2=0;
+    for(key in data){
+        if(key!=""){
+            N2++;
+            if(data[key]=='') N1++;
+        }
+    }
+    var status="#FFCC00";
+    if(N1==N2) 		    status='#FF0000';
+    else if(N1==0)  	status='#00FF00';
+    return status;
+}
+//--------------------------------------------------------

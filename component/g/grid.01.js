@@ -49,7 +49,6 @@ m.request_data=function(){
         if(tt_all<tt_server) tt_all=tt_server;
         $("#elapsed__ID").text((JSON.stringify(res.records).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
 
-        $('#save__ID').css('background','');
         m.records=res.records;
         m.res=res;
         if(m.data_process!==undefined){ m.data_process(); }
