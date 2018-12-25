@@ -3,22 +3,16 @@ if($vm.module==undefined) $vm.module={};
 $vm.module["__ID"]={};
 var m=$vm.module["__ID"];
 m.name=$vm.vm['__ID'].name;
-//m.input=$vm.vm['__ID'].input; //?
 m.module=$vm.module_list[m.name];
 m.preload=m.module.preload;
 m.prefix=m.module.prefix; if(m.prefix==undefined) m.prefix="";
 m.form_module=m.prefix+m.module.form_module;
-m.db_pid=m.module.table_id;
-m.qid=m.module.qid; if(m.qid==undefined) m.qid=$vm.qid;
 m.query={};
 m.options={};
 //-------------------------------------
 m.set_req=function(){
-    var sql="with tb as (select Information,ID,UID,PUID,DateTime,Modified=Convert(varchar,Modified,127),Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+m.db_pid+"-@S1] )";
-    sql+="select Information,ID,UID,PUID,DateTime,Modified,Author,RowNum from tb where RowNum between @I6 and @I7";
-    var sql_n="select count(ID) from [TABLE-"+m.db_pid+"-@S1]";
-	m.req={cmd:'read',qid:m.qid,sql:sql,sql_n:sql_n,s1:'"'+$('#keyword__ID').val()+'"',I:$('#I__ID').text(),page_size:$('#page_size__ID').val()}
-}
+    m.query={}
+};
 //-------------------------------------
 m.set_req_export=function(i1,i2){
     var sql="with tb as (select Information,DateTime,Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+m.db_pid+"-@S1] )";
@@ -27,27 +21,33 @@ m.set_req_export=function(i1,i2){
 }
 //-----------------------------------------------
 m.request_data=function(){
-    if(m.req==='') return;
+    var limit=parseInt($('#page_size__ID').val());
+    var skip=limit*parseInt($('#I__ID').text());
     var mt1=new Date().getTime();
-	$('#vm_loader').show();
-    $VmAPI.request({data:m.req,callback:function(res){
-		$('#vm_loader').hide();
-        m.form_I=-1;
-        $("#I__ID").text(res.I);
-        $("#A__ID").text(res.A);
+    $vm.request({cmd:"count-permission",query:m.query,options:m.options},function(res){
+        var N=res.records[0].count;
+        m.max_I=N/limit-1;
+        $("#B__ID").text(N)
+        var n2=skip+limit; if(n2>N) n2=N;
+        var a=(skip+1).toString()+"~"+(n2).toString()+" of ";
+        $("#A__ID").text(a);
+    });
+    $vm.request({cmd:"find-permission",query:m.query,options:m.options,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
+        //m.form_I=-1;
         var mt2=new Date().getTime();
         var tt_all=mt2-mt1;
-        var tt_server=parseInt(res.elapsed);
+        var tt_server=parseInt(res.sys.elapsed_time);
         if(tt_all<tt_server) tt_all=tt_server;
         $("#elapsed__ID").text((JSON.stringify(res.records).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
+
         $('#save__ID').css('background','');
         m.records=res.records;
         m.res=res;
         if(m.data_process!==undefined){ m.data_process(); }
         m.render();
-		if(m.data_process_after_render!==undefined){ m.data_process_after_render('grid'); }
-    }})
-}
+        if(m.data_process_after_render!==undefined){ m.data_process_after_render('grid'); }
+    })
+};
 //-------------------------------------
 m.render=function(){
     var start=0;
@@ -214,9 +214,10 @@ m.create_header=function(){
         m.field_id.push(thB);
     }
     //-------------------------
-    m.form_create_header();
+    //m.form_create_header();
 }
 //-------------------------------------
+/*
 m.form_create_header=function(){
     var cols=m.form_fields.split(',');
     m.form_field_header=[];
@@ -233,6 +234,7 @@ m.form_create_header=function(){
     }
     //-------------------------
 }
+*/
 //-------------------------------------
 m.set_value=function(value,records,I,column_name){
     if(value==="" && records[I][column_name]===undefined) return;

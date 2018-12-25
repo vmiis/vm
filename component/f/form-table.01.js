@@ -53,8 +53,8 @@ m.submit=function(event){
         });
     }
     else if(rid!=undefined){
-        var record={_id:rid,Data:data}
-        $vm.request({cmd:"update-table",record:record},function(res){
+        //var record={_id:rid,Data:data}
+        $vm.request({cmd:"update-table",id:rid,data:data},function(res){
             if(res.sys.exist!=undefined){
                 alert("The app or app/table is existed.");
                 $('#submit__ID').show();
@@ -62,7 +62,7 @@ m.submit=function(event){
             }
             var after_submit=function(){
                 if(m.after_update!=undefined){
-                    m.after_modify(record,res); return;
+                    m.after_modify(data,res); return;
                 }
                 $vm.refresh=1;
                 if(rid!=undefined) window.history.go(-1);                       //modify

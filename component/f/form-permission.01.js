@@ -53,16 +53,16 @@ m.submit=function(event){
         });
     }
     else if(rid!=undefined){
-        var record={_id:rid,Data:data}
-        $vm.request({cmd:"update-permission",record:record},function(res){
+        //var record={_id:rid,Data:data}
+        $vm.request({cmd:"update-permission",id:rid,data:data},function(res){
             if(res.sys.exist!=undefined){
-                alert("The table is existed.");
+                alert("The 'App' is not owned by you.");
                 $('#submit__ID').show();
                 return;
             }
             var after_submit=function(){
                 if(m.after_update!=undefined){
-                    m.after_modify(record,res); return;
+                    m.after_modify(data,res); return;
                 }
                 $vm.refresh=1;
                 if(rid!=undefined) window.history.go(-1);                       //modify
