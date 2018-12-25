@@ -40,7 +40,7 @@ m.request_data=function(){
     });
     $vm.request({cmd:"find",query:m.query,options:m.options,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
         if(res.permission==false){
-            alert("No permission");
+            alert("No permission or the data table doesn't exist.");
             return;
         }
         var mt2=new Date().getTime();
@@ -299,8 +299,7 @@ m.modify=function(record,dbv){
 //-------------------------------
 */
 m.delete=function(rid){
-    var record={_id:rid}
-    $vm.request({cmd:"delete",record:record},function(res){
+    $vm.request({cmd:"delete",id:rid},function(res){
         //-----------------------------
         if(res.permission==false){
             alert("No permission to delete this record.");
@@ -309,11 +308,11 @@ m.delete=function(rid){
         //-----------------------------
         var after_delete=function(){
             if(m.after_delete!=undefined){
-                m.after_delete(query,res); return;
+                m.after_delete(res); return;
             }
             m.request_data();
         }
-        after_delete();
+        after_delete(res);
     });
 };
 //-------------------------------

@@ -54,6 +54,7 @@ m.submit=function(event){
     $('#submit__ID').hide();
     //--------------------------------------------------------
     var data={};
+    var index={};
     var data_new=$vm.serialize('#F__ID');
     if(m.input.record!=undefined){
         for(k in m.input.record.Data){
@@ -69,16 +70,14 @@ m.submit=function(event){
     var file=$vm.serialize_file('#F__ID');
     var FN=0; $('#F__ID').find('input[type=file]').each(function(evt){ if(this.files.length==1) FN++; });
     var r=true;
-    if(m.before_submit!=undefined) r=m.before_submit(data);
+    if(m.before_submit!=undefined) r=m.before_submit(data,index);
     if(r==false){$('#submit__ID').show(); return;}
     //--------------------------------------------------------
-//alert(JSON.stringify(data))
-//return;
-    var query={App:m.module.App,Table:m.module.Table}
+    var table={App:m.module.App,Table:m.module.Table}
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
         var record={Data:data,File:file}
-        $vm.request({cmd:"insert",query:query,record:record},function(res){
+        $vm.request({cmd:"insert",table:table,data:data,index:index,file:file},function(res){
             if(res.permission==false){
                 alert("No permission to insert a new record in to the database.");
                 if(m.input.goback!=undefined){
@@ -108,7 +107,7 @@ m.submit=function(event){
     }
     else if(rid!=undefined){
         var record={_id:rid,Data:data,File:file}
-        $vm.request({cmd:"update",query:query,record:record},function(res){
+        $vm.request({cmd:"update",id:rid,table:table,data:data,index:index,file:file},function(res){
             //-----------------------------
             if(res.permission==false){
                 alert("No permission to update this record.");
