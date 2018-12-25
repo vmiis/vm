@@ -126,8 +126,8 @@ $vm.init=function(callback){
 }
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
-$vm._id=-1;
-$vm.id=function(txt){
+$vm.id=function(){
+	if($vm._id==undefined) $vm._id=0;
 	$vm._id++;
 	return "_"+$vm._id.toString();
 }
@@ -162,6 +162,7 @@ $vm.load_module=function(name,slot,input){
 	if($('#D'+module_id).length===0){
 		$vm.vm[module_id]={};
 	}
+	if($vm.vm[module_id]==undefined) $vm.vm[module_id]={};
 	$vm.vm[module_id].current_path=_g_current_path;
     $vm.vm[module_id].input=input;
     $vm.vm[module_id].name=name;
