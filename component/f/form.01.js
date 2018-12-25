@@ -12,6 +12,8 @@ m.db_pid=m.module.table_id;
 m.qid=m.module.qid; if(m.qid==undefined) m.qid=$vm.qid;
 //-------------------------------------
 m.load=function(){
+    $('#D__ID').scrollTop(0);
+    $(window).scrollTop(0);
     m.input=$vm.vm['__ID'].input; if(m.input==undefined) m.input={};
     $('#F__ID')[0].reset();
     $('#submit__ID').show();
