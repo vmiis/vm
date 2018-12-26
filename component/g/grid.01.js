@@ -410,3 +410,12 @@ $('#new__ID').on('click', function(){
 $('#D__ID').on('load',function(){  m.input=$vm.vm['__ID'].input; if(m.preload==true) return; if(m.load!=undefined) m.load(); m.set_req(); m.request_data(); })
 $('#D__ID').on('show',function(){  if($vm.refresh==1){$vm.refresh=0; m.set_req(); m.request_data();} })
 //-----------------------------------------------
+m.set_file_link=function(records,I,field,td){
+    var filename=records[I].Data[field];
+    td.html("<u style='cursor:pointer'>"+filename+"</u>");
+    td.find('u').on('click',function(){
+        var url=m.module.App+"/"+m.module.Table+"/"+records[I].UID+"-"+field+"-"+filename;
+        $vm.open_s3_url(filename,url);
+    })
+}
+//-------------------------------
