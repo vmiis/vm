@@ -24,7 +24,7 @@ m.request_data=function(){
     var limit=parseInt($('#page_size__ID').val());
     var skip=limit*parseInt($('#I__ID').text());
     var mt1=new Date().getTime();
-    $vm.request({cmd:"count-table",query:m.query,options:m.options},function(res){
+    $vm.request({cmd:"count-user",query:m.query,options:m.options},function(res){
         var N=res.records[0].count;
         m.max_I=N/limit-1;
         $("#B__ID").text(N)
@@ -32,7 +32,7 @@ m.request_data=function(){
         var a=(skip+1).toString()+"~"+(n2).toString()+" of ";
         $("#A__ID").text(a);
     });
-    $vm.request({cmd:"find-table",query:m.query,options:m.options,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
+    $vm.request({cmd:"find-user",query:m.query,options:m.options,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
         var mt2=new Date().getTime();
         var tt_all=mt2-mt1;
         var tt_server=parseInt(res.sys.elapsed_time);
@@ -213,27 +213,7 @@ m.create_header=function(){
         m.field_id.push(thB);
     }
     //-------------------------
-    //m.form_create_header();
 }
-//-------------------------------------
-/*
-m.form_create_header=function(){
-    var cols=m.form_fields.split(',');
-    m.form_field_header=[];
-    m.form_field_id=[];
-    //------------------------------------
-    //table
-    for(var i=0;i<cols.length;i++){
-        var th=cols[i];
-        var thA=th.split('|')[0];
-        var thB=th.split('|').pop().trim().replace(/ /g,'_');
-        //create form header and id
-        m.form_field_header.push(thA);
-        m.form_field_id.push(thB);
-    }
-    //-------------------------
-}
-*/
 //-------------------------------------
 m.set_value=function(value,records,I,column_name){
     if(value==="" && records[I][column_name]===undefined) return;
@@ -253,47 +233,9 @@ m.row_data=function(record){
     return data;
 }
 //-----------------------------------------------
-/*
-m.add=function(record,dbv){
-    var req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv};
-    if(m.xml==1 || m.xml==true)  req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv,xml:"1"};
-    $VmAPI.request({data:req,callback:function(res){
-        record.ID=res.ret;
-        record.dirty="0";
-        if(m.after_add!==undefined)  m.after_add(res,record,dev);
-        m.N_total--;
-        if( m.N_total===0){
-            if(m.after_submit_all!==undefined) m.after_submit_all();
-            m.set_req(),m.request_data();
-        }
-    }});
-    //-------------------------------
-};
-//-----------------------------------------------
-m.modify=function(record,dbv){
-    var req={cmd:"modify",qid:m.qid,rid:record.ID,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv};
-    if(m.xml==1 || m.xml==true)  req={cmd:"modify",qid:m.qid,rid:record.ID,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv,xml:"1"};
-    $VmAPI.request({data:req,callback:function(res){
-        record.dirty="0";
-        if(m.after_modify!==undefined)  m.after_modify(res,record,dev);
-        m.N_total--;
-        if( m.N_total===0){
-            if(m.after_submit_all!==undefined) m.after_submit_all();
-            m.set_req(),m.request_data();
-        }
-    }});
-};
-//-------------------------------
-*/
 m.delete=function(rid){
-    $vm.request({cmd:"delete-table",id:rid},function(res){
-        var after_delete=function(){
-            if(m.after_update!=undefined){
-                m.after_modify(query,res); return;
-            }
-        }
+    $vm.request({cmd:"delete-user",id:rid},function(res){
         m.request_data();
-        after_delete();
     });
 };
 //-------------------------------
