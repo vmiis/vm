@@ -1,25 +1,14 @@
 //-------------------------------------
-if($vm.module==undefined) $vm.module={};
-$vm.module["__ID"]={};
-var m=$vm.module["__ID"];
-m.name=$vm.vm['__ID'].name;
-m.input=$vm.vm['__ID'].input; if(m.input==undefined) m.input={};
-m.module=$vm.module_list[m.name];
-m.preload=m.module.preload;
-m.prefix=m.module.prefix; if(m.prefix==undefined) m.prefix="";
-m.form_module=m.prefix+m.module.form_module;
-m.db_pid=m.module.table_id;
-m.qid=m.module.qid; if(m.qid==undefined) m.qid=$vm.qid;
+var m=$vm.module_list[$vm.name["__ID"]]
+if(m.prefix==undefined) m.prefix="";
 //-------------------------------------
 m.load=function(){
     $('#D__ID').scrollTop(0);
     $(window).scrollTop(0);
-    m.input=$vm.vm['__ID'].input; if(m.input==undefined) m.input={};
     $('#F__ID')[0].reset();
     $('#submit__ID').show();
-    var grid_record=m.input.record;
-    $('#delete__ID').hide(); if(grid_record!=undefined && grid_record._id!==undefined) $('#delete__ID').show();
-    $vm.deserialize(grid_record,'#F__ID');
+    $('#delete__ID').hide(); if(m.input.record!=undefined && m.input.record._id!==undefined) $('#delete__ID').show();
+    $vm.deserialize(m.input.record,'#F__ID');
 }
 //-------------------------------
 m.set_file_link=function(tag){
@@ -73,7 +62,7 @@ m.submit=function(event){
     if(m.before_submit!=undefined) r=m.before_submit(data,index);
     if(r==false){$('#submit__ID').show(); return;}
     //--------------------------------------------------------
-    var table={App:m.module.App,Table:m.module.Table}
+    var table={App:m.App,Table:m.Table}
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
         var record={Data:data,File:file}

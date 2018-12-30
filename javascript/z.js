@@ -34,15 +34,6 @@ $vm.source=function(module_id,event){
 	}
 }
 //----------------------------------------------
-$vm.date_to_ddmmyyyy=function(d){
-	if(d==undefined || d==null || d=="" )  return '';
-	var ds=d.toString().split('-');
-	var year = ds[0];
-	var month =ds[1];
-	var day = ds[2];
-	return day+'/'+month+'/'+year;
-}
-//----------------------------------------------
 $vm.vm_password=function(length, special) {
     var iteration = 0;
     var password = "";

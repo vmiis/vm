@@ -27,6 +27,11 @@ $vm.load_module=function(name,slot,input){
 	var id=$vm.module_list[name].id;
 	if(id==undefined) id=$vm.id();
 	$vm.module_list[name].id=id;
+	if($vm.name==undefined) $vm.name={}
+	$vm.name[id]=name;
+	var m=$vm.module_list[name];
+	m.input=input;
+
 	var m_name=name;
 	var module_id	=id;
 	if(url[0]=='/') url=$vm.hosting_path+url;

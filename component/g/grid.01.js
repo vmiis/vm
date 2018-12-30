@@ -1,17 +1,11 @@
 //-------------------------------------
-if($vm.module==undefined) $vm.module={};
-$vm.module["__ID"]={};
-var m=$vm.module["__ID"];
-m.name=$vm.vm['__ID'].name;
-m.module=$vm.module_list[m.name];
-m.preload=m.module.preload;
-m.prefix=m.module.prefix; if(m.prefix==undefined) m.prefix="";
-m.form_module=m.prefix+m.module.form_module;
+var m=$vm.module_list[$vm.name["__ID"]]
+if(m.prefix==undefined) m.prefix="";
 m.query={};
 m.options={};
 //-------------------------------------
 m.set_req=function(){
-    m.query={App:m.module.App,Table:m.module.Table}
+    m.query={App:m.App,Table:m.Table}
 };
 //-------------------------------------
 m.set_req_export=function(i1,i2){
@@ -126,23 +120,11 @@ m.cell_process=function(){
             $(this).html("<u style='cursor:pointer'><i class='fa fa-pencil-square-o'></i></u>");
             $(this).find('u').on('click',function(){
                 m.form_I=row;
-                //var m.name=$vm.vm['__ID'].name;
-                var form_module_name=m.module.form_module;
-                if(form_module_name===undefined){
-                    var name='grid_form__ID';
-					if($vm.module_list[name]==undefined){
-                    	$vm.module_list[name]={table_id:m.db_pid.toString(),url:'__COMPONENT__/module/form.v1.html'};
-					}
-                    $vm.load_module(name,$vm.root_layout_content_slot,{m:m});
+                if($vm.module_list[m.form_module]===undefined){
+                    alert('Can not find "'+m.form_module+'" in the module list');
+                    return;
                 }
-                else{
-					var prefix="";	if($vm.module_list[m.name].prefix!=undefined) prefix=$vm.module_list[m.name].prefix
-                    if($vm.module_list[m.form_module]===undefined){
-                        alert('Can not find "'+m.form_module+'" in the module list');
-                        return;
-                    }
-                    $vm.load_module(m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
-                }
+                $vm.load_module(m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
             })
         }
         //-------------------------
@@ -153,7 +135,6 @@ m.cell_process=function(){
             $(this).find('u').on('click',function(){
                 var rid=$(this).data('ID');
                 if(confirm("Are you sure to delete?\n")){
-                    m.N_total=1;
                     m.delete(rid);
                 }
             })
@@ -172,40 +153,6 @@ m.cell_process=function(){
         }
     })
     //------------------------------------
-    /*
-    //cell value process
-    if($vm.edge==0) $('#grid__ID td').blur(function(){
-        var col = $(this).parent().children().index($(this));
-        var row = $(this).parent().parent().children().index($(this).parent())-1;
-        var column_name=$('#grid__ID th:nth-child('+(col+1)+')').attr('data-header');
-        if(column_name=='_Form' || column_name=='_Delete' || m.records[row].vm_custom[column_name]===true){
-            return;
-        }
-        var value=$(this).html().replace(/<div>/g,'').replace(/<\/div>/g,'\n').replace(/<br>/g,'\n');
-        var value=$('<div/>').html(value).text();
-
-        if(m.cell_value_process!==undefined) value=m.cell_value_process(value,column_name);
-        //m.set_value(value,m.records,row,column_name);
-        //if(m.after_change!==undefined){ m.after_change(m.records,row,column_name,$(this),m.set_value,'grid'); }
-    })
-    */
-    //------------------------------------
-    /*
-    if($vm.edge==1) $('#grid__ID td').find('div:first').blur(function(){
-        var col = $(this).parent().parent().children().index($(this).parent()); //edge
-        var row = $(this).parent().parent().parent().children().index($(this).parent().parent())-1; //edge
-        var column_name=$('#grid__ID th:nth-child('+(col+1)+')').attr('data-header');
-        if(column_name=='_Form' || column_name=='_Delete' || m.records[row].vm_custom[column_name]===true){
-            return;
-        }
-        var value=$(this).html().replace(/<div>/g,'').replace(/<\/div>/g,'\n').replace(/<br>/g,'\n');
-        var value=$('<div/>').html(value).text();
-        if(m.cell_value_process!==undefined) value=m.cell_value_process(value,column_name);
-        m.set_value(value,m.records,row,column_name);
-        if(m.after_change!==''){ m.after_change(m.records,row,column_name,$(this),m.set_value,'grid'); }
-    })
-    //------------------------------------
-    */
 }
 //-------------------------------------
 m.create_header=function(){
@@ -223,78 +170,8 @@ m.create_header=function(){
         m.field_id.push(thB);
     }
     //-------------------------
-    //m.form_create_header();
 }
 //-------------------------------------
-/*
-m.form_create_header=function(){
-    var cols=m.form_fields.split(',');
-    m.form_field_header=[];
-    m.form_field_id=[];
-    //------------------------------------
-    //table
-    for(var i=0;i<cols.length;i++){
-        var th=cols[i];
-        var thA=th.split('|')[0];
-        var thB=th.split('|').pop().trim().replace(/ /g,'_');
-        //create form header and id
-        m.form_field_header.push(thA);
-        m.form_field_id.push(thB);
-    }
-    //-------------------------
-}
-*/
-//-------------------------------------
-/*
-m.set_value=function(value,records,I,column_name){
-    if(value==="" && records[I][column_name]===undefined) return;
-    if(value!==records[I][column_name]){
-        records[I].vm_dirty=1;
-        records[I][column_name]=value;
-        $('#save__ID').css('background','#E00');
-    }
-}
-//-----------------------------------------------
-m.row_data=function(record){
-    var data={};
-    for(var i=0;i<m.form_field_id.length;i++){
-        var id=m.form_field_id[i];
-        data[id]=record[id];
-    }
-    return data;
-}
-//-----------------------------------------------
-m.add=function(record,dbv){
-    var req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv};
-    if(m.xml==1 || m.xml==true)  req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv,xml:"1"};
-    $VmAPI.request({data:req,callback:function(res){
-        record.ID=res.ret;
-        record.dirty="0";
-        if(m.after_add!==undefined)  m.after_add(res,record,dev);
-        m.N_total--;
-        if( m.N_total===0){
-            if(m.after_submit_all!==undefined) m.after_submit_all();
-            m.set_req(),m.request_data();
-        }
-    }});
-    //-------------------------------
-};
-//-----------------------------------------------
-m.modify=function(record,dbv){
-    var req={cmd:"modify",qid:m.qid,rid:record.ID,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv};
-    if(m.xml==1 || m.xml==true)  req={cmd:"modify",qid:m.qid,rid:record.ID,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv,xml:"1"};
-    $VmAPI.request({data:req,callback:function(res){
-        record.dirty="0";
-        if(m.after_modify!==undefined)  m.after_modify(res,record,dev);
-        m.N_total--;
-        if( m.N_total===0){
-            if(m.after_submit_all!==undefined) m.after_submit_all();
-            m.set_req(),m.request_data();
-        }
-    }});
-};
-//-------------------------------
-*/
 m.delete=function(rid){
     $vm.request({cmd:"delete",id:rid},function(res){
         //-----------------------------
@@ -386,7 +263,7 @@ $('#new__ID').on('click', function(){
         m.new();
         return;
     }
-    if(m.module.form_module!=undefined){
+    if(m.form_module!=undefined){
         $vm.load_module(m.form_module,'',{goback:1});
         return;
     }
@@ -414,7 +291,7 @@ m.set_file_link=function(records,I,field,td){
     var filename=records[I].Data[field];
     td.html("<u style='cursor:pointer'>"+filename+"</u>");
     td.find('u').on('click',function(){
-        var url=m.module.App+"/"+m.module.Table+"/"+records[I].UID+"-"+field+"-"+filename;
+        var url=m.App+"/"+m.Table+"/"+records[I].UID+"-"+field+"-"+filename;
         $vm.open_s3_url(filename,url);
     })
 }
