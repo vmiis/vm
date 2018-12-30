@@ -8,6 +8,8 @@ $vm.id=function(){
 _g_current_path='';
 $vm.load_module=function(name,slot,input){
     if(name==undefined) return;
+	if($vm.name==undefined) $vm.name={}
+	if($vm.vm==undefined) $vm.vm={}
     _g_vm_chrom_loop=0;
 	//$vm.load_module_by_name(name,slot_1,op);
     if(input==undefined) input={};
@@ -27,7 +29,6 @@ $vm.load_module=function(name,slot,input){
 	var id=$vm.module_list[name].id;
 	if(id==undefined) id=$vm.id();
 	$vm.module_list[name].id=id;
-	if($vm.name==undefined) $vm.name={}
 	$vm.name[id]=name;
 	var m=$vm.module_list[name];
 	m.input=input;
@@ -116,6 +117,7 @@ $vm.create_module_and_run_code=function(txt,module_id,url,slot,m_name){
 		}
     }
 	content=content.replace(/__ID/g, module_id);
+	content=content.replace(/__MODULE__/g, m_name);
 	content=content.replace(/<!--([\s\S]*?)-->/mig, '');
 	//-----------------
 	if(slot!='body'){
