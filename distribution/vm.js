@@ -493,7 +493,7 @@ $vm.process_first_include=function(txt,module_id,slot,url_0,m_name){
 }
 //-----------------------------------
 $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
-	var name=lines[i].replace('VmInclude:','').trim();
+	var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
 	var items=name.split('|');
 	var url=$vm.url(items[0]);
 	if(url[0]=='/') url=$vm.hosting_path+url;
@@ -850,5 +850,37 @@ $vm.status_of_data=function(data){
     if(N1==N2) 		    status='#FF0000';
     else if(N1==0)  	status='#00FF00';
     return status;
+}
+//--------------------------------------------------------
+$vm.text=function(txt){
+	return $('<div></div>').html(txt).text();
+}
+//--------------------------------------------------------
+$vm.invert_color=function(hex) {
+    var padZero=function(str, len) {
+        len = len || 2;
+        var zeros = new Array(len).join('0');
+        return (zeros + str).slice(-len);
+    }
+    var getRandomColor=function() {
+        var color = Math.round(Math.random() * 0x1000000).toString(16);
+        return "#" + padZero(color, 6);
+    }
+    if (hex.indexOf('#') === 0) {
+        hex = hex.slice(1);
+    }
+    // convert 3-digit hex to 6-digits.
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    if (hex.length !== 6) {
+        throw new Error('Invalid HEX color.');
+    }
+    // invert color components
+    var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
+        g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
+        b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
+    // pad each with zeros and return
+    return "#" + padZero(r) + padZero(g) + padZero(b);
 }
 //--------------------------------------------------------

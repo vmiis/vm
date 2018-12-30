@@ -246,7 +246,7 @@ $vm.process_first_include=function(txt,module_id,slot,url_0,m_name){
 }
 //-----------------------------------
 $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
-	var name=lines[i].replace('VmInclude:','').trim();
+	var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
 	var items=name.split('|');
 	var url=$vm.url(items[0]);
 	if(url[0]=='/') url=$vm.hosting_path+url;
