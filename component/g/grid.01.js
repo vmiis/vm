@@ -92,6 +92,7 @@ m.render=function(){
                     value=m.records[i]['Data'][b];
                 }
             }
+            if(value==undefined) value="";
             value=value.toString();
             value=$('<div/>').text(value).html();
             value=value.replace(/\n/g,'<br>');

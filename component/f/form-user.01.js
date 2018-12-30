@@ -1,4 +1,5 @@
 //-------------------------------------
+/*
 if($vm.module==undefined) $vm.module={};
 $vm.module["__ID"]={};
 var m=$vm.module["__ID"];
@@ -10,6 +11,8 @@ m.prefix=m.module.prefix; if(m.prefix==undefined) m.prefix="";
 m.form_module=m.prefix+m.module.form_module;
 m.db_pid=m.module.table_id;
 m.qid=m.module.qid; if(m.qid==undefined) m.qid=$vm.qid;
+*/
+var m=$vm.module_list['__MODULE__'];
 //-------------------------------------
 m.load=function(){
     m.input=$vm.vm['__ID'].input; if(m.input==undefined) m.input={};

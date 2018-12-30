@@ -1,12 +1,5 @@
 //-------------------------------------
-if($vm.module==undefined) $vm.module={};
-$vm.module["__ID"]={};
-var m=$vm.module["__ID"];
-m.name=$vm.vm['__ID'].name;
-m.module=$vm.module_list[m.name];
-m.preload=m.module.preload;
-m.prefix=m.module.prefix; if(m.prefix==undefined) m.prefix="";
-m.form_module=m.prefix+m.module.form_module;
+var m=$vm.module_list['__MODULE__'];
 m.query={};
 m.options={};
 //-------------------------------------
@@ -38,7 +31,6 @@ m.request_data=function(){
         var tt_server=parseInt(res.sys.elapsed_time);
         if(tt_all<tt_server) tt_all=tt_server;
         $("#elapsed__ID").text((JSON.stringify(res.records).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
-
         $('#save__ID').css('background','');
         m.records=res.records;
         m.res=res;
@@ -86,13 +78,14 @@ m.render=function(){
             var value="";
             if(m.records[i][b]!==undefined){
                 value=m.records[i][b];
-                if(b=="Submit_date") value=value.substring(0,10);
+                if(b=="Submit_date") value=$vm.date_to_ddmmyyyy(value.substring(0,10));
             }
             else{
                 if(m.records[i]['Data']!=undefined && m.records[i]['Data'][b]!==undefined){
                     value=m.records[i]['Data'][b];
                 }
             }
+            if(value==undefined) value="";
             value=value.toString();
             value=$('<div/>').text(value).html();
             value=value.replace(/\n/g,'<br>');
@@ -120,23 +113,11 @@ m.cell_process=function(){
             $(this).html("<u style='cursor:pointer'><i class='fa fa-pencil-square-o'></i></u>");
             $(this).find('u').on('click',function(){
                 m.form_I=row;
-                //var m.name=$vm.vm['__ID'].name;
-                var form_module_name=m.module.form_module;
-                if(form_module_name===undefined){
-                    var name='grid_form__ID';
-					if($vm.module_list[name]==undefined){
-                    	$vm.module_list[name]={table_id:m.db_pid.toString(),url:'__COMPONENT__/module/form.v1.html'};
-					}
-                    $vm.load_module(name,$vm.root_layout_content_slot,{m:m});
+                if($vm.module_list[m.form_module]===undefined){
+                    alert('Can not find "'+m.form_module+'" in the module list');
+                    return;
                 }
-                else{
-					var prefix="";	if($vm.module_list[m.name].prefix!=undefined) prefix=$vm.module_list[m.name].prefix
-                    if($vm.module_list[m.form_module]===undefined){
-                        alert('Can not find "'+m.form_module+'" in the module list');
-                        return;
-                    }
-                    $vm.load_module(m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
-                }
+                $vm.load_module(m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
             })
         }
         //-------------------------
@@ -253,38 +234,6 @@ m.row_data=function(record){
     return data;
 }
 //-----------------------------------------------
-/*
-m.add=function(record,dbv){
-    var req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv};
-    if(m.xml==1 || m.xml==true)  req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv,xml:"1"};
-    $VmAPI.request({data:req,callback:function(res){
-        record.ID=res.ret;
-        record.dirty="0";
-        if(m.after_add!==undefined)  m.after_add(res,record,dev);
-        m.N_total--;
-        if( m.N_total===0){
-            if(m.after_submit_all!==undefined) m.after_submit_all();
-            m.set_req(),m.request_data();
-        }
-    }});
-    //-------------------------------
-};
-//-----------------------------------------------
-m.modify=function(record,dbv){
-    var req={cmd:"modify",qid:m.qid,rid:record.ID,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv};
-    if(m.xml==1 || m.xml==true)  req={cmd:"modify",qid:m.qid,rid:record.ID,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv,xml:"1"};
-    $VmAPI.request({data:req,callback:function(res){
-        record.dirty="0";
-        if(m.after_modify!==undefined)  m.after_modify(res,record,dev);
-        m.N_total--;
-        if( m.N_total===0){
-            if(m.after_submit_all!==undefined) m.after_submit_all();
-            m.set_req(),m.request_data();
-        }
-    }});
-};
-//-------------------------------
-*/
 m.delete=function(rid){
     $vm.request({cmd:"delete-table",id:rid},function(res){
         var after_delete=function(){
@@ -370,7 +319,7 @@ $('#new__ID').on('click', function(){
         m.new();
         return;
     }
-    if(m.module.form_module!=undefined){
+    if(m.form_module!=undefined){
         $vm.load_module(m.form_module,'',{goback:1});
         return;
     }

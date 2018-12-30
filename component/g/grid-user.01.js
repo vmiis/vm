@@ -1,12 +1,5 @@
 //-------------------------------------
-if($vm.module==undefined) $vm.module={};
-$vm.module["__ID"]={};
-var m=$vm.module["__ID"];
-m.name=$vm.vm['__ID'].name;
-m.module=$vm.module_list[m.name];
-m.preload=m.module.preload;
-m.prefix=m.module.prefix; if(m.prefix==undefined) m.prefix="";
-m.form_module=m.prefix+m.module.form_module;
+var m=$vm.module_list['__MODULE__'];
 m.query={};
 m.options={};
 //-------------------------------------
@@ -93,6 +86,7 @@ m.render=function(){
                     value=m.records[i]['Data'][b];
                 }
             }
+            if(value==undefined) value="";
             value=value.toString();
             value=$('<div/>').text(value).html();
             value=value.replace(/\n/g,'<br>');
@@ -121,7 +115,7 @@ m.cell_process=function(){
             $(this).find('u').on('click',function(){
                 m.form_I=row;
                 //var m.name=$vm.vm['__ID'].name;
-                var form_module_name=m.module.form_module;
+                var form_module_name=m.form_module;
                 if(form_module_name===undefined){
                     var name='grid_form__ID';
 					if($vm.module_list[name]==undefined){
@@ -130,7 +124,6 @@ m.cell_process=function(){
                     $vm.load_module(name,$vm.root_layout_content_slot,{m:m});
                 }
                 else{
-					var prefix="";	if($vm.module_list[m.name].prefix!=undefined) prefix=$vm.module_list[m.name].prefix
                     if($vm.module_list[m.form_module]===undefined){
                         alert('Can not find "'+m.form_module+'" in the module list');
                         return;
@@ -312,7 +305,7 @@ $('#new__ID').on('click', function(){
         m.new();
         return;
     }
-    if(m.module.form_module!=undefined){
+    if(m.form_module!=undefined){
         $vm.load_module(m.form_module,'',{goback:1});
         return;
     }
