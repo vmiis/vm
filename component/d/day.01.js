@@ -1,6 +1,5 @@
 //---------------------------------------------
-var m=$vm.module_list[$vm.name["__ID"]]
-if(m.prefix==undefined) m.prefix="";
+var m=$vm.module_list['__MODULE__'];
 m.ref=0
 //---------------------------------------------
 $('#previous__ID').on('click',function(){   m.ref--;	m.set_ref();	m.request_and_render();	})

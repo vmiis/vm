@@ -22,8 +22,8 @@ window.onpopstate=function(event) {
             var top=$vm.page_stack[L-1];
             $('#D'+top.ID).css('display','block');
 			$('#D'+top.ID).triggerHandler('show');
-			//if($vm.change_meta!=undefined){ $vm.change_meta(top.ID); }
-			if($vm.show!=undefined){ $vm.show(top.ID); }
+			//if($vm.show!=undefined){ $vm.show(top.ID); }
+			if($vm.show!=undefined){ $vm.show(top.m_name); }
         }
     }
     else if(W_index>V_index){
@@ -35,8 +35,8 @@ window.onpopstate=function(event) {
         $('#D'+event.state.ID).css('display','block');
 		$('#D'+event.state.ID).triggerHandler('show');
         $vm.page_stack.push(event.state);
-		//if($vm.change_meta!=undefined){ $vm.change_meta(event.state.ID); }
-		if($vm.show!=undefined){ $vm.show(event.state.ID); }
+		//if($vm.show!=undefined){ $vm.show(event.state.ID); }
+		if($vm.show!=undefined){ $vm.show(event.state.m_name); }
     }
     console.log($vm.page_stack);
     //new ==========================================
@@ -255,7 +255,7 @@ $vm.id=function(){
 _g_current_path='';
 $vm.load_module=function(name,slot,input){
     if(name==undefined) return;
-	if($vm.name==undefined) $vm.name={}
+	//if($vm.name==undefined) $vm.name={}
 	if($vm.vm==undefined) $vm.vm={}
     _g_vm_chrom_loop=0;
 	//$vm.load_module_by_name(name,slot_1,op);
@@ -276,7 +276,7 @@ $vm.load_module=function(name,slot,input){
 	var id=$vm.module_list[name].id;
 	if(id==undefined) id=$vm.id();
 	$vm.module_list[name].id=id;
-	$vm.name[id]=name;
+	//$vm.name[id]=name;
 	var m=$vm.module_list[name];
 	m.input=input;
 
@@ -323,7 +323,7 @@ $vm.load_module=function(name,slot,input){
 				var current_all=data;
 				if(current_all.indexOf('VmInclude:')==-1){
 					$vm.create_module_and_run_code(current_all,module_id,url,slot,m_name);
-					$vm.insert_and_trigger_load(module_id,slot);
+					$vm.insert_and_trigger_load(module_id,slot,m_name);
 				}
 				else{
 					$vm.process_first_include(current_all,module_id,slot,url,m_name);
@@ -337,14 +337,14 @@ $vm.load_module=function(name,slot,input){
 			var current_all=txt;
 			if(current_all.indexOf('VmInclude:')==-1){
 				$vm.create_module_and_run_code(current_all,module_id,url,slot,m_name);
-				$vm.insert_and_trigger_load(module_id,slot);
+				$vm.insert_and_trigger_load(module_id,slot,m_name);
 			}
 			else{
 				$vm.process_first_include(current_all,module_id,slot,url,m_name);
 			}
 		}
 	}
-	else $vm.insert_and_trigger_load(module_id,slot);
+	else $vm.insert_and_trigger_load(module_id,slot,m_name);
 };
 //---------------------------------------------
 $vm.create_module_and_run_code=function(txt,module_id,url,slot,m_name){
@@ -368,7 +368,8 @@ $vm.create_module_and_run_code=function(txt,module_id,url,slot,m_name){
 	content=content.replace(/<!--([\s\S]*?)-->/mig, '');
 	//-----------------
 	if(slot!='body'){
-		content="<div id=D"+module_id+" module='"+m_name+"' class=vm_module style='display:none'><!--"+url+"-->"+content+"</div>"
+		//content="<div id=D"+module_id+" module='"+m_name+"' class=vm_module style='display:none'><!--"+url+"-->"+content+"</div>"
+		content="<div id=D"+module_id+" module='"+m_name+"' style='display:none'><!--"+url+"-->"+content+"</div>"
 		$("#D"+module_id).remove();
 		if(slot=='' || slot==undefined) slot=$vm.root_layout_content_slot;
 		$("#"+slot).append($(content));
@@ -393,15 +394,15 @@ $vm.create_module_and_run_code=function(txt,module_id,url,slot,m_name){
 		$vm.source(''+module_id,event);
 	});
 	//-------------------------------------
-	if($vm.vm_module_border!==undefined){
-		$('div.vm_module').css("border","1px solid red");
-	}
+	//if($vm.vm_module_border!==undefined){
+	//	$('div.vm_module').css("border","1px solid red");
+	//}
 	//-------------------------------------
 }
 //-----------------------------------
-$vm.insert_and_trigger_load=function(module_id,slot){
+$vm.insert_and_trigger_load=function(module_id,slot,m_name){
 	if(slot!="body"){
-		$vm.insert_module({module_id:module_id,slot:slot});
+		$vm.insert_module({module_id:module_id,slot:slot,m_name:m_name});
 		$('#D'+module_id).triggerHandler('load');
 	}
 	$('#vm_loader').hide();
@@ -429,10 +430,11 @@ $vm.insert_module=function(options){
 	$('#D'+module_id).css('display','block');
 	$('#D'+module_id).triggerHandler('show');
     $vm.page_stack_index++;
-    $vm.page_stack.push({ID:module_id,slot:slot,index:$vm.page_stack_index});
+    $vm.page_stack.push({m_name:options.m_name,ID:module_id,slot:slot,index:$vm.page_stack_index});
 	var pp=null;
 	//if($vm.vm_router!=undefined){
-    if($vm.module_list[$vm.vm[module_id].name].router!=undefined){
+    //if($vm.module_list[$vm.vm[module_id].name].router!=undefined){
+	if($vm.module_list[options.m_name].router!=undefined){
 		var dd="";
 		var q=window.location.href.split('?');
 		if(q.length==2){
@@ -462,26 +464,14 @@ $vm.insert_module=function(options){
 		if(ext=='html') pp=q[0]+"?/"+$vm.vm[module_id].name.replace(/_/g,'\/')+dd;
 		else            pp=$vm.hosting_path+"/?/"+$vm.vm[module_id].name.replace(/_/g,'\/')+dd;
 	}
-    window.history.pushState({ID:module_id,slot:slot,index:$vm.page_stack_index}, null, pp);
+    window.history.pushState({m_name:options.m_name,ID:module_id,slot:slot,index:$vm.page_stack_index}, null, pp);
 	//if($vm.change_meta!=undefined){ $vm.change_meta(module_id); }
-	if($vm.show!=undefined){ $vm.show(module_id); }
+	if($vm.show!=undefined){ $vm.show(options.m_name); }
     console.log($vm.page_stack)
     //=====================================
     return;
 };
 //------------------------------------
-/*
-$vm.show_module=function(module_id,slot,op){
-	if($vm.vm[module_id].op!=undefined && op!=undefined){
-		for (var a in op){
-			$vm.vm[module_id].op[a]=op[a];
-		};
-	}
-	$vm.insert_module({module_id:module_id,slot:slot});
-	$('#D'+module_id).triggerHandler('load');
-}
-*/
-//-----------------------------------
 $vm.process_first_include=function(txt,module_id,slot,url_0,m_name){
 	var lines=txt.split('\n');
 	for(var i=0;i<lines.length;i++){
@@ -536,7 +526,7 @@ $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
 			var current_all=$vm.replace_and_recreate_content(lines,i,data)
 			if(current_all.indexOf('VmInclude:')==-1){
 				$vm.create_module_and_run_code(current_all,module_id,url_0,slot,m_name);
-				$vm.insert_and_trigger_load(module_id,slot);
+				$vm.insert_and_trigger_load(module_id,slot,m_name);
 			}
 			else{
 				$vm.process_first_include(current_all,module_id,slot,url_0,m_name);
@@ -549,7 +539,7 @@ $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
 		var current_all=$vm.replace_and_recreate_content(lines,i,txt)
 		if(current_all.indexOf('VmInclude:')==-1){
 			$vm.create_module_and_run_code(current_all,module_id,url_0,slot,m_name);
-			$vm.insert_and_trigger_load(module_id,slot);
+			$vm.insert_and_trigger_load(module_id,slot,m_name);
 		}
 		else{
 			$vm.process_first_include(current_all,module_id,slot,url_0,m_name);
