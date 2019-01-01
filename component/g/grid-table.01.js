@@ -3,6 +3,7 @@ var m=$vm.module_list['__MODULE__'];
 m.query={};
 m.options={};
 //-------------------------------------
+$('#import_export_section__ID').hide();
 m.set_req=function(){
     m.query={}
 }

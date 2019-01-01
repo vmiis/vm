@@ -204,12 +204,110 @@ m.export_records=function(){
             close_model__ID();
         }
     });
-    return;
 }
+//---------------------------------------------
+m.import_records=function(){
+    $('#Import_f__ID').val('');
+    $('#Import_f__ID').trigger('click');
+}
+//---------------------------------------------
+m.handleFileSelect=function(evt){
+    var form_fields=undefined;
+    var before_submit=undefined;
+    var start=function(){
+        var files = evt.target.files;
+        if(files.length==1){
+            var reader = new FileReader();
+            reader.onload = (function(e) {
+                var contents = e.target.result;
+                var lines=contents.replace(/\r/g,'\n').replace(/\n\n/g,'\n').split('\n');
+                var NN=lines.length;
+                if(lines[NN-1].length<2) NN--;
+                NN--;
+                if(lines.length>1){
+                    var tab='\t';
+                    var n1=lines[0].split('\t').length;
+                    var n2=lines[0].split(',').length;
+                    if(n2>n1) tab=',';
+                    var header=lines[0].replace(/ /g,'_').splitCSV(tab);
+                    var flds=fields.split(',');
+                    var fn=$('#Import_f__ID').val().substring($('#Import_f__ID').val().lastIndexOf('\\')+1);
+                    if(confirm("Are you sure to import "+fn+"?\n")){
+                        open_model__ID();
+                        var I=0;
+                        var i=1;
+                        var permission=1;
+                        (function looper(){
+                            if( i<=lines.length && i<=NN && permission==1) {
+                                var items=lines[i].splitCSV(tab);
+                                if(items.length>=1){
+                                    var rd={};
+                                    var dbv={};
+                                    for(var j=0;j<flds.length;j++){
+                                        var field_id=flds[j];
+                                        var index=header.indexOf(field_id);
+                                        var index2=form_fields.indexOf(field_id);
+                                        if(index!=-1 && index2!=-1)  rd[field_id]=items[index];
+                                    }
+                                    if( jQuery.isEmptyObject(rd)===false){
+                                        if(typeof(before_submit)!='undefined'){
+                                            before_submit(rd,dbv);
+                                        }
+                                        jQuery.ajaxSetup({async:false});
+                                        $vm.request({cmd:"insert",table:m.query,data:rd,index:dbv,file:{}},function(res){
+                                            permission=res.permission;
+                                        });
+                                        I++;
+                                        jQuery.ajaxSetup({async:true});
+                                    }
+                                }
+                                $('#msg__ID').text("Imported:"+ I.toString()+"/ processing line "+i+"/ total lines:"+NN);
+                                i++;
+                                setTimeout( looper, 100);
+                            }
+                            else{
+                                close_model__ID();
+                                alert(I.toString()+" records have been imported."+i);
+                                m.request_data();
+                            }
+                        })();
+                    }
+                }
+            });
+            reader.readAsText(files[0]);
+        }
+    }
+
+    if($vm.module_list[m.form_module].id==undefined){
+        $vm.load_module(m.form_module,"hidden",{})
+    }
+    var I=0;
+    var loop__ID=setInterval(function (){
+        if($vm.module_list[m.form_module].submit!=undefined){
+            clearInterval(loop__ID);
+            var x=document.getElementById("F"+$vm.module_list[m.form_module].id);
+            var txt="";var nm0="";
+            for (var i=0; i < x.length; i++) {
+                var nm=x.elements[i].getAttribute("name");
+                if(nm!=null && nm!=nm0){ if(txt!="") txt+=", "; txt+=nm; nm0=nm;}
+            }
+            form_fields=txt;
+            before_submit=$vm.module_list[m.form_module].before_submit;
+            start();
+        }
+        I++; if(I>50){
+            clearInterval(loop__ID); alert("Teh "+m.form_module+" is not installed.");
+        }
+    },100);
+    //-------------------------------------
+}
+//-----------------------------------------------
+document.getElementById('Import_f__ID').addEventListener('change', m.handleFileSelect,false);
 //---------------------------------------------
 $('#search__ID').on('click',function(){   m.set_req(); m.request_data(); })
 $('#query__ID').on('click',function(){    m.set_req(); m.request_data(); })
 $('#export__ID').on('click',function(){   m.export_records(); })
+$('#import__ID').on('click',function(){   m.import_records(); })
 $("#p__ID").on('click',function(){  var I=$("#I__ID").text();I--; if(I<0) I=0; $("#I__ID").text(I); m.set_req(); m.request_data();})
 $("#n__ID").on('click',function(){  var I=$("#I__ID").text();I++; if(I>m.max_I) I=m.max_I; $("#I__ID").text(I); m.set_req(); m.request_data();})
 //-------------------------------------
