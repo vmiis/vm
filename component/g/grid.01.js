@@ -198,10 +198,8 @@ m.export_records=function(){
         $('#msg__ID').text((100*i/N).toFixed(0)+"%");
         if(i==-1){
             var len=txt.length;
-            var n_txt=txt.substring(5,len-9);
-            //console.log(n_txt);
+            var n_txt="["+txt.substring(5,len-9)+"]";
             var o=JSON.parse(n_txt);
-            //console.log(o);
             $vm.download_csv(m.Table+".csv",o);
             close_model__ID();
         }
