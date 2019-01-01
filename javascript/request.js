@@ -11,14 +11,15 @@ $vm.request=function(req,callback){
     $vm.ajax_server_error=0;
     var token=sessionStorage.getItem("vm_token");
     if(token==undefined) token="";
-    $.ajax({
+    
+    var param={
         headers:{'Authorization':'Bearer ' + token},
         type: "POST",
         url: $vm.api_address,
         contentType: "application/json",
         charset:"utf-8",
         dataType: "json",
-        error: function(jqXHR,error, errorThrown){ if(jqXHR.status) {alert(jqXHR.responseText);} else {alert("Something went wrong");}},
+        error: function(jqXHR,error, errorThrown){ if(jqXHR.status) {/*alert(jqXHR.responseText);*/} else {alert("Something went wrong");}},
         data: JSON.stringify(req),
         success: function(c,textStatus, request){
             var dt2=new Date().getTime();
@@ -35,15 +36,37 @@ $vm.request=function(req,callback){
             }
         },
         dataFilter: $vm.request_filter,
-    })
+        
+        
+    }
+    if(req.cmd=="export"){
+        param.xhr=function(){
+            var i=1;
+            var xhr = new window.XMLHttpRequest();
+            xhr.addEventListener("progress", function(evt){
+                var N=-1,end="";
+                var len=xhr.responseText.length;
+                if(len>=5 && N==-1)  N=parseInt(xhr.responseText.substring(0,5));
+                if(len>=14) end=xhr.responseText.substring(len-9,len);
+                if(end=='__E_N_D__') i=-1;
+                callback(N,i,xhr.responseText);
+                i++;
+            }, false);
+            return xhr;
+        }
+    }
+    $.ajax(param)
 };
 //-----------------------------------------------------------------
 $vm.request_filter=function(c){
-    var a=$.parseJSON(c);
-    if(a.Error!=undefined){
-        alert(a.Error);
-        $vm.ajax_server_error=1;
+    try{
+        var a=$.parseJSON(c);
+        if(a.Error!=undefined){
+            alert(a.Error);
+            $vm.ajax_server_error=1;
+        }
     }
+    catch(e){}
     return c;
 }
 //-----------------------------------------------------------------

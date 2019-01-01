@@ -124,3 +124,66 @@ $vm.invert_color=function(hex) {
     return "#" + padZero(r) + padZero(g) + padZero(b);
 }
 //--------------------------------------------------------
+$vm.download_csv=function(fn,data){
+    var CSV='';
+    var row="";
+    var ids=[];
+    for(var i=0;i<data.length;i++){
+        if(i==0){
+            for(k in data[i]){
+                ids.push(k);
+                if(row!="") row+=",";
+                row+='"'+k+'"';
+            }
+            row+="\r\n";
+            CSV+=row;
+        }
+        row="";
+        for(j=0;j<ids.length;j++){
+            if(j!==0) row+=",";
+            var v="";
+            var id=ids[j];
+            if(data[i][id]!==undefined) v=data[i][id];
+            v=v.toString().replace(/"/g,''); //remove "  ???
+            row+='"'+v+'"';
+        }
+        row+="\r\n";
+        CSV+=row;
+    }
+    //-----------------------
+    var bytes = [];
+        bytes.push(239);
+        bytes.push(187);
+        bytes.push(191);
+    for (var i = 0; i < CSV.length; i++) {
+        if(CSV.charCodeAt(i)<128) {
+            bytes.push(CSV.charCodeAt(i));
+        }
+        else if(CSV.charCodeAt(i)<2048) {
+            bytes.push(( (CSV.charCodeAt(i) & 192) >> 6 ) + ((CSV.charCodeAt(i) & 1792)>>6 ) +192); //xC0>>6 + x700>>8 +xE0
+            bytes.push(CSV.charCodeAt(i) & 63 + 128); //x3F + x80
+        }
+        else if(CSV.charCodeAt(i)<65536) {
+            bytes.push(((CSV.charCodeAt(i) & 61440) >>12) + 224 ); //xF00>>12 + xE0
+            bytes.push(( (CSV.charCodeAt(i) & 192) >> 6 ) + ((CSV.charCodeAt(i) & 3840)>>6 ) +128); //xC0>>6 + xF00>>8 +x80
+            bytes.push(CSV.charCodeAt(i) & 63 + 128); //x3F + x80
+        }
+    }
+    var u8 = new Uint8Array(bytes);
+    var blob = new Blob([u8]);
+    //-----------------------
+    if (navigator.appVersion.toString().indexOf('.NET') > 0){
+        window.navigator.msSaveBlob(blob, name);
+    }
+    else{
+        var link = document.createElement("a");
+        link.setAttribute("href", window.URL.createObjectURL(blob));
+        link.setAttribute("download", name);
+        link.style = "visibility:hidden";
+        link.download = fn;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
+//---------------------------------------------

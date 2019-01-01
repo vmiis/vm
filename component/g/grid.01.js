@@ -191,65 +191,22 @@ m.delete=function(rid){
 };
 //-------------------------------
 m.export_records=function(){
-    var g_I,gLoop,busy,results,gDialog_module_id;
-	//g_I page number, 0 is first page
-    var start=$('#start__ID').val();  if(start==="") start=1;
-    var page_size=parseInt($('#page_size__ID').val());
-    var num=$('#num__ID').val(); num=parseInt(num);
-
-    if($('#start__ID').val()==undefined || $('#start__ID').val()=="") start=1;
-    if($('#page_size__ID').val()==undefined) page_size=30;
-    if($('#num__ID').val()==undefined || $('#num__ID').val()=="") num=1;
-    var one_loop=function(){
-		//page by page (500ms) to get data and save to results
-        if(busy==1) return;
-        busy=1;
-
-        console.log(g_I)
-
-        var i1=1+(start-1+g_I)*page_size,i2=i1+page_size-1;
-        m.set_req_export(i1.toString(),i2.toString());
-        $VmAPI.request({data:m.req,callback:function(res){
-            busy=0;
-            $('#export_num'+gDialog_module_id).text("Page "+(g_I+1).toString());
-            if(res.records.length!=0){
-                for(var i=0;i<res.records.length;i++){
-                    results.push(res.records[i]);
-                }
-            }
-            else{
-                end_export();
-                return;
-            }
-            g_I++;
-            if(g_I>=num){
-                end_export();
-                return;
-            }
-        }})
-    }
-    //-------------------------------------
-    var start_export=function(){
-        g_I=0;busy=0;results=[];
-        gDialog_module_id=$vm.get_module_id({name:'_system_export_dialog_module'})
-        $('#export_num'+gDialog_module_id).text("Page 0");
-        $vm.open_dialog({name:'_system_export_dialog_module'});
-		gLoop=setInterval(one_loop, 500);
-		$vm._export_g_loop=gLoop;
-    }
-    //-------------------------------------
-    var end_export=function(){
-        clearInterval(gLoop);
-        $vm.close_dialog({name:'_system_export_dialog_module'});
-        if(m.fields_e===undefined) m.fields_e=m.fields.replace('_Form,','').replace(',_Delete','');
-		m.records=results;
-		if(m.data_process!==undefined){ m.data_process(); }
-        var fn=m.export_filename;
-        if(fn==undefined) fn="F"+m.db_pid+".csv";
-        $vm.download_csv({name:fn,data:m.records,fields:m.fields_e});
-    }
-    //-------------------------------------
-    start_export();
+    var req={cmd:"export",query:m.query,options:m.options,search:$('#keyword__ID').val()}
+    open_model__ID();
+    $vm.request(req,function(N,i,txt){
+        console.log(i+"/"+N);
+        $('#msg__ID').text((100*i/N).toFixed(0)+"%");
+        if(i==-1){
+            var len=txt.length;
+            var n_txt="["+txt.substring(5,len-10)+"]";
+            //console.log(n_txt);
+            var o=JSON.parse(n_txt);
+            //console.log(o);
+            $vm.download_csv(m.Table+".csv",o);
+            close_model__ID();
+        }
+    });
+    return;
 }
 //---------------------------------------------
 $('#search__ID').on('click',function(){   m.set_req(); m.request_data(); })

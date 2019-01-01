@@ -569,14 +569,15 @@ $vm.request=function(req,callback){
     $vm.ajax_server_error=0;
     var token=sessionStorage.getItem("vm_token");
     if(token==undefined) token="";
-    $.ajax({
+    
+    var param={
         headers:{'Authorization':'Bearer ' + token},
         type: "POST",
         url: $vm.api_address,
         contentType: "application/json",
         charset:"utf-8",
         dataType: "json",
-        error: function(jqXHR,error, errorThrown){ if(jqXHR.status) {alert(jqXHR.responseText);} else {alert("Something went wrong");}},
+        error: function(jqXHR,error, errorThrown){ if(jqXHR.status) {/*alert(jqXHR.responseText);*/} else {alert("Something went wrong");}},
         data: JSON.stringify(req),
         success: function(c,textStatus, request){
             var dt2=new Date().getTime();
@@ -593,15 +594,37 @@ $vm.request=function(req,callback){
             }
         },
         dataFilter: $vm.request_filter,
-    })
+        
+        
+    }
+    if(req.cmd=="export"){
+        param.xhr=function(){
+            var i=1;
+            var xhr = new window.XMLHttpRequest();
+            xhr.addEventListener("progress", function(evt){
+                var N=-1,end="";
+                var len=xhr.responseText.length;
+                if(len>=5 && N==-1)  N=parseInt(xhr.responseText.substring(0,5));
+                if(len>=14) end=xhr.responseText.substring(len-9,len);
+                if(end=='__E_N_D__') i=-1;
+                callback(N,i,xhr.responseText);
+                i++;
+            }, false);
+            return xhr;
+        }
+    }
+    $.ajax(param)
 };
 //-----------------------------------------------------------------
 $vm.request_filter=function(c){
-    var a=$.parseJSON(c);
-    if(a.Error!=undefined){
-        alert(a.Error);
-        $vm.ajax_server_error=1;
+    try{
+        var a=$.parseJSON(c);
+        if(a.Error!=undefined){
+            alert(a.Error);
+            $vm.ajax_server_error=1;
+        }
     }
+    catch(e){}
     return c;
 }
 //-----------------------------------------------------------------
@@ -876,3 +899,66 @@ $vm.invert_color=function(hex) {
     return "#" + padZero(r) + padZero(g) + padZero(b);
 }
 //--------------------------------------------------------
+$vm.download_csv=function(fn,data){
+    var CSV='';
+    var row="";
+    var ids=[];
+    for(var i=0;i<data.length;i++){
+        if(i==0){
+            for(k in data[i]){
+                ids.push(k);
+                if(row!="") row+=",";
+                row+='"'+k+'"';
+            }
+            row+="\r\n";
+            CSV+=row;
+        }
+        row="";
+        for(j=0;j<ids.length;j++){
+            if(j!==0) row+=",";
+            var v="";
+            var id=ids[j];
+            if(data[i][id]!==undefined) v=data[i][id];
+            v=v.toString().replace(/"/g,''); //remove "  ???
+            row+='"'+v+'"';
+        }
+        row+="\r\n";
+        CSV+=row;
+    }
+    //-----------------------
+    var bytes = [];
+        bytes.push(239);
+        bytes.push(187);
+        bytes.push(191);
+    for (var i = 0; i < CSV.length; i++) {
+        if(CSV.charCodeAt(i)<128) {
+            bytes.push(CSV.charCodeAt(i));
+        }
+        else if(CSV.charCodeAt(i)<2048) {
+            bytes.push(( (CSV.charCodeAt(i) & 192) >> 6 ) + ((CSV.charCodeAt(i) & 1792)>>6 ) +192); //xC0>>6 + x700>>8 +xE0
+            bytes.push(CSV.charCodeAt(i) & 63 + 128); //x3F + x80
+        }
+        else if(CSV.charCodeAt(i)<65536) {
+            bytes.push(((CSV.charCodeAt(i) & 61440) >>12) + 224 ); //xF00>>12 + xE0
+            bytes.push(( (CSV.charCodeAt(i) & 192) >> 6 ) + ((CSV.charCodeAt(i) & 3840)>>6 ) +128); //xC0>>6 + xF00>>8 +x80
+            bytes.push(CSV.charCodeAt(i) & 63 + 128); //x3F + x80
+        }
+    }
+    var u8 = new Uint8Array(bytes);
+    var blob = new Blob([u8]);
+    //-----------------------
+    if (navigator.appVersion.toString().indexOf('.NET') > 0){
+        window.navigator.msSaveBlob(blob, name);
+    }
+    else{
+        var link = document.createElement("a");
+        link.setAttribute("href", window.URL.createObjectURL(blob));
+        link.setAttribute("download", name);
+        link.style = "visibility:hidden";
+        link.download = fn;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
+//---------------------------------------------

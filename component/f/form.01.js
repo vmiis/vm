@@ -14,6 +14,7 @@ m.set_file_link=function(tag){
     $('#link_'+tag+'__ID').html("");
     $('#x_'+tag+'__ID').hide();
     var record=m.input.record;
+    if(record==undefined) return;
     var filename=record.Data[tag];
     if(filename==undefined){
         filename="";
