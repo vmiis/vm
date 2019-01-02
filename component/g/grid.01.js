@@ -247,7 +247,7 @@ m.handleFileSelect=function(evt){
                                         var field_id=flds[j];
                                         var index=header.indexOf(field_id);
                                         var index2=form_fields.indexOf(field_id);
-                                        if(index!=-1 && index2!=-1)  rd[field_id]=items[index];
+                                        if(index!=-1 && index2!=-1 && field_id.toUpperCase()!='ID')  rd[field_id]=items[index];
                                     }
                                     if( jQuery.isEmptyObject(rd)===false){
                                         if(typeof(before_submit)!='undefined'){
@@ -267,7 +267,7 @@ m.handleFileSelect=function(evt){
                             }
                             else{
                                 close_model__ID();
-                                alert(I.toString()+" records have been imported."+i);
+                                alert(I.toString()+" records have been imported.");
                                 m.request_data();
                             }
                         })();

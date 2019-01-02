@@ -166,3 +166,16 @@ $('#header__ID').on('click', function(event){
     }
 });
 //--------------------------------------------------------
+$('#pdf__ID').on('click',function(){
+    $('#F__ID').css('border-bottom-width','0');
+    $('#submit__ID').hide();
+    $('#pdf__ID').hide();
+    var pdf=new jsPDF('p', 'pt', 'a4');
+    pdf.addHTML($('#form_container__ID'), function() {
+        pdf.save(m.Table+'.pdf');
+        $('#F__ID').css('border-bottom-width','1px');
+        $('#submit__ID').show();
+        $('#pdf__ID').show();
+    });
+})
+//-------------------------------------
