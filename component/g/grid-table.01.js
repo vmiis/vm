@@ -18,22 +18,22 @@ m.request_data=function(){
     var limit=parseInt($('#page_size__ID').val());
     var skip=limit*parseInt($('#I__ID').text());
     var mt1=new Date().getTime();
-    $vm.request({cmd:"count-table",query:m.query,options:m.options},function(res){
-        var N=res.records[0].count;
+    $vm.request({cmd:"count-table"},function(res){
+        var N=res.result;
         m.max_I=N/limit-1;
         $("#B__ID").text(N)
         var n2=skip+limit; if(n2>N) n2=N;
         var a=(skip+1).toString()+"~"+(n2).toString()+" of ";
         $("#A__ID").text(a);
     });
-    $vm.request({cmd:"find-table",query:m.query,options:m.options,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
+    $vm.request({cmd:"find-table",search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
         var mt2=new Date().getTime();
         var tt_all=mt2-mt1;
         var tt_server=parseInt(res.sys.elapsed_time);
         if(tt_all<tt_server) tt_all=tt_server;
-        $("#elapsed__ID").text((JSON.stringify(res.records).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
+        $("#elapsed__ID").text((JSON.stringify(res.result).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
         $('#save__ID').css('background','');
-        m.records=res.records;
+        m.records=res.result;
         m.res=res;
         if(m.data_process!==undefined){ m.data_process(); }
         m.render();

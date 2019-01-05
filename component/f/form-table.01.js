@@ -1,17 +1,4 @@
 //-------------------------------------
-/*
-if($vm.module==undefined) $vm.module={};
-$vm.module["__ID"]={};
-var m=$vm.module["__ID"];
-m.name=$vm.vm['__ID'].name;
-m.input=$vm.vm['__ID'].input; if(m.input==undefined) m.input={};
-m.module=$vm.module_list[m.name];
-m.preload=m.module.preload;
-m.prefix=m.module.prefix; if(m.prefix==undefined) m.prefix="";
-m.form_module=m.prefix+m.module.form_module;
-m.db_pid=m.module.table_id;
-m.qid=m.module.qid; if(m.qid==undefined) m.qid=$vm.qid;
-*/
 var m=$vm.module_list['__MODULE__'];
 //-------------------------------------
 m.load=function(){
@@ -29,7 +16,6 @@ m.submit=function(event){
     $('#submit__ID').hide();
     //--------------------------------------------------------
     var data=$vm.serialize('#F__ID');
-    var file=$vm.serialize_file('#F__ID');
     var dbv={}
     var r=true;
     if(m.before_submit!=undefined) r=m.before_submit(data,dbv);
@@ -37,41 +23,26 @@ m.submit=function(event){
     //--------------------------------------------------------
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
-        var record={Data:data}
-        $vm.request({cmd:"insert-table",record:record},function(res){
-            if(res.sys.exist!=undefined){
-                alert("The app or app/table is existed.");
+        $vm.request({cmd:"insert-table",data:data},function(res){
+            if(res.ok==-1){
+                alert("The table is existed.");
                 $('#submit__ID').show();
                 return;
             }
-            var after_submit=function(){
-                if(m.after_insert!=undefined){
-                    m.after_insert(record,res); return;
-                }
-                $vm.refresh=1;
-                if(m.input.goback!=undefined) window.history.go(-1);       //from grid
-                else $vm.alert('Your data has been successfully submitted');    //standalone
-            }
-            after_submit();
+            $vm.refresh=1;
+            window.history.go(-1);
         });
     }
     else if(rid!=undefined){
-        //var record={_id:rid,Data:data}
         $vm.request({cmd:"update-table",id:rid,data:data},function(res){
-            if(res.sys.exist!=undefined){
-                alert("The app or app/table is existed.");
+            if(res.ok==-1){
+                alert("The table is existed.");
                 $('#submit__ID').show();
                 return;
             }
-            var after_submit=function(){
-                if(m.after_update!=undefined){
-                    m.after_modify(data,res); return;
-                }
-                $vm.refresh=1;
-                if(rid!=undefined) window.history.go(-1);                       //modify
-            }
-            after_submit();
-        });
+            $vm.refresh=1;
+            window.history.go(-1);
+    });
     }
 }
 //--------------------------------------------------------
@@ -104,16 +75,3 @@ $('#delete__ID').on('click', function(){
     }
 })
 //-------------------------------------
-$('#header__ID').on('click', function(event){
-    if(event.ctrlKey){
-        var x=document.getElementById("F__ID");
-        var txt="";var nm0="";
-        for (var i=0; i < x.length; i++) {
-            var nm=x.elements[i].getAttribute("name");
-            if(nm!=null && nm!=nm0){ if(txt!="") txt+=", "; txt+=nm; nm0=nm;}
-        }
-        //$vm.alert(txt);
-        console.log(txt);
-    }
-});
-//--------------------------------------------------------

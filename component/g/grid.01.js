@@ -17,29 +17,29 @@ m.request_data=function(){
     var limit=parseInt($('#page_size__ID').val());
     var skip=limit*parseInt($('#I__ID').text());
     var mt1=new Date().getTime();
-    $vm.request({cmd:"count",query:m.query,options:m.options,search:$('#keyword__ID').val()},function(res){
+    $vm.request({cmd:"count",table:m.Table,options:m.options,search:$('#keyword__ID').val()},function(res){
         if(res.permission==false){
             return;
         }
-        var N=res.records[0].count;
+        var N=res.result;
         m.max_I=N/limit-1;
         $("#B__ID").text(N)
         var n2=skip+limit; if(n2>N) n2=N;
         var a=(skip+1).toString()+"~"+(n2).toString()+" of ";
         $("#A__ID").text(a);
     });
-    $vm.request({cmd:"find",query:m.query,options:m.options,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
-        if(res.permission==false){
-            alert("No permission or the data table doesn't exist.");
+    $vm.request({cmd:"find",table:m.Table,options:m.options,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
+        if(res.sys.permission==false){
+            alert("No permission.");
             return;
         }
         var mt2=new Date().getTime();
         var tt_all=mt2-mt1;
         var tt_server=parseInt(res.sys.elapsed_time);
         if(tt_all<tt_server) tt_all=tt_server;
-        $("#elapsed__ID").text((JSON.stringify(res.records).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
+        $("#elapsed__ID").text((JSON.stringify(res.result).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
 
-        m.records=res.records;
+        m.records=res.result;
         m.res=res;
         if(m.data_process!==undefined){ m.data_process(); }
         m.render();
@@ -173,9 +173,9 @@ m.create_header=function(){
 }
 //-------------------------------------
 m.delete=function(rid){
-    $vm.request({cmd:"delete",id:rid},function(res){
+    $vm.request({cmd:"delete",id:rid,table:m.Table},function(res){
         //-----------------------------
-        if(res.permission==false){
+        if(res.sys.permission==false){
             alert("No permission to delete this record.");
             return;
         }
@@ -191,7 +191,7 @@ m.delete=function(rid){
 };
 //-------------------------------
 m.export_records=function(){
-    var req={cmd:"export",query:m.query,options:m.options,search:$('#keyword__ID').val()}
+    var req={cmd:"export",table:m.Table,options:m.options,search:$('#keyword__ID').val()}
     open_model__ID();
     $vm.request(req,function(N,i,txt){
         console.log(i+"/"+N);

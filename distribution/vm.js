@@ -577,7 +577,7 @@ $vm.request=function(req,callback){
         contentType: "application/json",
         charset:"utf-8",
         dataType: "json",
-        error: function(jqXHR,error, errorThrown){ if(jqXHR.status) {/*alert(jqXHR.responseText);*/} else {alert("Something went wrong");}},
+        error: function(jqXHR,error, errorThrown){ if(jqXHR.status) {/*alert(jqXHR.responseText);*/} else {/*alert("Something went wrong");*/}},
         data: JSON.stringify(req),
         success: function(c,textStatus, request){
             var dt2=new Date().getTime();

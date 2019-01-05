@@ -62,12 +62,10 @@ m.submit=function(event){
     if(m.before_submit!=undefined) r=m.before_submit(data,index);
     if(r==false){$('#submit__ID').show(); return;}
     //--------------------------------------------------------
-    var table={App:m.App,Table:m.Table}
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
-        var record={Data:data,File:file}
-        $vm.request({cmd:"insert",table:table,data:data,index:index,file:file},function(res){
-            if(res.permission==false){
+        $vm.request({cmd:"insert",table:m.Table,data:data,index:index,file:file},function(res){
+            if(res.sys.permission==false){
                 alert("No permission to insert a new record in to the database.");
                 if(m.input.goback!=undefined){
                     $vm.refresh=1;
@@ -77,7 +75,7 @@ m.submit=function(event){
             }
             var after_submit=function(){
                 if(m.after_insert!=undefined){
-                    m.after_insert(record,res); return;
+                    m.after_insert(data,res); return;
                 }
                 $vm.refresh=1;
                 if(m.input.goback!=undefined) window.history.go(-1);       //from grid
@@ -95,17 +93,16 @@ m.submit=function(event){
         });
     }
     else if(rid!=undefined){
-        var record={_id:rid,Data:data,File:file}
-        $vm.request({cmd:"update",id:rid,table:table,data:data,index:index,file:file},function(res){
+        $vm.request({cmd:"update",id:rid,table:m.Table,data:data,index:index,file:file},function(res){
             //-----------------------------
-            if(res.permission==false){
+            if(res.sys.permission==false){
                 alert("No permission to update this record.");
                 return;
             }
             //-----------------------------
             var after_submit=function(){
                 if(m.after_update!=undefined){
-                    m.after_modify(record,res); return;
+                    m.after_modify(data,res); return;
                 }
                 $vm.refresh=1;
                 if(rid!=undefined) window.history.go(-1);                       //modify
