@@ -8,38 +8,27 @@ m.set_req=function(){
     m.query={}
 };
 //-------------------------------------
-m.set_req_export=function(i1,i2){
-    var sql="with tb as (select Information,DateTime,Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+m.db_pid+"-@S1] )";
-    sql+="select Information,DateTime,Author from tb where RowNum between @I1 and @I2";
-	m.req={cmd:'read',qid:m.qid,sql:sql,i1:i1,i2:i2};
-}
-//-----------------------------------------------
 m.request_data=function(){
     var limit=parseInt($('#page_size__ID').val());
     var skip=limit*parseInt($('#I__ID').text());
     var mt1=new Date().getTime();
-    $vm.request({cmd:"count-permission",query:m.query,options:m.options},function(res){
-        var N=res.records[0].count;
+    $vm.request({cmd:"count-permission",search:$('#keyword__ID').val()},function(res){
+        var N=res.result;
         m.max_I=N/limit-1;
         $("#B__ID").text(N)
         var n2=skip+limit; if(n2>N) n2=N;
         var a=(skip+1).toString()+"~"+(n2).toString()+" of ";
         $("#A__ID").text(a);
     });
-    $vm.request({cmd:"find-permission",query:m.query,options:m.options,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
-        //m.form_I=-1;
+    $vm.request({cmd:"find-permission",search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
         var mt2=new Date().getTime();
         var tt_all=mt2-mt1;
         var tt_server=parseInt(res.sys.elapsed_time);
         if(tt_all<tt_server) tt_all=tt_server;
-        $("#elapsed__ID").text((JSON.stringify(res.records).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
-
-        $('#save__ID').css('background','');
-        m.records=res.records;
+        $("#elapsed__ID").text((JSON.stringify(res.result).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
+        m.records=res.result;
         m.res=res;
-        if(m.data_process!==undefined){ m.data_process(); }
         m.render();
-        if(m.data_process_after_render!==undefined){ m.data_process_after_render('grid'); }
     })
 };
 //-------------------------------------
@@ -161,36 +150,6 @@ m.cell_process=function(){
         }
     })
     //------------------------------------
-    //cell value process
-    if($vm.edge==0) $('#grid__ID td').blur(function(){
-        var col = $(this).parent().children().index($(this));
-        var row = $(this).parent().parent().children().index($(this).parent())-1;
-        var column_name=$('#grid__ID th:nth-child('+(col+1)+')').attr('data-header');
-        if(column_name=='_Form' || column_name=='_Delete' || m.records[row].vm_custom[column_name]===true){
-            return;
-        }
-        var value=$(this).html().replace(/<div>/g,'').replace(/<\/div>/g,'\n').replace(/<br>/g,'\n');
-        var value=$('<div/>').html(value).text();
-
-        if(m.cell_value_process!==undefined) value=m.cell_value_process(value,column_name);
-        m.set_value(value,m.records,row,column_name);
-        if(m.after_change!==undefined){ m.after_change(m.records,row,column_name,$(this),m.set_value,'grid'); }
-    })
-    //------------------------------------
-    if($vm.edge==1) $('#grid__ID td').find('div:first').blur(function(){
-        var col = $(this).parent().parent().children().index($(this).parent()); //edge
-        var row = $(this).parent().parent().parent().children().index($(this).parent().parent())-1; //edge
-        var column_name=$('#grid__ID th:nth-child('+(col+1)+')').attr('data-header');
-        if(column_name=='_Form' || column_name=='_Delete' || m.records[row].vm_custom[column_name]===true){
-            return;
-        }
-        var value=$(this).html().replace(/<div>/g,'').replace(/<\/div>/g,'\n').replace(/<br>/g,'\n');
-        var value=$('<div/>').html(value).text();
-        if(m.cell_value_process!==undefined) value=m.cell_value_process(value,column_name);
-        m.set_value(value,m.records,row,column_name);
-        if(m.after_change!==''){ m.after_change(m.records,row,column_name,$(this),m.set_value,'grid'); }
-    })
-    //------------------------------------
 }
 //-------------------------------------
 m.create_header=function(){
@@ -208,81 +167,10 @@ m.create_header=function(){
         m.field_id.push(thB);
     }
     //-------------------------
-    //m.form_create_header();
 }
 //-------------------------------------
-/*
-m.form_create_header=function(){
-    var cols=m.form_fields.split(',');
-    m.form_field_header=[];
-    m.form_field_id=[];
-    //------------------------------------
-    //table
-    for(var i=0;i<cols.length;i++){
-        var th=cols[i];
-        var thA=th.split('|')[0];
-        var thB=th.split('|').pop().trim().replace(/ /g,'_');
-        //create form header and id
-        m.form_field_header.push(thA);
-        m.form_field_id.push(thB);
-    }
-    //-------------------------
-}
-*/
-//-------------------------------------
-m.set_value=function(value,records,I,column_name){
-    if(value==="" && records[I][column_name]===undefined) return;
-    if(value!==records[I][column_name]){
-        records[I].vm_dirty=1;
-        records[I][column_name]=value;
-        $('#save__ID').css('background','#E00');
-    }
-}
-//-----------------------------------------------
-m.row_data=function(record){
-    var data={};
-    for(var i=0;i<m.form_field_id.length;i++){
-        var id=m.form_field_id[i];
-        data[id]=record[id];
-    }
-    return data;
-}
-//-----------------------------------------------
-/*
-m.add=function(record,dbv){
-    var req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv};
-    if(m.xml==1 || m.xml==true)  req={cmd:"add",qid:m.qid,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv,xml:"1"};
-    $VmAPI.request({data:req,callback:function(res){
-        record.ID=res.ret;
-        record.dirty="0";
-        if(m.after_add!==undefined)  m.after_add(res,record,dev);
-        m.N_total--;
-        if( m.N_total===0){
-            if(m.after_submit_all!==undefined) m.after_submit_all();
-            m.set_req(),m.request_data();
-        }
-    }});
-    //-------------------------------
-};
-//-----------------------------------------------
-m.modify=function(record,dbv){
-    var req={cmd:"modify",qid:m.qid,rid:record.ID,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv};
-    if(m.xml==1 || m.xml==true)  req={cmd:"modify",qid:m.qid,rid:record.ID,db_pid:m.db_pid.toString(),data:m.row_data(record),dbv:dbv,xml:"1"};
-    $VmAPI.request({data:req,callback:function(res){
-        record.dirty="0";
-        if(m.after_modify!==undefined)  m.after_modify(res,record,dev);
-        m.N_total--;
-        if( m.N_total===0){
-            if(m.after_submit_all!==undefined) m.after_submit_all();
-            m.set_req(),m.request_data();
-        }
-    }});
-};
-//-------------------------------
-*/
 m.delete=function(rid){
-    var query={_id:rid}
-    $vm.request({cmd:"delete-table",query:query},function(res){
+    $vm.request({cmd:"delete-permission",id:rid},function(res){
         var after_delete=function(){
             if(m.after_update!=undefined){
                 m.after_modify(query,res); return;
@@ -293,71 +181,8 @@ m.delete=function(rid){
     });
 };
 //-------------------------------
-m.export_records=function(){
-    var g_I,gLoop,busy,results,gDialog_module_id;
-	//g_I page number, 0 is first page
-    var start=$('#start__ID').val();  if(start==="") start=1;
-    var page_size=parseInt($('#page_size__ID').val());
-    var num=$('#num__ID').val(); num=parseInt(num);
-
-    if($('#start__ID').val()==undefined || $('#start__ID').val()=="") start=1;
-    if($('#page_size__ID').val()==undefined) page_size=30;
-    if($('#num__ID').val()==undefined || $('#num__ID').val()=="") num=1;
-    var one_loop=function(){
-		//page by page (500ms) to get data and save to results
-        if(busy==1) return;
-        busy=1;
-
-        console.log(g_I)
-
-        var i1=1+(start-1+g_I)*page_size,i2=i1+page_size-1;
-        m.set_req_export(i1.toString(),i2.toString());
-        $VmAPI.request({data:m.req,callback:function(res){
-            busy=0;
-            $('#export_num'+gDialog_module_id).text("Page "+(g_I+1).toString());
-            if(res.records.length!=0){
-                for(var i=0;i<res.records.length;i++){
-                    results.push(res.records[i]);
-                }
-            }
-            else{
-                end_export();
-                return;
-            }
-            g_I++;
-            if(g_I>=num){
-                end_export();
-                return;
-            }
-        }})
-    }
-    //-------------------------------------
-    var start_export=function(){
-        g_I=0;busy=0;results=[];
-        gDialog_module_id=$vm.get_module_id({name:'_system_export_dialog_module'})
-        $('#export_num'+gDialog_module_id).text("Page 0");
-        $vm.open_dialog({name:'_system_export_dialog_module'});
-		gLoop=setInterval(one_loop, 500);
-		$vm._export_g_loop=gLoop;
-    }
-    //-------------------------------------
-    var end_export=function(){
-        clearInterval(gLoop);
-        $vm.close_dialog({name:'_system_export_dialog_module'});
-        if(m.fields_e===undefined) m.fields_e=m.fields.replace('_Form,','').replace(',_Delete','');
-		m.records=results;
-		if(m.data_process!==undefined){ m.data_process(); }
-        var fn=m.export_filename;
-        if(fn==undefined) fn="F"+m.db_pid+".csv";
-        $vm.download_csv({name:fn,data:m.records,fields:m.fields_e});
-    }
-    //-------------------------------------
-    start_export();
-}
-//---------------------------------------------
 $('#search__ID').on('click',function(){   m.set_req(); m.request_data(); })
 $('#query__ID').on('click',function(){    m.set_req(); m.request_data(); })
-$('#export__ID').on('click',function(){   m.export_records(); })
 $("#p__ID").on('click',function(){  var I=$("#I__ID").text();I--; if(I<0) I=0; $("#I__ID").text(I); m.set_req(); m.request_data();})
 $("#n__ID").on('click',function(){  var I=$("#I__ID").text();I++; if(I>m.max_I) I=m.max_I; $("#I__ID").text(I); m.set_req(); m.request_data();})
 //-------------------------------------

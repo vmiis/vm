@@ -42,36 +42,10 @@ m.submit=function(event){
             }
             $vm.refresh=1;
             window.history.go(-1);
-    });
+        });
     }
 }
 //--------------------------------------------------------
 $('#D__ID').on('load',function(){ m.load();})
 $('#F__ID').submit(function(event){m.submit(event);})
 //--------------------------------------------------------
-$('#delete__ID').on('click', function(){
-    var record=m.input.record;
-    if(record==undefined) return;
-    var rid=record._id;
-    if(rid==undefined){
-        return;
-    }
-    if(confirm("Are you sure to delete?\n")){
-        var req={cmd:"delete-table",qid:m.qid,db_pid:m.db_pid,rid:rid,dbv:{}};
-        $VmAPI.request({data:req,callback:function(res){
-            //-------------------------------
-            if(res.Error!==undefined) return false;
-            if(res.ret=='NULL'){
-                if(res.msg!==undefined) alert(res.msg);
-                else alert("No permission!");
-                return false;
-            }
-            //-------------------------------
-            if(m.after_delete!==undefined)  m.after_delete(res);
-            //-------------------------------
-            $vm.refresh=1;
-            window.history.go(-1);
-        }});
-    }
-})
-//-------------------------------------

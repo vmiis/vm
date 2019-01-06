@@ -18,7 +18,7 @@ m.request_data=function(){
     var limit=parseInt($('#page_size__ID').val());
     var skip=limit*parseInt($('#I__ID').text());
     var mt1=new Date().getTime();
-    $vm.request({cmd:"count-table"},function(res){
+    $vm.request({cmd:"count-table",search:$('#keyword__ID').val()},function(res){
         var N=res.result;
         m.max_I=N/limit-1;
         $("#B__ID").text(N)
@@ -35,9 +35,7 @@ m.request_data=function(){
         $('#save__ID').css('background','');
         m.records=res.result;
         m.res=res;
-        if(m.data_process!==undefined){ m.data_process(); }
         m.render();
-        if(m.data_process_after_render!==undefined){ m.data_process_after_render('grid'); }
     })
 };
 //-------------------------------------
@@ -195,27 +193,7 @@ m.create_header=function(){
         m.field_id.push(thB);
     }
     //-------------------------
-    //m.form_create_header();
 }
-//-------------------------------------
-/*
-m.form_create_header=function(){
-    var cols=m.form_fields.split(',');
-    m.form_field_header=[];
-    m.form_field_id=[];
-    //------------------------------------
-    //table
-    for(var i=0;i<cols.length;i++){
-        var th=cols[i];
-        var thA=th.split('|')[0];
-        var thB=th.split('|').pop().trim().replace(/ /g,'_');
-        //create form header and id
-        m.form_field_header.push(thA);
-        m.form_field_id.push(thB);
-    }
-    //-------------------------
-}
-*/
 //-------------------------------------
 m.set_value=function(value,records,I,column_name){
     if(value==="" && records[I][column_name]===undefined) return;

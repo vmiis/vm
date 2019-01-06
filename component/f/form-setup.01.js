@@ -9,7 +9,7 @@ m.load=function(){
     $vm.request({cmd:"find-setup"},function(res){
         if(res.records.length!=0){
             $vm.deserialize(res.records[0],'#F__ID');
-            rid=res.records[0]._id;
+            m.rid=res.records[0]._id;
         }
     })
 }
@@ -26,14 +26,13 @@ m.submit=function(event){
     if(m.before_submit!=undefined) r=m.before_submit(data,dbv);
     if(r==false){$('#submit__ID').show(); return;}
     //--------------------------------------------------------
-    var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
-    if(rid==undefined){
+    if(m.rid==undefined){
         $vm.request({cmd:"insert-setup",data:data},function(res){
             window.history.go(-1);
         });
     }
-    else if(rid!=undefined){
-        $vm.request({cmd:"update-setup",id:rid,data:data},function(res){
+    else if(m.rid!=undefined){
+        $vm.request({cmd:"update-setup",id:m.rid,data:data},function(res){
             window.history.go(-1);
         });
     }
