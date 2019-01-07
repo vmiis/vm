@@ -23,10 +23,10 @@ m.set_file_link=function(tag){
         $('#x_'+tag+'__ID').show();
     }
     $('#link_'+tag+'__ID').html(filename);
-    var url=record.App+"/"+record.Table+"/"+record.UID+"-"+tag+"-"+filename;
+    var url=record.Table+"/"+record.UID+"-"+tag+"-"+filename;
     $('#link_'+tag+'__ID').on('click',function(){
         if(record._id!==undefined){
-            if(filename!="") $vm.open_s3_url(filename,url);
+            if(filename!="") $vm.open_s3_url(record._id,m.Table,filename,url);
         }
         else alert("No file was found on server.")
     });

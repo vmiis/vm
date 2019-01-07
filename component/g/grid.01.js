@@ -346,8 +346,8 @@ m.set_file_link=function(records,I,field,td){
     var filename=records[I].Data[field];
     td.html("<u style='cursor:pointer'>"+filename+"</u>");
     td.find('u').on('click',function(){
-        var url=m.App+"/"+m.Table+"/"+records[I].UID+"-"+field+"-"+filename;
-        $vm.open_s3_url(filename,url);
+        var url=m.Table+"/"+records[I].UID+"-"+field+"-"+filename;
+        $vm.open_s3_url(records[I]._id,m.Table,filename,url);
     })
 }
 //-------------------------------

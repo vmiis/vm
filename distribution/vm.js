@@ -688,8 +688,8 @@ $vm.uploading_file=function(s3_upload_url,file,msg_id,callback){
     }
 }
 //---------------------------------------------
-$vm.open_s3_url=function(filename,url){
-    $vm.request({cmd:"s3_download_url",filename:filename,url:url},function(res){
+$vm.open_s3_url=function(id,table,filename,url){
+    $vm.request({cmd:"s3_download_url",id:id,table:table,filename:filename,url:url},function(res){
         var link = document.createElement("a");
         link.href = res.result;
         link.style = "visibility:hidden";
