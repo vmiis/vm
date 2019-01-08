@@ -30,9 +30,10 @@ m.request_data=function(){
     });
     $vm.request({cmd:"find",table:m.Table,options:m.options,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
         if(res.sys.permission==false){
-            alert("No permission.");
-            return;
+            $vm.alert("No permission. Private database table, ask the table's owner for permissions.");
+            //return;
         }
+        if(res.result==undefined) res.result=[];
         var mt2=new Date().getTime();
         var tt_all=mt2-mt1;
         var tt_server=parseInt(res.sys.elapsed_time);
