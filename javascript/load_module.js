@@ -82,7 +82,7 @@ $vm.load_module=function(name,slot,input){
 					$vm.process_first_include(current_all,module_id,slot,url,m_name);
 				}
 			}).fail(function() {
-			    alert( "The file '"+url+"' doesn't exist!" );
+			    alert( "The module '"+url+"' doesn't exist or you have AdBlock that blocks this remote module to be loaded." );
 			});
 		}
 		else{
