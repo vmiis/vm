@@ -257,8 +257,8 @@ m.handleFileSelect=function(evt){
                                             before_submit(rd,dbv);
                                         }
                                         jQuery.ajaxSetup({async:false});
-                                        $vm.request({cmd:"insert",table:m.query,data:rd,index:dbv,file:{}},function(res){
-                                            permission=res.permission;
+                                        $vm.request({cmd:"insert",table:m.Table,data:rd,index:dbv,file:{}},function(res){
+                                            permission=res.sys.permission;
                                         });
                                         I++;
                                         jQuery.ajaxSetup({async:true});
