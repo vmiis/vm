@@ -99,6 +99,7 @@ $vm.load_module=function(name,slot,input){
 	}
 	else $vm.insert_and_trigger_load(module_id,slot,m_name);
 };
+$vm.load_module_v2=$vm.load_module;
 //---------------------------------------------
 $vm.create_module_and_run_code=function(txt,module_id,url,slot,m_name){
 	//txt=txt.replace(/__CURRENT_PATH__/g,_g_current_path);
@@ -220,7 +221,7 @@ $vm.insert_module=function(options){
     window.history.pushState({m_name:options.m_name,ID:module_id,slot:slot,index:$vm.page_stack_index}, null, pp);
 	//if($vm.change_meta!=undefined){ $vm.change_meta(module_id); }
 	if($vm.show!=undefined){ $vm.show(options.m_name); }
-    console.log($vm.page_stack)
+//    console.log($vm.page_stack)
     //=====================================
     return;
 };

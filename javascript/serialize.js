@@ -36,6 +36,43 @@ $vm.deserialize=function(record,form_id){
         }
     });
 }
+$vm.deserialize_s=function(record,form_id){
+    if(record==undefined) return;
+    $.each(record, function(name, value){
+        if(name!=''){
+            var $els = $(form_id+' *[name='+name+']');
+            $els.each(function(){
+                var $el=$(this);
+                var type = $el.attr('type');
+                switch(type){
+                    case 'checkbox':
+                        if(value=='off' || value=='0' || value=='' ) $el.prop('checked', false);
+                        else $el.prop('checked', true);
+                        break;
+                    case 'radio':
+                        if($el.attr('value')==value){
+                             $el.prop('checked', true);
+                        }
+                        break;
+                    case 'file':
+                        break;
+                    case 'text':
+                    case 'email':
+                    case 'textarea':
+                    case 'select':
+                        $el.val(value);
+                        break;
+                    case 'undefined':
+                        break;
+                    default:
+                        $el.val(value);
+                        break;
+
+                }
+            });
+        }
+    });
+}
 $vm.serialize=function(form_id){
     var data={};
     var a=$(form_id).serializeArray();

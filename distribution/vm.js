@@ -235,6 +235,10 @@ $vm.date_to_yyyymmdd=function(nd){
 //----------------------------------------------------------------------------
 //-----------------------------------------------------------------
 $vm.init=function(callback){
+	if($vm.api_type=="sqlserver"){
+		$vm.init_s(callback);
+		return;		
+	}
     $vm.user_name="guest";
     $vm.user_id="-";
     $vm.user_ip="0";
@@ -245,6 +249,43 @@ $vm.init=function(callback){
     })
 }
 //-----------------------------------------------------------------
+$vm.init_s=function(callback){
+	if($vm.vm==undefined) $vm.vm={};
+	$vm.edge=0;
+	if(navigator.appVersion.indexOf('Edge')!=-1) $vm.edge=1;
+	$vm.user="guest";
+	$VmAPI.request({data:{cmd:'user_name',ip:$vm.ip},callback:function(res){
+		if(res.user!==undefined){
+			$vm.user=res.user;
+			$vm.user_id=res.user_id;
+			$vm.user_ip=res.user_ip;
+			$vm.user_puid=res.user_puid;
+		}
+		if(callback!==undefined) callback(res);
+
+		//------------------------------------------------------------------
+		$vm.ip='';
+		try{
+			window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+			var pc = new RTCPeerConnection({iceServers:[]}), noop = function(){};
+			pc.createDataChannel("");
+			pc.createOffer(pc.setLocalDescription.bind(pc), noop);
+			pc.onicecandidate = function(ice){
+			   if(!ice || !ice.candidate || !ice.candidate.candidate)  return;
+			   $vm.ip=/([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(ice.candidate.candidate)[1];
+			   pc.onicecandidate = noop;
+			   $VmAPI.request({data:{cmd:'user_ip',ip:$vm.ip,name:$vm.user},callback:function(res){}})
+			   //-----------------------------------------------------
+			};
+		}catch(e){
+			$VmAPI.request({data:{cmd:'user_ip',ip:'0.0.0.0',name:$vm.user},callback:function(res){}})
+		}
+		//------------------------------------------------------------------
+
+	}})
+	//-----------------------------------------------------
+};
+//------------------------------------------------------------------
 //-----------------------------------------------------------------
 $vm.id=function(){
 	if($vm._id==undefined) $vm._id=0;
@@ -346,6 +387,7 @@ $vm.load_module=function(name,slot,input){
 	}
 	else $vm.insert_and_trigger_load(module_id,slot,m_name);
 };
+$vm.load_module_v2=$vm.load_module;
 //---------------------------------------------
 $vm.create_module_and_run_code=function(txt,module_id,url,slot,m_name){
 	//txt=txt.replace(/__CURRENT_PATH__/g,_g_current_path);
@@ -467,7 +509,7 @@ $vm.insert_module=function(options){
     window.history.pushState({m_name:options.m_name,ID:module_id,slot:slot,index:$vm.page_stack_index}, null, pp);
 	//if($vm.change_meta!=undefined){ $vm.change_meta(module_id); }
 	if($vm.show!=undefined){ $vm.show(options.m_name); }
-    console.log($vm.page_stack)
+//    console.log($vm.page_stack)
     //=====================================
     return;
 };
@@ -635,6 +677,108 @@ $vm.clear_token=function(token){
     sessionStorage.setItem("vm_token","");
 };
 //-----------------------------------------------------------------
+//-----------------------------------------------------------------
+(function(){
+	var _token="notoken";
+	$VmAPI.set_token=function(token,api_url,loginname,userid,nickname){
+		sessionStorage.setItem("ahsj634cupsd6349wquyewij4swq7202",token);
+		sessionStorage.setItem("x7645hscvf650hd64083hgf69087201a",api_url);
+		sessionStorage.setItem("h3879j478450wjh830ks9937300kj3kj",loginname);
+		sessionStorage.setItem("gu8309ihd407js6h59eje8jhl630543h",userid);
+		sessionStorage.setItem("v84yw673jhekerhgs4fld54hdfzshjrt",nickname);
+  		_token=token;
+		if(token=="") _token="notoken";
+  	};
+	$VmAPI.clear_token=function(){
+		sessionStorage.setItem("ahsj634cupsd6349wquyewij4swq7202","notoken");
+		sessionStorage.setItem("x7645hscvf650hd64083hgf69087201a","");
+		sessionStorage.setItem("h3879j478450wjh830ks9937300kj3kj","");
+		sessionStorage.setItem("gu8309ihd407js6h59eje8jhl630543h","");
+		sessionStorage.setItem("v84yw673jhekerhgs4fld54hdfzshjrt","");
+	}
+	$VmAPI.get_username=function(){
+		return sessionStorage.getItem("h3879j478450wjh830ks9937300kj3kj");
+	}
+	var g_N=0;
+  	$VmAPI.request=function(options){
+		g_N++;
+		var this_N=g_N;
+		_token=sessionStorage.getItem("ahsj634cupsd6349wquyewij4swq7202");
+		if(typeof(_token)==undefined){ //safari bug
+			console.log('safari bug')
+			_token="notoken";
+		}
+  		//$VmAPI._request(_token,options)
+		var data=options.data;
+		var callback=options.callback;
+		$VmAPI.ajax_server_error=0;
+		var url=$VmAPI.api_base+'api.aspx?api=1';
+		if($vm.debug_message===true){
+			console.log(' ');
+			//console.log('TO '+url+" --- "+JSON.stringify(data));
+			console.log(data.cmd+'('+this_N+') TO '/*+url*/);
+			console.dir(data);
+			//console.log(data);
+		}
+		var dt1=new Date().getTime();
+		var headers={'Authorization':'Bearer ' + _token};
+		//if(_token=='') headers={}; else headers={'Authorization':_token.substring(0,50)};
+		$.ajax({
+			headers:headers,
+			type: "POST",
+			url: url,
+			contentType: "application/json",
+			charset:"utf-8",
+			dataType: "json",
+			error: function(jqXHR,error, errorThrown){ if(jqXHR.status) {alert(jqXHR.responseText);} else {alert("Something went wrong");}},
+			data: JSON.stringify(data),
+			success: function(c,textStatus, request){
+				var dt2=new Date().getTime();
+				if($vm.debug_message===true){
+					console.log(' ');
+					console.log(data.cmd+'('+this_N+') FROM '+/*url+*/" --- "+(dt2-dt1).toString()+"ms"/*+"--- "+JSON.stringify(c)*/);
+					console.dir(c);
+				}
+				if($VmAPI.ajax_server_error==1) return;
+				try{
+					if(callback!==undefined) callback(c);
+				}catch(err){
+					alert(err.toString());
+				}
+			},
+			dataFilter: $VmAPI.request_filter,
+			/*
+			beforeSend:function(jqXHR,settings){
+				alert(_token)
+				//if(_token!='') jqXHR.setRequestHeader('Authorization',_token);
+			},
+			*/
+		})
+  	};
+	$VmAPI.connect=function(db_pid,room_uid,onmessage,callback){
+		var url=$VmAPI.api_base.replace('https://','wss://')+'api.ashx';
+		var ws= new WebSocket(url);
+		ws.onmessage=onmessage;
+        ws.onopen = function () {
+            ws.send("VM_CONNECT:"+_token+"|"+db_pid+"|"+room_uid);
+			callback(ws);
+        };
+	}
+}());
+//$VmAPI._request=function(token,options){};
+//-----------------------------------------------------------------
+$VmAPI.request_filter=function(c){
+	var a=$.parseJSON(c);
+	if(a.Error!=undefined){
+		alert(a.Error);
+		$VmAPI.ajax_server_error=1;
+		if(typeof($VmAPI.submit_div)!=='undefined' && $VmAPI.submit_div!=""){
+   			$('#D'+$VmAPI.submit_div).triggerHandler('submit_failed');
+		}
+	}
+	return c;
+}
+//-----------------------------------------------------------------
 //--------------------------------------------------------
 $vm.upload_form_files=function(res,$form,msg_id,callback){
     //--------------------------------------------------------
@@ -703,6 +847,43 @@ $vm.open_s3_url=function(id,table,filename,url){
 $vm.deserialize=function(record,form_id){
     if(record==undefined || record.Data==undefined) return;
     $.each(record.Data, function(name, value){
+        if(name!=''){
+            var $els = $(form_id+' *[name='+name+']');
+            $els.each(function(){
+                var $el=$(this);
+                var type = $el.attr('type');
+                switch(type){
+                    case 'checkbox':
+                        if(value=='off' || value=='0' || value=='' ) $el.prop('checked', false);
+                        else $el.prop('checked', true);
+                        break;
+                    case 'radio':
+                        if($el.attr('value')==value){
+                             $el.prop('checked', true);
+                        }
+                        break;
+                    case 'file':
+                        break;
+                    case 'text':
+                    case 'email':
+                    case 'textarea':
+                    case 'select':
+                        $el.val(value);
+                        break;
+                    case 'undefined':
+                        break;
+                    default:
+                        $el.val(value);
+                        break;
+
+                }
+            });
+        }
+    });
+}
+$vm.deserialize_s=function(record,form_id){
+    if(record==undefined) return;
+    $.each(record, function(name, value){
         if(name!=''){
             var $els = $(form_id+' *[name='+name+']');
             $els.each(function(){
