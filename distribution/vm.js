@@ -235,14 +235,16 @@ $vm.date_to_yyyymmdd=function(nd){
 //----------------------------------------------------------------------------
 //-----------------------------------------------------------------
 $vm.init=function(callback){
+    $vm.user_name="guest";
+    $vm.user_id="-";
+    $vm.user_ip="0";
+	
 	if($vm.api_type=="sqlserver"){
 		$vm.init_s(callback);
 		return;		
 	}
-    $vm.user_name="guest";
-    $vm.user_id="-";
-    $vm.user_ip="0";
-    $vm.sys_N=0;
+	
+	$vm.sys_N=0;
     $vm.request({cmd:'user-info'},function(res){
         $vm.user_name=res.records[0].user_name;
         if(callback!==undefined) callback(res);
@@ -257,6 +259,7 @@ $vm.init_s=function(callback){
 	$VmAPI.request({data:{cmd:'user_name',ip:$vm.ip},callback:function(res){
 		if(res.user!==undefined){
 			$vm.user=res.user;
+			$vm.user_name=res.user;
 			$vm.user_id=res.user_id;
 			$vm.user_ip=res.user_ip;
 			$vm.user_puid=res.user_puid;
@@ -528,6 +531,8 @@ $vm.process_first_include=function(txt,module_id,slot,url_0,m_name){
 //-----------------------------------
 $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
 	var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
+	name=name.replace(/\'/g,'');
+	name=name.replace(/\"/g,'');
 	var items=name.split('|');
 	var url=$vm.url(items[0]);
 	if(url[0]=='/') url=$vm.hosting_path+url;
@@ -806,6 +811,32 @@ $vm.upload_form_files=function(res,$form,msg_id,callback){
     //--------------------------------------------------------
 }
 //--------------------------------------------------------
+$vm.upload_form_files_s=function(res,$form,msg_id,callback){
+    //--------------------------------------------------------
+    var total_num=0;
+    $form.find('input[type=file]').each(function(evt){
+        if(this.files.length===1){
+            total_num++;
+        }
+    });
+    if(total_num!=0){
+        $form.find('input[type=file]').each(function(evt){
+            if(this.files.length===1){
+                var name=this.name;
+                var s3_upload_url=res['file__'+name];
+                $vm.uploading_file(s3_upload_url,this.files[0],msg_id,function(){
+                    total_num--;
+                    if(total_num==0){
+                        callback();
+                    }
+                });
+            }
+        });
+    }
+    else callback();
+    //--------------------------------------------------------
+}
+//--------------------------------------------------------
 $vm.uploading_file=function(s3_upload_url,file,msg_id,callback){
     if(file){
         $.ajax({
@@ -841,6 +872,20 @@ $vm.open_s3_url=function(id,table,filename,url){
         link.click();
         document.body.removeChild(link);
     });
+}
+//---------------------------------------------
+$vm.open_s3_url_s=function(rid,filename,minutes){
+    var req={cmd:'get_s3_download_url',qid:$vm.qid,rid:rid,filename:filename,minutes:minutes};
+    $VmAPI.request({data:req,callback:function(res){
+        var link = document.createElement("a");
+        link.href = res.s3_download_url;
+        link.style = "visibility:hidden";
+        var fn=filename.split('-');
+        link.download = filename.replace(fn[0]+'-','').replace(/ /g,'_');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }});
 }
 //---------------------------------------------
 //--------------------------------------------------------
@@ -943,15 +988,41 @@ $vm.serialize_file=function(form_id){
 }
 //---------------------------------------------
 $vm.signin=function(){
+	if($vm.api_type=="sqlserver"){
+		$vm.signin_s();
+		return;		
+	}
 	if($vm.user_name=='guest'){
 		window.open($vm.api_address+"/signin.html","Sign In","width=600, height=700");
 	}
 }
 //---------------------------------------------
+$vm.signin_s=function(){
+	if($vm.user=='guest'){
+		window.open($VmAPI.api_base+"signin.html?url="+window.location.href,"Sign In","width=600, height=700");
+	}
+}
+//---------------------------------------------
 $vm.signout=function(){
+	if($vm.api_type=="sqlserver"){
+		$vm.signout_s();
+		return;		
+	}
 	$vm.clear_token();
 	sessionStorage["signinout"]=1;
 	location.reload(true);
+}
+//---------------------------------------------
+$vm.signout_s=function(){
+	$VmAPI.clear_token();
+	sessionStorage["signinout"]=1;
+	location.reload(true);
+	/*
+	$VmAPI.request({data:{cmd:'signout'},callback:function(c){
+		sessionStorage["signinout"]=1;
+		location.reload(true);
+	}});
+	*/
 }
 //---------------------------------------------
 //----------------------------------------------
@@ -1031,6 +1102,38 @@ $vm.autocomplete=function($input,req,autocomplete_list,callback){
                 callback(ui.item);
             }
         }
+    })
+}
+//-------------------------------------
+$vm.autocomplete_s=function($input,sql,autocomplete_list,callback){
+    var field=$input.attr('data-id');
+    $input.focus(function(){$input.autocomplete("search","");});
+    return $input.autocomplete({
+        minLength:0,
+        source:function(request,response){
+            $VmAPI.request({data:{cmd:'auto',s1:request.term,sql:sql,minLength:0},callback:function(res){
+                response(autocomplete_list(res.table));
+            }});
+        },
+        select: function(event,ui){
+            if(callback!=undefined){
+                callback(ui.item);
+            }
+        }
+        /*
+        select: function(event,ui){
+            if(callback!=undefined){
+                callback(field+'_uid',ui.item.value2);
+                for(key in ui.item){
+                    if(key.indexOf('field_')!==-1){
+                        var k=key.replace('field_','')
+                        var v=ui.item[key];
+                        callback(k,v);
+                    }
+                }
+            }
+        }
+        */
     })
 }
 //-------------------------------------

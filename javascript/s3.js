@@ -25,6 +25,32 @@ $vm.upload_form_files=function(res,$form,msg_id,callback){
     //--------------------------------------------------------
 }
 //--------------------------------------------------------
+$vm.upload_form_files_s=function(res,$form,msg_id,callback){
+    //--------------------------------------------------------
+    var total_num=0;
+    $form.find('input[type=file]').each(function(evt){
+        if(this.files.length===1){
+            total_num++;
+        }
+    });
+    if(total_num!=0){
+        $form.find('input[type=file]').each(function(evt){
+            if(this.files.length===1){
+                var name=this.name;
+                var s3_upload_url=res['file__'+name];
+                $vm.uploading_file(s3_upload_url,this.files[0],msg_id,function(){
+                    total_num--;
+                    if(total_num==0){
+                        callback();
+                    }
+                });
+            }
+        });
+    }
+    else callback();
+    //--------------------------------------------------------
+}
+//--------------------------------------------------------
 $vm.uploading_file=function(s3_upload_url,file,msg_id,callback){
     if(file){
         $.ajax({
@@ -60,5 +86,19 @@ $vm.open_s3_url=function(id,table,filename,url){
         link.click();
         document.body.removeChild(link);
     });
+}
+//---------------------------------------------
+$vm.open_s3_url_s=function(rid,filename,minutes){
+    var req={cmd:'get_s3_download_url',qid:$vm.qid,rid:rid,filename:filename,minutes:minutes};
+    $VmAPI.request({data:req,callback:function(res){
+        var link = document.createElement("a");
+        link.href = res.s3_download_url;
+        link.style = "visibility:hidden";
+        var fn=filename.split('-');
+        link.download = filename.replace(fn[0]+'-','').replace(/ /g,'_');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }});
 }
 //---------------------------------------------

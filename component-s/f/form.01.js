@@ -14,6 +14,8 @@ m.form_module=m.prefix+m.module.form_module;
 m.db_pid=m.module.table_id;
 m.qid=m.module.qid; if(m.qid==undefined) m.qid=$vm.qid;
 */
+m.db_pid=m.Table;
+m.qid=$vm.qid;
 //-------------------------------------
 m.load=function(){
     $('#D__ID').scrollTop(0);
@@ -61,9 +63,11 @@ m.submit=function(event){
         }
         if(FN==0) after_submit();
         else{
-            $vm.upload_form_files_v2(res,$('#F__ID'),function(){
-                after_submit();
-            })
+           open_model__ID();
+           $vm.upload_form_files_s(res,$('#F__ID'),"msg__ID",function(){
+               close_model__ID();
+               after_submit();
+           })
         }
     }});
     //--------------------------------------------------------
@@ -106,8 +110,37 @@ $('#header__ID').on('click', function(event){
             var nm=x.elements[i].getAttribute("name");
             if(nm!=null && nm!=nm0){ if(txt!="") txt+=", "; txt+=nm; nm0=nm;}
         }
-        //$vm.alert(txt);
         console.log(txt);
     }
 });
 //--------------------------------------------------------
+m.set_file_link=function(tag){
+    $('#link_'+tag+'__ID').html("");
+    $('#x_'+tag+'__ID').hide();
+    var record=m.input.record;
+    if(record==undefined) return;
+    var filename=record[tag];
+    if(filename==undefined){
+        filename="";
+    }
+    else{
+        $('#x_'+tag+'__ID').show();
+    }
+    $('#link_'+tag+'__ID').html(filename);
+    $('#link_'+tag+'__ID').on('click',function(){
+       var rid=record.ID;
+       if(rid!==undefined){
+           filename=record[tag]; if(filename==undefined) filename=""
+           if(filename!="") $vm.open_s3_url_s(rid,filename,5);
+       }
+       else alert("No file was found on server.")
+   
+
+    });
+    $('#x_'+tag+'__ID').on('click',function(){
+        $('#link_'+tag+'__ID').html('');
+        $('#x_'+tag+'__ID').hide();
+        record[tag]="";
+    })
+}
+//-------------------------------

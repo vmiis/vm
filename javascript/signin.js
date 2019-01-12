@@ -1,13 +1,39 @@
 //---------------------------------------------
 $vm.signin=function(){
+	if($vm.api_type=="sqlserver"){
+		$vm.signin_s();
+		return;		
+	}
 	if($vm.user_name=='guest'){
 		window.open($vm.api_address+"/signin.html","Sign In","width=600, height=700");
 	}
 }
 //---------------------------------------------
+$vm.signin_s=function(){
+	if($vm.user=='guest'){
+		window.open($VmAPI.api_base+"signin.html?url="+window.location.href,"Sign In","width=600, height=700");
+	}
+}
+//---------------------------------------------
 $vm.signout=function(){
+	if($vm.api_type=="sqlserver"){
+		$vm.signout_s();
+		return;		
+	}
 	$vm.clear_token();
 	sessionStorage["signinout"]=1;
 	location.reload(true);
+}
+//---------------------------------------------
+$vm.signout_s=function(){
+	$VmAPI.clear_token();
+	sessionStorage["signinout"]=1;
+	location.reload(true);
+	/*
+	$VmAPI.request({data:{cmd:'signout'},callback:function(c){
+		sessionStorage["signinout"]=1;
+		location.reload(true);
+	}});
+	*/
 }
 //---------------------------------------------

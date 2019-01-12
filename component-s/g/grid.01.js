@@ -15,10 +15,11 @@ m.db_pid=m.module.table_id;
 m.qid=m.module.qid; if(m.qid==undefined) m.qid=$vm.qid;
 */
 m.db_pid=m.Table;
+m.qid=$vm.qid;
 //-------------------------------------
 m.set_req=function(){
     var sql="with tb as (select Information,ID,UID,PUID,DateTime,Modified=Convert(varchar,Modified,127),Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+m.db_pid+"-@S1] )";
-    sql+="select Information,ID,UID,PUID,DateTime,Modified,Author,RowNum from tb where RowNum between @I6 and @I7";
+    sql+="select Information,ID,UID,PUID,Submit_date=DateTime,Modified,Submitted_by=Author,RowNum from tb where RowNum between @I6 and @I7";
     var sql_n="select count(ID) from [TABLE-"+m.db_pid+"-@S1]";
 	m.req={cmd:'read',qid:m.qid,sql:sql,sql_n:sql_n,s1:'"'+$('#keyword__ID').val()+'"',I:$('#I__ID').text(),page_size:$('#page_size__ID').val()}
 }
@@ -56,8 +57,8 @@ m.render=function(){
     var start=0;
     var max=m.records.length;
     for(var i=start;i<max;i++){
-        if(m.records[i].DateTime!==undefined){
-            m.records[i].DateTime=m.records[i].DateTime.substring(0,10);
+        if(m.records[i].Submit_date!==undefined){
+            m.records[i].Submit_date=m.records[i].Submit_date.substring(0,10);
         }
         if(m.records[i].vm_dirty===undefined) m.records[i].vm_dirty=0;
         if(m.records[i].vm_custom===undefined) m.records[i].vm_custom={};
