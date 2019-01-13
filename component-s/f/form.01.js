@@ -45,8 +45,8 @@ m.submit=function(event){
         req={cmd:"modify",rid:rid,qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv,file:file};
         if(m.xml==1 || m.xml==true) req={cmd:"modify",rid:rid,qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv,file:file,xml:"1"};
     }
-    else if($vm.online_questionnaire==1 || m.add_s2==1) req={cmd:"add-s2",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv,file:file};
-    else if(m.add_anonymous==1) req={cmd:"add-anonymous",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv,file:file};
+    //else if($vm.online_questionnaire==1 || m.add_s2==1) req={cmd:"add-s2",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv,file:file};
+    //else if(m.add_anonymous==1) req={cmd:"add-anonymous",qid:m.qid,db_pid:m.db_pid,data:data,dbv:dbv,file:file};
     var FN=0; $('#F__ID').find('input[type=file]').each(function(evt){ if(this.files.length==1) FN++; });
     $VmAPI.request({data:req,callback:function(res){
         var after_submit=function(){
