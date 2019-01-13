@@ -91,7 +91,8 @@
 $VmAPI.request_filter=function(c){
 	var a=$.parseJSON(c);
 	if(a.Error!=undefined){
-		alert(a.Error);
+		//alert(a.Error);
+		console.log(a.Error)
 		$VmAPI.ajax_server_error=1;
 		if(typeof($VmAPI.submit_div)!=='undefined' && $VmAPI.submit_div!=""){
    			$('#D'+$VmAPI.submit_div).triggerHandler('submit_failed');
