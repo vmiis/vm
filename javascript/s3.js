@@ -79,6 +79,10 @@ $vm.uploading_file=function(s3_upload_url,file,msg_id,callback){
 //---------------------------------------------
 $vm.open_s3_url=function(id,table,filename,url){
     $vm.request({cmd:"s3_download_url",id:id,table:table,filename:filename,url:url},function(res){
+        if(res.sys.permission==false){
+            alert("No permission.")
+            return;
+        }
         var link = document.createElement("a");
         link.href = res.result;
         link.style = "visibility:hidden";

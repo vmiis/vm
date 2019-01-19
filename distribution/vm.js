@@ -866,6 +866,10 @@ $vm.uploading_file=function(s3_upload_url,file,msg_id,callback){
 //---------------------------------------------
 $vm.open_s3_url=function(id,table,filename,url){
     $vm.request({cmd:"s3_download_url",id:id,table:table,filename:filename,url:url},function(res){
+        if(res.sys.permission==false){
+            alert("No permission.")
+            return;
+        }
         var link = document.createElement("a");
         link.href = res.result;
         link.style = "visibility:hidden";
@@ -1062,41 +1066,6 @@ $vm.source=function(module_id,event){
 	}
 }
 //----------------------------------------------
-$vm.source2=function(module_id,event){
-	if (event.altKey) {
-		if($vm.vm[module_id].url!==undefined){
-			var url='__COMPONENT__/c/code-viewer.01.html'
-			var module_url=$vm.vm[module_id].url;
-			if(module_url[0]=='/') module_url=$vm.hosting_path+module_url;
-			else{
-				if(module_url.substring(0,7)!='http://' && module_url.substring(0,8)!='https://'){
-					module_url=$vm.hosting_path+"/"+module_url;
-				}
-			}
-			$.get(module_url+'?'+new Date().getTime(), function(data){
-				var nm=$vm.vm[module_id].name;
-				if($vm.module_list[nm]!==undefined){
-                    if($vm.module_list[nm].html_filter!=undefined){
-                        data=$vm.module_list[nm].html_filter(data);
-                    }
-					if($vm.module_list["sys_code_viewer"]==undefined){
-						$vm.module_list["sys_code_viewer"]={url:url}
-					}
-					var msg=module_url;
-					if($vm.module_list[nm]['App']!=undefined && $vm.module_list[nm]['Table']!=undefined){
-						msg=msg+ " - "+$vm.module_list[nm]['App']+"/"+$vm.module_list[nm]['Table'];
-					}
-					$vm.load_module("sys_code_viewer",'',{code:data,msg:msg});
-				}
-			})
-		}
-    }
-	else if (event.ctrlKey) {
-    }
-	else if(event.shiftKey){
-	}
-}
-//----------------------------------------------
 $vm.vm_password=function(length, special) {
     var iteration = 0;
     var password = "";
@@ -1126,11 +1095,11 @@ $vm.autocomplete=function($input,req,autocomplete_list,callback){
         source:function(request,response){
             req.search=request.term;
             $vm.request(req,function(res){
-                if(res.permission==false){
+                if(res.sys.permission==false){
                     console.log("No permission");
                     return;
                 }
-                response(autocomplete_list(res.records));
+                response(autocomplete_list(res.result));
             })
         },
         select: function(event,ui){

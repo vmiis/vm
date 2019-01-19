@@ -63,11 +63,11 @@ $vm.autocomplete=function($input,req,autocomplete_list,callback){
         source:function(request,response){
             req.search=request.term;
             $vm.request(req,function(res){
-                if(res.permission==false){
+                if(res.sys.permission==false){
                     console.log("No permission");
                     return;
                 }
-                response(autocomplete_list(res.records));
+                response(autocomplete_list(res.result));
             })
         },
         select: function(event,ui){
