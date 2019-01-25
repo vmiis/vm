@@ -4,7 +4,7 @@ m.query={};
 m.options={};
 //-------------------------------------
 m.set_req=function(){
-    m.query={App:m.App,Table:m.Table}
+    m.query={}
 };
 //-------------------------------------
 m.set_req_export=function(i1,i2){
@@ -17,7 +17,7 @@ m.request_data=function(){
     var limit=parseInt($('#page_size__ID').val());
     var skip=limit*parseInt($('#I__ID').text());
     var mt1=new Date().getTime();
-    $vm.request({cmd:"count",table:m.Table,options:m.options,search:$('#keyword__ID').val()},function(res){
+    $vm.request({cmd:"count",table:m.Table,query:m.query,options:m.options,search:$('#keyword__ID').val()},function(res){
         if(res.permission==false){
             return;
         }
@@ -28,7 +28,7 @@ m.request_data=function(){
         var a=(skip+1).toString()+"~"+(n2).toString()+" of ";
         $("#A__ID").text(a);
     });
-    $vm.request({cmd:"find",table:m.Table,options:m.options,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
+    $vm.request({cmd:"find",table:m.Table,query:m.query,options:m.options,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
         if(res.sys.permission==false){
             $vm.alert("No permission. Private database table, ask the table's owner for permissions.");
             //return;
