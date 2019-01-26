@@ -37,6 +37,58 @@ m.set_file_link=function(tag){
     })
 }
 //-------------------------------
+m.set_image_url=function(tag){
+    $obj=$('#'+tag+'__ID');
+    $obj.attr('src',"");
+    $('#x_'+tag+'__ID').hide();
+    var record=m.input.record;
+    if(record==undefined) return;
+    var filename=record.Data[tag];
+    if(filename==undefined || filename==""){
+        return;
+    }
+    else{
+        $('#x_'+tag+'__ID').show();
+    }
+    var modified=record.Update_date;
+    if(modified==undefined) modified=record.Submit_date;
+    
+    var img_id='img_'+tag+'_'+record._id;
+    if(m[img_id]!=undefined) $obj.attr('src',m[img_id]);
+    else{
+        var img_url				=localStorage.getItem(img_id+"_url");
+        var img_last_load_date	=localStorage.getItem(img_id+"_last_load_date");
+        var img_modified		=localStorage.getItem(img_id+"_modified");
+        var D1=new Date();
+        var D0=new Date(img_last_load_date);
+        var dif=D1.getTime()-D0.getTime();
+        dif=dif/1000/3600/24;
+        if(img_url!==null && dif<6 && img_modified==modified){
+            m[img_id]=img_url;
+            $obj.attr('src',img_url);
+        }
+        else{
+            var url=record.Table+"/"+record.UID+"-"+tag+"-"+filename;
+            $vm.request({cmd:"s3_download_url",id:record._id,table:record.Table,filename:filename,url:url},function(res){
+                if(res.sys.permission==false){
+                    alert("No permission.")
+                    return;
+                }
+                m[img_id]=res.result;
+                $obj.attr('src',res.result);
+                localStorage.setItem(img_id+"_url",res.result);
+                localStorage.setItem(img_id+"_last_load_date",new Date().toString());
+                localStorage.setItem(img_id+"_modified",modified);
+            });
+        }
+    }
+    $('#x_'+tag+'__ID').on('click',function(){
+        $obj.attr('src',"");
+        $('#x_'+tag+'__ID').hide();
+        record.Data[tag]="";
+    })
+}
+//-------------------------------
 m.submit=function(event){
     //--------------------------------------------------------
     event.preventDefault();
