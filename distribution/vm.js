@@ -474,6 +474,9 @@ $vm.insert_module=function(options){
     //$vm.push_to_slot({div:module_id,slot:slot});
 	$('#D'+module_id).css('display','block');
 	$('#D'+module_id).triggerHandler('show');
+
+	if(slot!=$vm.root_layout_content_slot) return;
+
     $vm.page_stack_index++;
     $vm.page_stack.push({m_name:options.m_name,ID:module_id,slot:slot,index:$vm.page_stack_index});
 	var pp=null;
