@@ -145,7 +145,10 @@ m.submit=function(event){
         });
     }
     else if(rid!=undefined){
-        $vm.request({cmd:"update",id:rid,table:m.Table,data:data,index:index,file:file},function(res){
+        var cmd="update";
+        if(m.cmd_type=='p1') cmd='update-p1';
+        if(m.cmd_type=='p2') cmd='update-p2';
+        $vm.request({cmd:cmd,id:rid,table:m.Table,data:data,index:index,file:file},function(res){
             //-----------------------------
             if(res.sys.permission==false){
                 alert("No permission to update this record.");

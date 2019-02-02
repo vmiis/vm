@@ -17,7 +17,11 @@ m.request_data=function(){
     var limit=parseInt($('#page_size__ID').val());
     var skip=limit*parseInt($('#I__ID').text());
     var mt1=new Date().getTime();
-    $vm.request({cmd:"count",table:m.Table,query:m.query,search:$('#keyword__ID').val()},function(res){
+    var c_cmd="count";
+    if(m.cmd_type=='s') c_cmd='count-s';
+    else if(m.cmd_type=='p1') c_cmd='count-p1';
+    else if(m.cmd_type=='p2') c_cmd='count-p2';
+    $vm.request({cmd:c_cmd,table:m.Table,query:m.query,search:$('#keyword__ID').val()},function(res){
         if(res.permission==false){
             return;
         }
@@ -28,7 +32,11 @@ m.request_data=function(){
         var a=(skip+1).toString()+"~"+(n2).toString()+" of ";
         $("#A__ID").text(a);
     });
-    $vm.request({cmd:"find",table:m.Table,query:m.query,sort:m.sort,projection:m.projection,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
+    var f_cmd="find";
+    if(m.cmd_type=='s') f_cmd='find-s';
+    else if(m.cmd_type=='p1') f_cmd='find-p1';
+    else if(m.cmd_type=='p2') f_cmd='find-p2';
+    $vm.request({cmd:f_cmd,table:m.Table,query:m.query,sort:m.sort,projection:m.projection,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
         if(res.sys.permission==false){
             $vm.alert("No permission. Private database table, ask the table's owner for permissions.");
             //return;
