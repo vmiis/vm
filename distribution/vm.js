@@ -233,6 +233,23 @@ $vm.date_to_yyyymmdd=function(nd){
     return nd.getFullYear()+"-"+$vm.pad(nd.getMonth()+1,2)+"-"+$vm.pad(nd.getDate(),2);
 }
 //----------------------------------------------------------------------------
+$vm.render_checkbox_field=function(record,mID,$div,html){
+    var field=$div.attr('data-id');
+    //record.vm_custom[field]=true;
+    $div.html(html);
+    if(record[field]=="1" || record[field]=="True" || record[field]=="on" ) $div.find('input').prop('checked', true);
+    $div.find('input').on('click', function(){
+        var value='0';
+        if($(this).prop("checked") == true)   value='1';
+
+        if(value==="" && record[field]===undefined) return;
+        if(value!==record[field]){
+            record.vm_dirty=1;
+            record[field]=value;
+            $('#save'+mID).css('background','#E00');
+        }
+    });
+}
 //-----------------------------------------------------------------
 $vm.init=function(callback){
     $vm.user_name="guest";
@@ -1069,6 +1086,27 @@ $vm.source=function(module_id,event){
 	}
 }
 //----------------------------------------------
+$vm.set_dropdown_list_from_text=function($List,text){
+    var txt=$("<div></div>").html(text).text();
+    txt=txt.replace(/\r/g,'\n');
+    txt=txt.replace(/\n\n/g,'\n');
+    txt=txt.replace(/\n/g,',');
+    txt=txt.replace(/,,/g,',');
+    var lines=txt.split(',');
+    $List.html('');
+    for(var i=0;i<lines.length;i++){
+        var line=lines[i];
+        var items=line.split(';');
+        var sel='';
+        if(items[0].length>0 && items[0]=='*'){
+            items[0]=items[0].replace('*','');
+            sel='selected';
+        }
+        if(items.length==2)	$List.append(  $('<option '+sel+'></option>').val(items[1]).html(items[0])  );
+        else			    $List.append(  $('<option '+sel+'></option>').val(items[0]).html(items[0])  );
+    }
+}
+//---------------------------------------------
 $vm.vm_password=function(length, special) {
     var iteration = 0;
     var password = "";

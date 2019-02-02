@@ -34,6 +34,27 @@ $vm.source=function(module_id,event){
 	}
 }
 //----------------------------------------------
+$vm.set_dropdown_list_from_text=function($List,text){
+    var txt=$("<div></div>").html(text).text();
+    txt=txt.replace(/\r/g,'\n');
+    txt=txt.replace(/\n\n/g,'\n');
+    txt=txt.replace(/\n/g,',');
+    txt=txt.replace(/,,/g,',');
+    var lines=txt.split(',');
+    $List.html('');
+    for(var i=0;i<lines.length;i++){
+        var line=lines[i];
+        var items=line.split(';');
+        var sel='';
+        if(items[0].length>0 && items[0]=='*'){
+            items[0]=items[0].replace('*','');
+            sel='selected';
+        }
+        if(items.length==2)	$List.append(  $('<option '+sel+'></option>').val(items[1]).html(items[0])  );
+        else			    $List.append(  $('<option '+sel+'></option>').val(items[0]).html(items[0])  );
+    }
+}
+//---------------------------------------------
 $vm.vm_password=function(length, special) {
     var iteration = 0;
     var password = "";

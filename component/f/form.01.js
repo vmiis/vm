@@ -130,7 +130,7 @@ m.submit=function(event){
                     m.after_insert(data,res); return;
                 }
                 $vm.refresh=1;
-                if(m.input.goback!=undefined) window.history.go(-1);       //from grid
+                if(m.input.goback!=undefined) window.history.go(-1);            //from grid
                 else $vm.alert('Your data has been successfully submitted');    //standalone
             }
             if(FN==0) after_submit();
@@ -154,7 +154,7 @@ m.submit=function(event){
             //-----------------------------
             var after_submit=function(){
                 if(m.after_update!=undefined){
-                    m.after_modify(data,res); return;
+                    m.after_update(data,res); return;
                 }
                 $vm.refresh=1;
                 if(rid!=undefined) window.history.go(-1);                       //modify
