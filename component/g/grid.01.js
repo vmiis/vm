@@ -22,8 +22,8 @@ m.request_data=function(){
     else if(m.cmd_type=='p1') c_cmd='count-p1';
     else if(m.cmd_type=='p2') c_cmd='count-p2';
     $vm.request({cmd:c_cmd,table:m.Table,query:m.query,search:$('#keyword__ID').val()},function(res){
-        if(res.permission==false){
-            return;
+        if(res.status=='np'){
+            res.result=0;
         }
         var N=res.result;
         m.max_I=N/limit-1;
@@ -37,18 +37,22 @@ m.request_data=function(){
     else if(m.cmd_type=='p1') f_cmd='find-p1';
     else if(m.cmd_type=='p2') f_cmd='find-p2';
     $vm.request({cmd:f_cmd,table:m.Table,query:m.query,sort:m.sort,projection:m.projection,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
-        if(res.sys.permission==false){
-            $vm.alert("No permission. Private database table, ask the table's owner for permissions.");
-            //return;
-        }
-        if(res.result==undefined) res.result=[];
         var mt2=new Date().getTime();
         var tt_all=mt2-mt1;
         var tt_server=parseInt(res.sys.elapsed_time);
         if(tt_all<tt_server) tt_all=tt_server;
         var db="<span style='color:#0919ec'>&#9679;</span> "; if(res.sys.db!=undefined) db="<span style='color:#0bbe0b'>&#9679;</span> ";
-        var tb="<span style='color:red'>&#9679;</span> "; if(res.sys.tb=="on") tb="<span style='color:#0bbe0b'>&#9679;</span> ";
+        var tb="<span style='color:red'>&#9679;</span> ";     if(res.sys.tb=='on') tb="<span style='color:#0bbe0b'>&#9679;</span> ";
         $("#elapsed__ID").html(db+tb+(JSON.stringify(res.result).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
+        
+        if(res.status=='np' || res.result==undefined){
+            res.result=[];
+        }
+
+        if(res.status=='np'){
+            if(res.sys.tb=='on') $vm.alert("No permission. Private database table, ask the table's owner for permissions.");
+            else $vm.alert("No permission.");
+        }
 
         m.records=res.result;
         m.res=res;
@@ -186,7 +190,12 @@ m.create_header=function(){
 m.delete=function(rid){
     $vm.request({cmd:"delete",id:rid,table:m.Table},function(res){
         //-----------------------------
-        if(res.sys.permission==false){
+        if(res.status=="lk"){
+            $vm.alert("This record is locked.");
+            return;
+        }
+        //-----------------------------
+        if(res.status=="np"){
             alert("No permission to delete this record.");
             return;
         }
@@ -266,7 +275,7 @@ m.handleFileSelect=function(evt){
                                         }
                                         jQuery.ajaxSetup({async:false});
                                         $vm.request({cmd:"insert",table:m.Table,data:rd,index:dbv,file:{}},function(res){
-                                            permission=res.sys.permission;
+                                            permission=res.status;
                                         });
                                         I++;
                                         jQuery.ajaxSetup({async:true});

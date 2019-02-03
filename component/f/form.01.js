@@ -70,7 +70,7 @@ m.set_image_url=function(tag){
         else{
             var url=record.Table+"/"+record.UID+"-"+tag+"-"+filename;
             $vm.request({cmd:"s3_download_url",id:record._id,table:record.Table,filename:filename,url:url},function(res){
-                if(res.sys.permission==false){
+                if(res.status=="np"){
                     alert("No permission.")
                     return;
                 }
@@ -117,7 +117,7 @@ m.submit=function(event){
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
         $vm.request({cmd:"insert",table:m.Table,data:data,index:index,file:file},function(res){
-            if(res.sys.permission==false){
+            if(res.status=="np"){
                 alert("No permission to insert a new record in to the database.");
                 if(m.input.goback!=undefined){
                     $vm.refresh=1;
@@ -150,7 +150,12 @@ m.submit=function(event){
         if(m.cmd_type=='p2') cmd='update-p2';
         $vm.request({cmd:cmd,id:rid,table:m.Table,data:data,index:index,file:file},function(res){
             //-----------------------------
-            if(res.sys.permission==false){
+            if(res.status=="lk"){
+                $vm.alert("This record is locked.");
+                return;
+            }
+            //-----------------------------
+            if(res.status=="np"){
                 alert("No permission to update this record.");
                 return;
             }
@@ -180,6 +185,7 @@ $('#D__ID').on('load',function(){ m.load();})
 $('#F__ID').submit(function(event){m.submit(event);})
 //--------------------------------------------------------
 $('#delete__ID').on('click', function(){
+    /*
     var record=m.input.record;
     if(record==undefined) return;
     var rid=record._id;
@@ -203,6 +209,7 @@ $('#delete__ID').on('click', function(){
             window.history.go(-1);
         }});
     }
+    */
 })
 //-------------------------------------
 $('#header__ID').on('click', function(event){
