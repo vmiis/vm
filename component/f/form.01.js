@@ -185,33 +185,45 @@ $('#D__ID').on('load',function(){ m.load();})
 $('#F__ID').submit(function(event){m.submit(event);})
 //--------------------------------------------------------
 $('#delete__ID').on('click', function(){
-    /*
-    var record=m.input.record;
-    if(record==undefined) return;
-    var rid=record._id;
-    if(rid==undefined){
-        return;
-    }
+    var record=m.input.record;    if(record==undefined) return;
+    var rid=record._id;           if(rid==undefined)    return;
     if(confirm("Are you sure to delete?\n")){
-        var req={cmd:"delete",qid:m.qid,db_pid:m.db_pid,rid:rid,dbv:{}};
-        $VmAPI.request({data:req,callback:function(res){
-            //-------------------------------
-            if(res.Error!==undefined) return false;
-            if(res.ret=='NULL'){
-                if(res.msg!==undefined) alert(res.msg);
-                else alert("No permission!");
-                return false;
+        $vm.request({cmd:"delete",id:rid,table:m.Table},function(res){
+            //-----------------------------
+            if(res.status=="lk"){
+                $vm.alert("This record is locked.");
+                return;
             }
-            //-------------------------------
-            if(m.after_delete!==undefined)  m.after_delete(res);
+            //-----------------------------
+            if(res.status=="np"){
+                alert("No permission to delete this record.");
+                return;
+            }
+            //-----------------------------
+            if(m.after_delete!=undefined){
+                m.after_delete(res); 
+                return;
+            }
             //-------------------------------
             $vm.refresh=1;
             window.history.go(-1);
-        }});
+        });
     }
-    */
 })
 //-------------------------------------
+$('#copy__ID').on('click',function(){
+    if($vm.copy_paste==undefined) $vm.copy_paste={}
+    $vm.copy_paste['__ID']={Data:$vm.serialize('#F__ID')};
+    console.log($vm.copy_paste['__ID'])
+})
+//---------------------------------------------
+$('#paste__ID').on('click',function(){
+    if($vm.copy_paste!=undefined && $vm.copy_paste['__ID']!=null){
+        $vm.deserialize($vm.copy_paste['__ID'],'#F__ID');
+        if(m.paste!=undefined) m.paste($vm.copy_paste['__ID']);
+    }
+})
+//---------------------------------------------
 $('#header__ID').on('click', function(event){
     if(event.ctrlKey){
         var x=document.getElementById("F__ID");

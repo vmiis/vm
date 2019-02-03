@@ -61,4 +61,7 @@
         width:100%;
         max-width: 100%;
     }
+    .c_print {
+        display: none;
+    }
 }
