@@ -237,9 +237,11 @@ $('#header__ID').on('click', function(event){
 });
 //--------------------------------------------------------
 $('#pdf__ID').on('click',function(){
+    $('#D__ID').scrollTop(0);
+    $(window).scrollTop(0);
     var h=$('#D__ID').css('height');
-    $('#D__ID').css('height',"3000px");
-    $('form_container__ID').css('height',"3000px");
+    $('#D__ID').css('height',"210mm");
+    $('form_container__ID').css('height',"297mm");
     $('#F__ID').css('border-bottom-width','0');
     $('#submit__ID').hide();
     $('#pdf__ID').hide();
@@ -256,5 +258,6 @@ $('#pdf__ID').on('click',function(){
         $('#pdf__ID').show();
         $('#D__ID').css('height',h);
     });
+    
 })
 //-------------------------------------
