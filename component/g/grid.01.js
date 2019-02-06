@@ -26,8 +26,9 @@ m.request_data=function(){
             res.result=0;
         }
         var N=res.result;
-        m.max_I=N/limit-1;
         $("#B__ID").text(N)
+        
+        m.max_I=Math.ceil(N/limit)-1;
         var n2=skip+limit; if(n2>N) n2=N;
         var a=(skip+1).toString()+"~"+(n2).toString()+" of ";
         $("#A__ID").text(a);
@@ -256,9 +257,9 @@ m.handleFileSelect=function(evt){
                         open_model__ID();
                         var I=0;
                         var i=1;
-                        var permission=1;
+                        var status="ok";
                         (function looper(){
-                            if( i<=lines.length && i<=NN && permission==1) {
+                            if( i<=lines.length && i<=NN && status=='ok') {
                                 var items=lines[i].splitCSV(tab);
                                 if(items.length>=1){
                                     var rd={};
@@ -275,7 +276,7 @@ m.handleFileSelect=function(evt){
                                         }
                                         jQuery.ajaxSetup({async:false});
                                         $vm.request({cmd:"insert",table:m.Table,data:rd,index:dbv,file:{}},function(res){
-                                            permission=res.status;
+                                            status=res.status;
                                         });
                                         I++;
                                         jQuery.ajaxSetup({async:true});
