@@ -4,7 +4,7 @@
     font-size:13px;
     font-family: Helvetica, Arial, sans-serif;
 	height:100%;
-	overflow: auto;
+	overflow: hidden;
 	animation: vm_module_fadein 1.0s;
 }
 
