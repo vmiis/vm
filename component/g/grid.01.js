@@ -70,9 +70,9 @@ m.render=function(){
         if(m.records[i].DateTime!==undefined){
             m.records[i].DateTime=m.records[i].DateTime.substring(0,10);
         }
-        if(m.records[i].vm_dirty===undefined) m.records[i].vm_dirty=0;
-        if(m.records[i].vm_custom===undefined) m.records[i].vm_custom={};
-        if(m.records[i].vm_readonly===undefined) m.records[i].vm_readonly={};
+        //if(m.records[i].vm_dirty===undefined) m.records[i].vm_dirty=0;
+        //if(m.records[i].vm_custom===undefined) m.records[i].vm_custom={};
+        //if(m.records[i].vm_readonly===undefined) m.records[i].vm_readonly={};
     }
 
     var txt="";
@@ -158,6 +158,7 @@ m.cell_process=function(){
         //-------------------------
         if(m.cell_render!==undefined){ m.cell_render(m.records,row,column_name,$(this)); }
         //-------------------------
+        /*
         if(column_name=='_Form' || column_name=='_Delete' || column_name=='DateTime' || column_name=='Author' || m.records[row].vm_readonly[column_name]===true){
             if($vm.edge==0) $(this).removeAttr('contenteditable');
             else if($vm.edge==1) $(this).find('div:first').removeAttr('contenteditable');
@@ -167,6 +168,7 @@ m.cell_process=function(){
             if($vm.edge==0) $(this).removeAttr('contenteditable');
             else if($vm.edge==1) $(this).find('div:first').removeAttr('contenteditable');
         }
+        */
     })
     //------------------------------------
 }
