@@ -21,7 +21,7 @@ m.request_data=function(){
     if(m.cmd_type=='s') c_cmd='count-s';
     else if(m.cmd_type=='p1') c_cmd='count-p1';
     else if(m.cmd_type=='p2') c_cmd='count-p2';
-    $vm.request({cmd:c_cmd,table:m.Table,query:m.query,search:$('#keyword__ID').val()},function(res){
+    $vm.request({cmd:c_cmd,table:m.Table,query:m.query,I1:m.I1,search:$('#keyword__ID').val()},function(res){
         if(res.status=='np'){
             res.result=0;
         }
@@ -37,7 +37,7 @@ m.request_data=function(){
     if(m.cmd_type=='s') f_cmd='find-s';
     else if(m.cmd_type=='p1') f_cmd='find-p1';
     else if(m.cmd_type=='p2') f_cmd='find-p2';
-    $vm.request({cmd:f_cmd,table:m.Table,query:m.query,sort:m.sort,projection:m.projection,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
+    $vm.request({cmd:f_cmd,table:m.Table,I1:m.I1,query:m.query,sort:m.sort,projection:m.projection,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
         var mt2=new Date().getTime();
         var tt_all=mt2-mt1;
         var tt_server=parseInt(res.sys.elapsed_time);
