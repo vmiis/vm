@@ -252,8 +252,10 @@ m.handleFileSelect=function(evt){
                     var n1=lines[0].split('\t').length;
                     var n2=lines[0].split(',').length;
                     if(n2>n1) tab=',';
-                    var header=lines[0].replace(/ /g,'_').splitCSV(tab);
-                    var flds=fields.split(',');
+                    var flds=lines[0].replace(/ /g,'_').splitCSV(tab);
+                    //var import_fields=fields;
+                    //if(m.import_fields!=undefined) import_fields=m.import_fields;
+                    //var flds=header.split(',');
                     var fn=$('#Import_f__ID').val().substring($('#Import_f__ID').val().lastIndexOf('\\')+1);
                     if(confirm("Are you sure to import "+fn+"?\n")){
                         open_model__ID();
@@ -268,9 +270,13 @@ m.handleFileSelect=function(evt){
                                     var dbv={};
                                     for(var j=0;j<flds.length;j++){
                                         var field_id=flds[j];
-                                        var index=header.indexOf(field_id);
+                                        var index=flds.indexOf(field_id);
                                         var index2=form_fields.indexOf(field_id);
-                                        if(index!=-1 && index2!=-1 && field_id.toUpperCase()!='ID')  rd[field_id]=items[index];
+                                        if(index!=-1 && index2!=-1)  rd[field_id]=items[index];
+                                        if(field_id=='UID' && j==0) rd['UID']=items[0];
+                                        if(field_id=='Submit_date' && j==1) rd['Submit_date']=items[1];
+                                        if(field_id=='Submitted_by' && j==2) rd['Submitted_by']=items[2];
+                                        if(field_id=='I1' && j==3) dbv['I1']=items[3];
                                     }
                                     if( jQuery.isEmptyObject(rd)===false){
                                         if(typeof(before_submit)!='undefined'){
@@ -280,6 +286,7 @@ m.handleFileSelect=function(evt){
                                         $vm.request({cmd:"insert",table:m.Table,data:rd,index:dbv,file:{}},function(res){
                                             status=res.status;
                                         });
+                                        //console.log(rd)
                                         I++;
                                         jQuery.ajaxSetup({async:true});
                                     }
