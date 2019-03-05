@@ -25,8 +25,8 @@ m.set_req=function(){
 }
 //-------------------------------------
 m.set_req_export=function(i1,i2){
-    var sql="with tb as (select Information,DateTime,Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+m.db_pid+"-@S1] )";
-    sql+="select Information,DateTime,Author from tb where RowNum between @I1 and @I2";
+    var sql="with tb as (select UID,Information,DateTime,Author,RowNum=row_number() over (order by ID DESC) from [TABLE-"+m.db_pid+"-@S1] )";
+    sql+="select UID,Information,DateTime,Author from tb where RowNum between @I1 and @I2";
 	m.req={cmd:'read',qid:m.qid,sql:sql,i1:i1,i2:i2};
 }
 //-----------------------------------------------
@@ -309,8 +309,8 @@ m.export_records=function(){
         if(m.fields_e===undefined) m.fields_e=m.fields.replace('_Form,','').replace(',_Delete','');
 		m.records=results;
 		if(m.data_process!==undefined){ m.data_process(); }
-        var fn=m.export_filename;
-        if(fn==undefined) fn="F"+m.db_pid+".csv";
+        var fn='__MODULE__'.replace('-data','')+".csv";//m.export_filename;
+        //if(fn==undefined) fn="F"+m.db_pid+".csv";
         $vm.download_csv({name:fn,data:m.records,fields:m.fields_e});
     }
     //-------------------------------------
@@ -358,3 +358,114 @@ $('#new__ID').on('click', function(){
 $('#D__ID').on('load',function(){  m.input=$vm.vm['__ID'].input; if(m.preload==true) return; if(m.load!=undefined) m.load(); m.set_req(); m.request_data(); })
 $('#D__ID').on('show',function(){  if($vm.refresh==1){$vm.refresh=0; m.set_req(); m.request_data();} })
 //-----------------------------------------------
+$vm.get_module_id=function(options){
+	return $vm.module_list[options.name].id;
+}
+//-----------------------------------
+$vm.open_dialog=function(options){
+	var name=options.name;
+	if($vm.module_list[name]===undefined) return;
+	var mid;
+	var url;
+	if(Array.isArray($vm.module_list[name])===true){
+		mid=$vm.module_list[name][0];
+		url=$vm.module_list[name][1];
+	}
+	else{
+		mid=$vm.module_list[name]['table_id'];
+		url=$vm.module_list[name]['url'];
+	}
+	var id=$vm.module_list[name].id;
+	$('#D'+id).css('display','block')
+}
+//--------------------------------------------------------
+$vm.close_dialog=function(options){
+	var name=options.name;
+	if($vm.module_list[name]===undefined) return;
+	var mid;
+	var url;
+	if(Array.isArray($vm.module_list[name])===true){
+		mid=$vm.module_list[name][0];
+		url=$vm.module_list[name][1];
+	}
+	else{
+		mid=$vm.module_list[name]['table_id'];
+		url=$vm.module_list[name]['url'];
+	}
+	var pid=$vm.id(url+mid);
+	var id=$vm.module_list[name].id;
+	$('#D'+id).css('display','none')
+}
+//--------------------------------------------------------
+$vm.download_csv=function(params){
+    var name=params.name;
+    var data=params.data;
+    var fields=params.fields;
+
+    if(data==='') return;
+    var CSV='';
+    var row="";
+    var ids=fields.split(',');
+    for(var j=0;j<ids.length;j++){
+        if(j!==0) row+=",";
+        if(ids[j].split('|')[0][0]!='_'){
+            row+=ids[j].split('|')[0];
+        }
+    }
+    row+="\r\n";
+    CSV+=row;
+    for(var i=0;i<data.length;i++){
+        row="";
+        for(j=0;j<ids.length;j++){
+            if(j!==0) row+=",";
+            if(ids[j].split('|')[0][0]!='_'){
+                //var pro=ids[j].split('|').pop().trim().replace(/ /g,'_').replace('...','');
+                var pro=ids[j].split('|').pop().trim().replace('...','');
+                var v="";
+                if(data[i][pro]!==undefined) v=data[i][pro];
+                v=v.toString().replace(/"/g,''); //remove "
+                row+='"'+v+'"';
+            }
+        }
+        row+="\r\n";
+        CSV+=row;
+    }
+    name=name.replace(/ /g,'_');
+    //window.URL = window.webkitURL || window.URL;
+    //-----------------------
+    var bytes = [];
+        bytes.push(239);
+        bytes.push(187);
+        bytes.push(191);
+    for (var i = 0; i < CSV.length; i++) {
+        if(CSV.charCodeAt(i)<128) {
+            bytes.push(CSV.charCodeAt(i));
+        }
+        else if(CSV.charCodeAt(i)<2048) {
+            bytes.push(( (CSV.charCodeAt(i) & 192) >> 6 ) + ((CSV.charCodeAt(i) & 1792)>>6 ) +192); //xC0>>6 + x700>>8 +xE0
+            bytes.push(CSV.charCodeAt(i) & 63 + 128); //x3F + x80
+        }
+        else if(CSV.charCodeAt(i)<65536) {
+            bytes.push(((CSV.charCodeAt(i) & 61440) >>12) + 224 ); //xF00>>12 + xE0
+            bytes.push(( (CSV.charCodeAt(i) & 192) >> 6 ) + ((CSV.charCodeAt(i) & 3840)>>6 ) +128); //xC0>>6 + xF00>>8 +x80
+            bytes.push(CSV.charCodeAt(i) & 63 + 128); //x3F + x80
+        }
+    }
+    var u8 = new Uint8Array(bytes);
+    var blob = new Blob([u8]);
+    //-----------------------
+    if (navigator.appVersion.toString().indexOf('.NET') > 0){
+        window.navigator.msSaveBlob(blob, name);
+    }
+    else{
+        var link = document.createElement("a");
+        link.setAttribute("href", window.URL.createObjectURL(blob));
+        link.setAttribute("download", name);
+        link.style = "visibility:hidden";
+        link.download = name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
+//---------------------------------------------
