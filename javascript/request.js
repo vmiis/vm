@@ -3,9 +3,9 @@ $vm.request=function(req,callback){
     $vm.sys_N++;
     $vm.sys_token="guest|where|when|scode";
     if($vm.debug_message===true){
-        console.log(' ');
-        console.log(req.cmd+'('+$vm.sys_N+') TO ');
-        console.dir(req);
+        //console.log(' ');
+        console.log(req.cmd+'('+$vm.sys_N+') TO ',req);
+        //console.dir(req);
     }
     var dt1=new Date().getTime();
     $vm.ajax_server_error=0;
@@ -24,9 +24,9 @@ $vm.request=function(req,callback){
         success: function(c,textStatus, request){
             var dt2=new Date().getTime();
             if($vm.debug_message===true){
-                console.log(' ');
-                console.log(req.cmd+'('+$vm.sys_N+') FROM '+" --- "+(dt2-dt1).toString()+"ms");
-                console.dir(c);
+                //console.log(' ');
+                console.log(req.cmd+'('+$vm.sys_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms",c);
+                //console.dir(c);
             }
             if($vm.ajax_server_error==1) return;
             try{
