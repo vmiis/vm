@@ -4,7 +4,7 @@ $vm.request=function(req,callback){
     $vm.sys_token="guest|where|when|scode";
     if($vm.debug_message===true){
         //console.log(' ');
-        console.log(req.cmd+'('+$vm.sys_N+') TO ',req);
+        console.log("%c"+req.cmd+'('+$vm.sys_N+') TO ',"color:yellow",req);
         //console.dir(req);
     }
     var dt1=new Date().getTime();
@@ -25,7 +25,8 @@ $vm.request=function(req,callback){
             var dt2=new Date().getTime();
             if($vm.debug_message===true){
                 //console.log(' ');
-                console.log(req.cmd+'('+$vm.sys_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms",c);
+                if(c.status=='ok')  console.log("%c"+req.cmd+'('+$vm.sys_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms","color:lightgreen",c);
+                else                console.log("%c"+req.cmd+'('+$vm.sys_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms","color:red",c);
                 //console.dir(c);
             }
             if($vm.ajax_server_error==1) return;
