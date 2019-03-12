@@ -136,11 +136,12 @@ m.cell_process=function(){
             $(this).html("<u style='cursor:pointer'><i class='fa fa-pencil-square-o'></i></u>");
             $(this).find('u').on('click',function(){
                 m.form_I=row;
-                if($vm.module_list[m.form_module]===undefined){
+                var prefix=""; if(m.prefix!=undefined) prefix=m.prefix;
+                if($vm.module_list[prefix+m.form_module]===undefined){
                     alert('Can not find "'+m.form_module+'" in the module list');
                     return;
                 }
-                $vm.load_module(m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
+                $vm.load_module(prefix+m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
             })
         }
         //-------------------------
@@ -309,7 +310,8 @@ m.handleFileSelect=function(evt){
     }
 
     if($vm.module_list[m.form_module].id==undefined){
-        $vm.load_module(m.form_module,"hidden",{})
+        var prefix=""; if(m.prefix!=undefined) prefix=m.prefix;
+        $vm.load_module(prefix+m.form_module,"hidden",{})
     }
     var I=0;
     var loop__ID=setInterval(function (){
@@ -347,7 +349,8 @@ $('#new__ID').on('click', function(){
         return;
     }
     if(m.form_module!=undefined){
-        $vm.load_module(m.form_module,'',{goback:1});
+        var prefix=""; if(m.prefix!=undefined) prefix=m.prefix;
+        $vm.load_module(prefix+m.form_module,'',{goback:1});
         return;
     }
     if(m.new_process!=undefined){
