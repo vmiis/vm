@@ -1,5 +1,6 @@
 //-------------------------------------
 var m=$vm.module_list['__MODULE__'];
+if(m.prefix==undefined) m.prefix="";
 m.query={};
 m.sort={_id:-1}
 m.projection={}
