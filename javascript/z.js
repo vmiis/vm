@@ -105,8 +105,8 @@ $vm.autocomplete_s=function($input,sql,autocomplete_list,callback){
     return $input.autocomplete({
         minLength:0,
         source:function(request,response){
-            $VmAPI.request({data:{cmd:'auto',s1:request.term,sql:sql,minLength:0},callback:function(res){
-                response(autocomplete_list(res.table));
+            $VmAPI.request({data:{cmd:'read',qid:$vm.qid,s1:request.term,sql:sql,minLength:0},callback:function(res){
+                response(autocomplete_list(res.records));
             }});
         },
         select: function(event,ui){
@@ -114,20 +114,6 @@ $vm.autocomplete_s=function($input,sql,autocomplete_list,callback){
                 callback(ui.item);
             }
         }
-        /*
-        select: function(event,ui){
-            if(callback!=undefined){
-                callback(field+'_uid',ui.item.value2);
-                for(key in ui.item){
-                    if(key.indexOf('field_')!==-1){
-                        var k=key.replace('field_','')
-                        var v=ui.item[key];
-                        callback(k,v);
-                    }
-                }
-            }
-        }
-        */
     })
 }
 //-------------------------------------
