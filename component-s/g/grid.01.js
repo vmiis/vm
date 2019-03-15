@@ -1,5 +1,6 @@
 //-------------------------------------
 var m=$vm.module_list['__MODULE__'];
+if(m.prefix==undefined) m.prefix="";
 //-------------------------------------
 /*
 if($vm.module==undefined) $vm.module={};
@@ -119,11 +120,11 @@ m.cell_process=function(){
             $(this).html("<u style='cursor:pointer'><i class='fa fa-pencil-square-o'></i></u>");
             $(this).find('u').on('click',function(){
                 m.form_I=row;
-                if($vm.module_list[m.form_module]===undefined){
+                if($vm.module_list[m.prefix+m.form_module]===undefined){
                     alert('Can not find "'+m.form_module+'" in the module list');
                     return;
                 }
-                $vm.load_module(m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
+                $vm.load_module(m.prefix+m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
             })
         }
         //-------------------------
@@ -137,7 +138,7 @@ m.cell_process=function(){
                     alert('Can not find "'+m.form_module2+'" in the module list');
                     return;
                 }
-                $vm.load_module(m.form_module2,$vm.root_layout_content_slot,{record:m.records[I]});
+                $vm.load_module(m.prefix+m.form_module2,$vm.root_layout_content_slot,{record:m.records[I]});
             })
         }
         //-------------------------
@@ -329,11 +330,11 @@ $('#new__ID').on('click', function(){
         return;
     }
     if(m.form_module2!=undefined){
-        $vm.load_module(m.form_module2,'',{goback:1});
+        $vm.load_module(m.prefix+m.form_module2,'',{goback:1});
         return;
     }
     else if(m.form_module!=undefined){
-        $vm.load_module(m.form_module,'',{goback:1});
+        $vm.load_module(m.prefix+m.form_module,'',{goback:1});
         return;
     }
     /*
