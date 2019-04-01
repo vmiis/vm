@@ -1,6 +1,7 @@
 //-------------------------------------
 var m=$vm.module_list['__MODULE__'];
 if(m.prefix==undefined) m.prefix="";
+m.endpoint=$vm.o365.organizationURI;
 m.query={};
 m.sort={_id:-1}
 m.projection={}
@@ -78,7 +79,7 @@ m.set_req=function(){
 m.request_data=function(){
     function retrieveData(error, token){
         var req = new XMLHttpRequest()  
-        req.open("GET", encodeURI($vm.o365.organizationURI + m.req), true);  
+        req.open("GET", encodeURI(m.endpoint + m.req), true);  
         //Set Bearer token  
         req.setRequestHeader("Authorization", "Bearer " + token);  
         req.setRequestHeader("Accept", "application/json");  
@@ -107,7 +108,7 @@ m.request_data=function(){
         var mt1=new Date().getTime();
         req.send(); 
     }
-    $vm.o365.authContext.acquireToken($vm.o365.organizationURI, retrieveData);  
+    $vm.o365.authContext.acquireToken(m.endpoint, retrieveData);  
 }
 //-------------------------------------
 m.render=function(){
