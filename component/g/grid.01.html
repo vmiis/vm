@@ -3,7 +3,7 @@
 	    	<div id=row_1__ID>
 					<button id=info__ID type=button class='btn btn-secondary' title='Add new' style='display:none'><i class="fa fa-info"></i></button>
 		        	<button id=new__ID  type=button class='btn btn-secondary' title='Add new'><i class="fa fa-plus"></i></button>
-					<input id=keyword__ID type="text" placeholder="keyword" class="form-control" style="width: 150px; display:inline-block;">
+					<input id=keyword__ID type="text" placeholder="keyword" class="form-control">
 					<button id=query__ID type=button class="btn btn-secondary" title='Search for keyword'><i class="fa fa-search" ></i></button>
 	    	</div>
 	    	<div>
@@ -13,7 +13,7 @@
 		            <button id=p__ID type=button class="btn btn-secondary" title="Previous page"><i class="fa fa-arrow-left"></i></button>
 		            <button id=n__ID type=button class="btn btn-secondary" title="Next page"><i class="fa fa-arrow-right"></i></button>
 	    	</div>
-			<div id=import_export_section__ID>
+			<div id=import_export_section__ID class="d-none d-sm-block">
 					<button id=export__ID type=button class="btn btn-secondary" title=Export><i class="fa fa-download" ></i></button>
 					<button id=import__ID type=button class="btn btn-secondary" title=Import><i class="fa fa-upload" ></i></button>
 					<input id=Import_f__ID type=file style='display:none' />
@@ -34,6 +34,10 @@
 	#toolbar__ID *{
 		margin-right:3px;
 	}
+	#keyword__ID{
+		width: 150px; 
+		display:inline-block;
+	}
 	@media screen and (max-width:768px){
 		#toolbar__ID{
 			padding: 3px 0;
@@ -43,6 +47,10 @@
 		}
 		#row_1__ID{
 			padding-bottom: 3px;
+			width:100%;
+		}
+		#keyword__ID{
+			width:auto;
 		}
 	}
 </style>
