@@ -323,13 +323,8 @@ $vm.load_component=function(name,div){
 	var http127=0;
 	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1) http127=1;
 	var create_and_run=function(txt,div){
-
-//alert(url)		
 		var last_part=url.split('/').pop();
-//alert(last_part)		
 		var c_path=url.replace(last_part,'');
-//alert(c_path)		
-	
 		txt=txt.replace(/__CURRENT_PATH__/g,c_path);
 		var id=$vm.id();
 		txt=txt.replace(/__ID/g, id);
@@ -342,6 +337,7 @@ $vm.load_component=function(name,div){
 				alert(err+"\r\nThis error happend in the module\r\n"+url);
 			}
 		}
+		$('#D'+id).triggerHandler('load');
 	}
 	if(ver!=$vm.ver[0] || http127==1 || txt==null || $vm.reload!='' || reload==1){
 		$.get(url+'?_='+new Date().getTime(),function(new_txt){
@@ -962,6 +958,46 @@ $vm.open_s3_url_s=function(rid,filename,minutes){
         link.click();
         document.body.removeChild(link);
     }});
+}
+//---------------------------------------------
+$vm.get_image_url=function(tag,record,expires,callback){
+    var modified=record.Update_date;
+       if(modified==undefined) modified=record.Submit_date;
+    
+    var filename=record.Data[tag];
+    if(filename==undefined || filename==""){
+        callback('');
+        return;
+    }
+    var img_id='img_'+tag+'_'+record._id;
+    if($vm[img_id]!=undefined) callback($vm[img_id]);
+    else{
+        var img_url				=localStorage.getItem(img_id+"_url");
+        var img_last_load_date	=localStorage.getItem(img_id+"_last_load_date");
+        var img_modified		=localStorage.getItem(img_id+"_modified");
+        var D1=new Date();
+        var D0=new Date(img_last_load_date);
+        var dif=D1.getTime()-D0.getTime();
+        dif=dif/1000/3600/24;
+        if(img_url!==null && dif<6 && img_modified==modified){
+            $vm[img_id]=img_url;
+            callback($vm[img_id]);
+        }
+        else{
+            var url=record.Table+"/"+record.UID+"-"+tag+"-"+filename;
+            $vm.request({cmd:"s3_download_url",id:record._id,table:record.Table,filename:filename,url:url,expires:expires},function(res){
+                if(res.status=="np"){
+                    callback('');
+                    return;
+                }
+                localStorage.setItem(img_id+"_url",res.result);
+                localStorage.setItem(img_id+"_last_load_date",new Date().toString());
+                localStorage.setItem(img_id+"_modified",modified);
+                $vm[img_id]=res.result;
+                callback($vm[img_id]);
+            });
+        }
+    }
 }
 //---------------------------------------------
 //--------------------------------------------------------

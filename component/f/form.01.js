@@ -69,8 +69,9 @@ m.set_image_url=function(tag){
             $obj.attr('src',img_url);
         }
         else{
+            var expires=7*24*3600;
             var url=record.Table+"/"+record.UID+"-"+tag+"-"+filename;
-            $vm.request({cmd:"s3_download_url",id:record._id,table:record.Table,filename:filename,url:url},function(res){
+            $vm.request({cmd:"s3_download_url",id:record._id,table:record.Table,filename:filename,url:url,expires:expires},function(res){
                 if(res.status=="np"){
                     alert("No permission.")
                     return;

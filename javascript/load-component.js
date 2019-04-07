@@ -29,6 +29,7 @@ $vm.load_component=function(name,div){
 				alert(err+"\r\nThis error happend in the module\r\n"+url);
 			}
 		}
+		$('#D'+id).triggerHandler('load');
 	}
 	if(ver!=$vm.ver[0] || http127==1 || txt==null || $vm.reload!='' || reload==1){
 		$.get(url+'?_='+new Date().getTime(),function(new_txt){
