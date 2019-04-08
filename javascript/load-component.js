@@ -88,7 +88,7 @@ $vm.load_component=function(name,div){
 	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1) http127=1;
 	//-----------------------------------
 	var create_and_run=function(txt,div){
-		if(txt.indexOf('VmInclude:')==-1) $vm.create_component_and_run(txt,url,div),name;
+		if(txt.indexOf('VmInclude:')==-1) $vm.create_component_and_run(txt,url,div,name);
 		else $vm.process_component_include_and_run(txt,url,div,name); //Step A
 	}
 	//-----------------------------------

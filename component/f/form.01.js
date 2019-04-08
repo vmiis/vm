@@ -1,6 +1,7 @@
 //-------------------------------------
 var m=$vm.module_list['__MODULE__'];
 if(m.prefix==undefined) m.prefix="";
+m.change_status=0;
 //-------------------------------------
 m.load=function(){
     $('#D__ID').scrollTop(0);
@@ -132,6 +133,8 @@ m.submit=function(event){
                     m.after_insert(data,res); return;
                 }
                 $vm.refresh=1;
+                //if(m.change_status==undefined) m.change_status=0;
+                m.change_status++;
                 if(m.input.goback!=undefined) window.history.go(-1);            //from grid
                 else $vm.alert('Your data has been successfully submitted');    //standalone
             }
@@ -167,6 +170,8 @@ m.submit=function(event){
                     m.after_update(data,res); return;
                 }
                 $vm.refresh=1;
+                //if(m.change_status==undefined) m.change_status=0;
+                m.change_status++;
                 if(rid!=undefined) window.history.go(-1);                       //modify
             }
             //-----------------------------
@@ -208,6 +213,8 @@ $('#delete__ID').on('click', function(){
             }
             //-------------------------------
             $vm.refresh=1;
+            //if(m.change_status==undefined) m.change_status=0;
+            m.change_status++;
             window.history.go(-1);
         });
     }

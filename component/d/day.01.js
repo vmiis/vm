@@ -1,5 +1,7 @@
 //---------------------------------------------
 var m=$vm.module_list['__MODULE__'];
+if(m.prefix==undefined) m.prefix="";
+m.change_status=0;
 m.ref=0
 //---------------------------------------------
 $('#previous__ID').on('click',function(){   m.ref--;	m.set_ref();	m.request_and_render();	})
