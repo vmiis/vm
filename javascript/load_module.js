@@ -269,7 +269,7 @@ $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
 		console.log('loading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
 		$.get(new_url, function(data){
 			var c_m=$("<p>"+data+"</p>").filter('#D__ID').html();
-			if(c_m!=undefined && c_m!='' && c_n!=null){ data=c_m;}
+			if(c_m!=undefined && c_m!='' && c_m!=null){ data=c_m;}
 			if(items.length>1){
 				for(var kk=0;kk<(items.length-1)/2;kk++){
 					var k1=2*kk+1;
