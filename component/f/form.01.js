@@ -8,8 +8,8 @@ m.load=function(){
     $(window).scrollTop(0);
     $('#F__ID')[0].reset();
     $('#submit__ID').show();
-    $('#delete__ID').hide(); if(m.input.record!=undefined && m.input.record._id!==undefined) $('#delete__ID').show();
-    $vm.deserialize(m.input.record,'#F__ID');
+    $('#delete__ID').hide(); if(m.input!=undefined && m.input.record!=undefined && m.input.record._id!==undefined) $('#delete__ID').show();
+    if(m.input!=undefined) $vm.deserialize(m.input.record,'#F__ID');
 }
 //-------------------------------
 m.set_file_link=function(tag){
@@ -100,7 +100,7 @@ m.submit=function(event){
     var data={};
     var index={};
     var data_new=$vm.serialize('#F__ID');
-    if(m.input.record!=undefined){
+    if(m.input!=undefined && m.input.record!=undefined){
         for(k in m.input.record.Data){
             data[k]=m.input.record.Data[k];
         }
@@ -117,12 +117,12 @@ m.submit=function(event){
     if(m.before_submit!=undefined) r=m.before_submit(data,index);
     if(r==false){$('#submit__ID').show(); return;}
     //--------------------------------------------------------
-    var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
+    var rid=undefined; if(m.input!=undefined && m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
         $vm.request({cmd:"insert",table:m.Table,data:data,index:index,file:file},function(res){
             if(res.status=="np"){
                 alert("No permission to insert a new record in to the database.");
-                if(m.input.goback!=undefined){
+                if(m.input!=undefined && m.input.goback!=undefined){
                     $vm.refresh=1;
                     window.history.go(-1);       //from grid
                 }
