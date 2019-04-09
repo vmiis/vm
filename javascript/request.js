@@ -4,7 +4,7 @@ $vm.request=function(req,callback){
     $vm.sys_token="guest|where|when|scode";
     if($vm.debug_message===true){
         //console.log(' ');
-        console.log("%c"+req.cmd+'('+$vm.sys_N+') TO ',"color:yellow",req);
+        console.log("%c"+req.cmd+'('+$vm.sys_N+') TO ',"color:orange",req);
         //console.dir(req);
     }
     var dt1=new Date().getTime();
