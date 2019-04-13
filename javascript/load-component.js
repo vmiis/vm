@@ -71,7 +71,7 @@ $vm.process_component_include_and_run=function(txt,url,div,m_name){
 	}
 }
 //------------------------------------------------
-$vm.load_component=function(name,div){
+$vm.load_component=function(name,div,input){
 	if($vm.module_list[name]===undefined){
 		alert("The module '"+name+"' is not in the module list.");
 		return;
@@ -81,6 +81,8 @@ $vm.load_component=function(name,div){
 		alert("The module '"+name+"' does not have url.");
 		return;
 	}
+	var m=$vm.module_list[name];
+	m.input=input;
 	var apppath=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
 	var ver=localStorage.getItem(apppath+url+"ver");
 	var txt=localStorage.getItem(apppath+url+"txt");

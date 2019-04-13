@@ -77,8 +77,8 @@ $vm.uploading_file=function(s3_upload_url,file,msg_id,callback){
     }
 }
 //---------------------------------------------
-$vm.open_s3_url=function(id,table,filename,url){
-    $vm.request({cmd:"s3_download_url",id:id,table:table,filename:filename,url:url},function(res){
+$vm.open_s3_url=function(id,table,filename,url,expires){
+    $vm.request({cmd:"s3_download_url",id:id,table:table,filename:filename,url:url,expires:expires},function(res){
         if(res.sys.permission==false){
             alert("No permission.")
             return;

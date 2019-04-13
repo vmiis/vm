@@ -45,7 +45,7 @@ m.request_data=function(){
 };
 //-------------------------------------
 $('#query__ID').on('click',function(){    m.set_req(); m.request_data(); })
-$('#D__ID').on('load',function(){  m.input=$vm.vm['__ID'].input; if(m.preload==true) return; if(m.load!=undefined) m.load(); m.set_req(); m.request_data(); })
+$('#D__ID').on('load',function(){  /*m.input=$vm.vm['__ID'].input;*/ if(m.preload==true) return; if(m.load!=undefined) m.load(); m.set_req(); m.request_data(); })
 $('#D__ID').on('show',function(){  if($vm.refresh==1){$vm.refresh=0; m.set_req(); m.request_data();} })
 //-------------------------------------
 m.start=function(){
