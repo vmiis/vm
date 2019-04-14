@@ -314,6 +314,7 @@ $vm.create_component_and_run=function(txt,url,div,m_name){
 	var id=$vm.id();
 	txt=txt.replace(/__ID/g, id);
 	txt=txt.replace(/__MODULE__/g, m_name);	
+	txt=$vm.url(txt);
 	$('#'+div).html(txt);
 	if (typeof window['F'+id] == 'function') {
 		try{
