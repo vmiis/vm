@@ -1222,10 +1222,11 @@ $vm.source=function(module_id,event){
 					if($vm.module_list["sys_code_viewer"]==undefined){
 						$vm.module_list["sys_code_viewer"]={url:url}
 					}
-					var msg=module_url;
-					if($vm.module_list[nm]['App']!=undefined && $vm.module_list[nm]['Table']!=undefined){
-						msg=msg+ " - "+$vm.module_list[nm]['App']+"/"+$vm.module_list[nm]['Table'];
-					}
+					var msg="No."+module_id.replace('_','')+",  Name:"+nm;
+					if($vm.module_list[nm]['Table']!=undefined){
+						msg+=",  Table:"+$vm.module_list[nm]['Table'];
+                    }
+                    msg+=",  Url:"+module_url
 					$vm.load_module("sys_code_viewer",'',{code:data,msg:msg});
 				}
 			})
