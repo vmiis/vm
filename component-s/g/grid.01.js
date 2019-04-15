@@ -121,7 +121,7 @@ m.cell_process=function(){
             $(this).find('u').on('click',function(){
                 m.form_I=row;
                 if($vm.module_list[m.prefix+m.form_module]===undefined){
-                    alert('Can not find "'+m.form_module+'" in the module list');
+                    alert('Can not find "'+m.prefix+m.form_module+'" in the module list');
                     return;
                 }
                 $vm.load_module(m.prefix+m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});

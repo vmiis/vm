@@ -91,7 +91,7 @@ $vm.date_to_ddmmyyyy=function(d){
 }
 //----------------------------------------------
 //----------------------------------------------
-$vm.ddmmyyyy_to_yyyymmdd=function(d){
+$vm.yyyymmdd_to_ddmmyyyy=function(d){
 	if(d==undefined || d==null || d=="" )  return '';
     var ds=d.toString().split('-');
     if(ds.length!=3) ds=d.toString().split('/');
