@@ -22,6 +22,7 @@ m.request_data=function(){
     if(m.cmd_type=='s') c_cmd='count-s';
     else if(m.cmd_type=='p1') c_cmd='count-p1';
     else if(m.cmd_type=='p2') c_cmd='count-p2';
+    else if(m.cmd_type=='table') c_cmd='count-table';
     $vm.request({cmd:c_cmd,table:m.Table,query:m.query,I1:m.I1,search:$('#keyword__ID').val()},function(res){
         if(res.status=='np'){
             res.result=0;
@@ -38,6 +39,7 @@ m.request_data=function(){
     if(m.cmd_type=='s') f_cmd='find-s';
     else if(m.cmd_type=='p1') f_cmd='find-p1';
     else if(m.cmd_type=='p2') f_cmd='find-p2';
+    else if(m.cmd_type=='table') f_cmd='find-table';
     $vm.request({cmd:f_cmd,table:m.Table,I1:m.I1,query:m.query,sort:m.sort,projection:m.projection,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
         var mt2=new Date().getTime();
         var tt_all=mt2-mt1;
@@ -193,7 +195,9 @@ m.create_header=function(){
 }
 //-------------------------------------
 m.delete=function(rid){
-    $vm.request({cmd:"delete",id:rid,table:m.Table},function(res){
+    var d_cmd="delete";
+    if(m.cmd_type=='table') d_cmd='delete-table';
+    $vm.request({cmd:d_cmd,id:rid,table:m.Table},function(res){
         //-----------------------------
         if(res.status=="lk"){
             $vm.alert("This record is locked.");

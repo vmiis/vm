@@ -119,7 +119,9 @@ m.submit=function(event){
     //--------------------------------------------------------
     var rid=undefined; if(m.input!=undefined && m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
-        $vm.request({cmd:"insert",table:m.Table,data:data,index:index,file:file},function(res){
+        var i_cmd="insert";
+        if(m.cmd_type=='table') i_cmd='insert-table';
+        $vm.request({cmd:i_cmd,table:m.Table,data:data,index:index,file:file},function(res){
             if(res.status=="np"){
                 alert("No permission to insert a new record in to the database.");
                 if(m.input!=undefined && m.input.goback!=undefined){
@@ -153,6 +155,7 @@ m.submit=function(event){
         var cmd="update";
         if(m.cmd_type=='p1') cmd='update-p1';
         if(m.cmd_type=='p2') cmd='update-p2';
+        if(m.cmd_type=='table') cmd='update-table';
         $vm.request({cmd:cmd,id:rid,table:m.Table,data:data,index:index,file:file},function(res){
             //-----------------------------
             if(res.status=="lk"){
@@ -195,7 +198,9 @@ $('#delete__ID').on('click', function(){
     var record=m.input.record;    if(record==undefined) return;
     var rid=record._id;           if(rid==undefined)    return;
     if(confirm("Are you sure to delete?\n")){
-        $vm.request({cmd:"delete",id:rid,table:m.Table},function(res){
+        var d_cmd="delete";
+        if(m.cmd_type=='table') cmd='delete-table';
+        $vm.request({cmd:d_cmd,id:rid,table:m.Table},function(res){
             //-----------------------------
             if(res.status=="lk"){
                 $vm.alert("This record is locked.");
