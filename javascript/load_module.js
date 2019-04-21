@@ -158,6 +158,7 @@ $vm.insert_and_trigger_load=function(module_id,slot,m_name){
 	if(slot!="body"){
 		$vm.insert_module({module_id:module_id,slot:slot,m_name:m_name});
 		$('#D'+module_id).triggerHandler('load');
+		window.scrollTo(0,0);
 	}
 	$('#vm_loader').hide();
 }
