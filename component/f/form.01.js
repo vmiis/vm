@@ -4,8 +4,8 @@ if(m.prefix==undefined) m.prefix="";
 m.change_status=0;
 //-------------------------------------
 m.load=function(){
-    $('#D__ID').scrollTop(0);
-    $(window).scrollTop(0);
+    //$('#D__ID').scrollTop(0);
+    //$(window).scrollTop(0);
     $('#F__ID')[0].reset();
     $('#submit__ID').show();
     $('#delete__ID').hide(); if(m.input!=undefined && m.input.record!=undefined && m.input.record._id!==undefined) $('#delete__ID').show();
