@@ -1399,7 +1399,7 @@ $vm.download_csv=function(fn,data){
             var v="";
             var id=ids[j];
             if(data[i][id]!==undefined) v=data[i][id];
-            v=v.toString().replace(/"/g,''); //remove "  ???
+            if(v!=null) v=v.toString().replace(/"/g,''); //remove "  ???
             row+='"'+v+'"';
         }
         row+="\r\n";
