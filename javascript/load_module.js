@@ -225,6 +225,7 @@ $vm.insert_module=function(options){
     window.history.pushState({m_name:options.m_name,ID:module_id,slot:slot,index:$vm.page_stack_index}, null, pp);
 	//if($vm.change_meta!=undefined){ $vm.change_meta(module_id); }
 	if($vm.show!=undefined){ $vm.show(options.m_name); }
+	else if($vm.first_module==undefined) $vm.first_module=options.m_name;
 //    console.log($vm.page_stack)
     //=====================================
     return;
