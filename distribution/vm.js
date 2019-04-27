@@ -315,7 +315,7 @@ $vm.create_component_and_run=function(txt,url,div,m_name){
 	txt=txt.replace(/__ID/g, id);
 	txt=txt.replace(/__MODULE__/g, m_name);	
 	txt=$vm.url(txt);
-	$('#'+div).html(txt);
+	$('#'+div).append(txt);
 	if (typeof window['F'+id] == 'function') {
 		try{
 			eval('F'+id+"()");
@@ -324,6 +324,7 @@ $vm.create_component_and_run=function(txt,url,div,m_name){
 			alert(err+"\r\nThis error happend in the module\r\n"+url);
 		}
 	}
+	$('#D'+id).attr('module',m_name);
 	$('#D'+id).triggerHandler('load');
 }
 //------------------------------------------------
