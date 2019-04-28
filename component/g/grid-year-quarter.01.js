@@ -15,6 +15,7 @@ for(var i=0;i<4;i++){
 $List2.val( Math.floor((new Date().getMonth())/3) + 1);
 //-------------------------------------
 var m=$vm.module_list['__MODULE__'];
+if(m.prefix==undefined) m.prefix="";
 m.query={};
 m.sort={I1: -1}
 m.options={};
@@ -143,11 +144,12 @@ m.cell_process=function(){
             $(this).html("<u style='cursor:pointer'><i class='fa fa-pencil-square-o'></i></u>");
             $(this).find('u').on('click',function(){
                 m.form_I=row;
-                if($vm.module_list[m.form_module]===undefined){
+                var prefix=""; if(m.prefix!=undefined) prefix=m.prefix;
+                if($vm.module_list[prefix+m.form_module]===undefined){
                     alert('Can not find "'+m.form_module+'" in the module list');
                     return;
                 }
-                $vm.load_module(m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
+                $vm.load_module(prefix+m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
             })
         }
         //-------------------------
@@ -302,8 +304,10 @@ m.handleFileSelect=function(evt){
     }
 
     if($vm.module_list[m.form_module].id==undefined){
-        $vm.load_module(m.form_module,"hidden",{})
+        var prefix=""; if(m.prefix!=undefined) prefix=m.prefix;
+        $vm.load_module(prefix+m.form_module,"hidden",{})
     }
+
     var I=0;
     var loop__ID=setInterval(function (){
         if($vm.module_list[m.form_module].submit!=undefined){
@@ -340,7 +344,8 @@ $('#new__ID').on('click', function(){
         return;
     }
     if(m.form_module!=undefined){
-        $vm.load_module(m.form_module,'',{goback:1});
+        var prefix=""; if(m.prefix!=undefined) prefix=m.prefix;
+        $vm.load_module(prefix+m.form_module,'',{goback:1});
         return;
     }
     if(m.new_process!=undefined){
@@ -361,7 +366,17 @@ $('#new__ID').on('click', function(){
     m.render(0);
 });
 $('#D__ID').on('load',function(){  m.input=$vm.vm['__ID'].input; if(m.preload==true) return; if(m.load!=undefined) m.load(); m.set_req(); m.request_data(); })
-$('#D__ID').on('show',function(){  if($vm.refresh==1){$vm.refresh=0; m.set_req(); m.request_data();} })
+$('#D__ID').on('show',function(){  
+    if($vm.module_list[m.prefix+m.form_module]!=undefined){
+        var s=$vm.module_list[m.prefix+m.form_module].change_status;
+        if(m.change_status!=s){
+            m.change_status=s;
+            m.set_req(); 
+            m.request_data();
+        }
+    }
+    //if($vm.refresh==1){$vm.refresh=0; m.set_req(); m.request_data();} 
+})
 //-----------------------------------------------
 m.set_file_link=function(records,I,field,td){
     var filename=records[I].Data[field];
