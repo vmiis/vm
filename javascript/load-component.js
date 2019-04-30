@@ -96,6 +96,10 @@ $vm.load_component=function(name,div,input){
 		else $vm.process_component_include_and_run(txt,url,div,name); //Step A
 	}
 	//-----------------------------------
+	var reload=0;
+	if(window.location.toString().indexOf('reload='+name)!=-1){
+		reload=1;
+	}
 	if(ver!=$vm.ver[0] || http127==1 || txt==null || $vm.reload!='' || reload==1){
 		$.get(url+'?_='+new Date().getTime(),function(new_txt){
 			localStorage.setItem(apppath+url+"txt",new_txt);
