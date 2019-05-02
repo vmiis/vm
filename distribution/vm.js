@@ -430,8 +430,11 @@ $vm.id=function(){
 }
 //------------------------------------------------------------------
 $vm.load_content=function(name,slot,input,content){
-	if(slot=='') slot=$vm.root_layout_content_slot;
 	var url=$vm.module_list[name]['url'];
+	var apppath=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
+	localStorage.setItem(apppath+url+"_txt",content);
+
+	if(slot=='') slot=$vm.root_layout_content_slot;
 	var id=$vm.module_list[name].id;
 	if(id==undefined) id=$vm.id();
 	$vm.module_list[name].id=id;
