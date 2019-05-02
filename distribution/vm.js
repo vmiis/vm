@@ -429,6 +429,23 @@ $vm.id=function(){
 	return "_"+$vm._id.toString();
 }
 //------------------------------------------------------------------
+$vm.load_content=function(name,slot,input,content){
+	if(slot=='') slot=$vm.root_layout_content_slot;
+	var url=$vm.module_list[name]['url'];
+	var id=$vm.module_list[name].id;
+	if(id==undefined) id=$vm.id();
+	$vm.module_list[name].id=id;
+	$vm.vm[id]={};
+	$vm.vm[id].current_path=url;
+	if(content.indexOf('VmInclude:')==-1){
+		$vm.create_module_and_run_code(content,id,url,slot,name);
+		$vm.insert_and_trigger_load(id,slot,name);
+	}
+	else{
+		$vm.process_first_include(content,id,slot,url,name);
+	}
+}
+//------------------------------------------------------------------
 _g_current_path='';
 $vm.load_module=function(name,slot,input){
     if(name==undefined) return;
