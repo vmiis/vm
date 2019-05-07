@@ -1,7 +1,7 @@
 //-------------------------------------
 var m=$vm.module_list['__MODULE__'];
 if(m.prefix==undefined) m.prefix="";
-m.endpoint=$vm.o365.organizationURI;
+m.endpoint=$vm.m365.organizationURI;
 m.query={};
 m.sort={_id:-1}
 m.projection={}
@@ -108,7 +108,7 @@ m.request_data=function(){
         var mt1=new Date().getTime();
         req.send(); 
     }
-    $vm.o365.authContext.acquireToken(m.endpoint, retrieveData);  
+    $vm.m365.authContext.acquireToken(m.endpoint, retrieveData);  
 }
 //-------------------------------------
 m.render=function(){

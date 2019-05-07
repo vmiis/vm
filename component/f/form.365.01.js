@@ -1,6 +1,7 @@
 //-------------------------------------
 var m=$vm.module_list['__MODULE__'];
 if(m.prefix==undefined) m.prefix="";
+m.endpoint=$vm.m365.organizationURI;
 //-------------------------------------
 m.load=function(){
     $('#D__ID').scrollTop(0);
@@ -205,7 +206,7 @@ m.submit=function(event){
     if(rid==undefined){
         var addData=function(error, token){
             var req = new XMLHttpRequest()  
-            req.open("POST", encodeURI($vm.o365.organizationURI + m.req), true);  
+            req.open("POST", encodeURI(m.endpoint + m.req), true);  
             //Set Bearer token  
             req.setRequestHeader("Authorization", "Bearer " + token);  
             req.setRequestHeader("Accept", "application/json");  
@@ -226,7 +227,7 @@ m.submit=function(event){
                     }  
                     else {  
                         var error = JSON.parse(this.response).error;  
-                        console.log(error.message);  
+                        if(error!=undefined) console.log(error.message);  
                     }  
                 }  
             };  
@@ -234,19 +235,22 @@ m.submit=function(event){
             var d=JSON.stringify(data)
             req.send(d); 
         }
-        m.req="/api/data/v9.1/"+m.Table;
-        $vm.o365.authContext.acquireToken($vm.o365.organizationURI, addData);
+        //m.req="/api/data/v9.1/"+m.Table;
+        $vm.m365.authContext.acquireToken(m.endpoint, addData);
     }
     else if(rid!=undefined){
         var modifyData=function(error, token){
             var req = new XMLHttpRequest()  
-            req.open("PATCH", encodeURI($vm.o365.organizationURI + m.req), true);  
+            req.open("PATCH", encodeURI(m.endpoint + m.req), true);  
+            //req.open("POST", encodeURI(m.endpoint + m.req), true);  
             //Set Bearer token  
             req.setRequestHeader("Authorization", "Bearer " + token);  
             req.setRequestHeader("Accept", "application/json");  
             req.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
             req.setRequestHeader("OData-MaxVersion", "4.0");  
             req.setRequestHeader("OData-Version", "4.0");  
+            req.setRequestHeader("IF-MATCH", "*");  
+            
             req.onreadystatechange = function () {  
                 if (this.readyState == 4 /* complete */) {  
                     req.onreadystatechange = null;  
@@ -274,8 +278,8 @@ m.submit=function(event){
             var d=JSON.stringify(data)
             req.send(d); 
         }
-        m.req="/api/data/v9.1/"+m.Table+"("+m.input.record._id+")";
-        $vm.o365.authContext.acquireToken($vm.o365.organizationURI, modifyData);
+        //m.req="/api/data/v9.1/"+m.Table+"("+m.input.record._id+")";
+        $vm.m365.authContext.acquireToken(m.endpoint, modifyData);
     }
 }
 //--------------------------------------------------------
