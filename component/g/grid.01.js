@@ -221,7 +221,7 @@ m.delete=function(rid){
 };
 //-------------------------------
 m.export_records=function(){
-    var req={cmd:"export",table:m.Table,search:$('#keyword__ID').val()}
+    var req={cmd:"export",table:m.Table,I1:m.I1,search:$('#keyword__ID').val()}
     open_model__ID();
     $vm.request(req,function(N,i,txt){
         console.log(i+"/"+N);
