@@ -1,7 +1,7 @@
 //-------------------------------------
 var m=$vm.module_list['__MODULE__'];
 if(m.prefix==undefined) m.prefix="";
-m.endpoint=$vm.m365.organizationURI;
+//m.endpoint=$vm.m365.organizationURI;
 m.query={};
 m.sort={_id:-1}
 m.projection={}
@@ -77,6 +77,7 @@ m.set_req=function(){
 };
 //-------------------------------------
 m.request_data=function(){
+    /*
     function retrieveData(error, token){
         var req = new XMLHttpRequest()  
         req.open("GET", encodeURI(m.endpoint + m.req), true);  
@@ -87,7 +88,7 @@ m.request_data=function(){
         req.setRequestHeader("OData-MaxVersion", "4.0");  
         req.setRequestHeader("OData-Version", "4.0");  
         req.onreadystatechange = function () {  
-            if (this.readyState == 4 /* complete */) {  
+            if (this.readyState == 4 ) {  
                 req.onreadystatechange = null;  
                 if (this.status == 200) {  
                     var data = JSON.parse(this.response).value;  
@@ -109,6 +110,27 @@ m.request_data=function(){
         req.send(); 
     }
     $vm.m365.authContext.acquireToken(m.endpoint, retrieveData);  
+    */
+    $vm.m365_msal.acquireTokenSilent($vm.m365_scope).then(function (tokenResponse) {
+        var mt1=new Date().getTime();
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200){
+                //callback(JSON.parse(this.responseText));
+                var data=JSON.parse(this.responseText);  
+                var mt2=new Date().getTime();
+                var tt_all=mt2-mt1;
+                $("#elapsed__ID").html( (this.response.length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms");
+                if(m.data_process!=undefined) m.data_process(data);
+                m.render();
+            }
+        }
+        xmlHttp.open("GET", m.endpoint, true); // true for asynchronous
+        xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
+        xmlHttp.send();
+    }).catch(function (error) {
+        console.log(error);
+    });
 }
 //-------------------------------------
 m.render=function(){
@@ -240,6 +262,7 @@ m.create_header=function(){
 }
 //-------------------------------------
 m.delete=function(rid){
+    /*
     $vm.request({cmd:"delete",id:rid,table:m.Table},function(res){
         //-----------------------------
         if(res.status=="lk"){
@@ -260,6 +283,27 @@ m.delete=function(rid){
         }
         after_delete(res);
     });
+    */
+    $vm.m365_msal.acquireTokenSilent($vm.m365_scope).then(function (tokenResponse) {
+        var mt1=new Date().getTime();
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 204){
+                var mt2=new Date().getTime();
+                var tt_all=mt2-mt1;
+                m.request_data();
+            }
+        }
+        xmlHttp.open("DELETE", m.endpoint_d+"/"+rid, true); // true for asynchronous
+        xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
+        xmlHttp.setRequestHeader("Accept", "application/json");  
+        xmlHttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
+        xmlHttp.send();
+    }).catch(function (error) {
+        console.log(error);
+    });
+
+
 };
 //-------------------------------
 /*
