@@ -73,13 +73,13 @@ $vm.process_component_include_and_run=function(txt,url,div,m_name){
 	}
 }
 //------------------------------------------------
-$vm.load_component=function(name,div,input){
-	if($vm.module_list[name]===undefined){
+$vm.load_component=function(name,div,input,dialog){
+	if($vm.module_list[name]===undefined && dialog==undefined){
 		alert("The module '"+name+"' is not in the module list.");
 		return;
 	}
 	var url=$vm.module_list[name].url;
-	if(url==undefined){
+	if(url==undefined && dialog==undefined){
 		alert("The module '"+name+"' does not have url.");
 		return;
 	}
