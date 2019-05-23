@@ -120,7 +120,7 @@ m.request_data=function(){
                 var data=JSON.parse(this.responseText);  
                 var mt2=new Date().getTime();
                 var tt_all=mt2-mt1;
-                $("#elapsed__ID").html( (this.response.length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms");
+                $("#_sys_dev_info_elapsed").html( (this.response.length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms");
                 if(m.data_process!=undefined) m.data_process(data);
                 m.render();
             }
