@@ -1,5 +1,6 @@
 window.onpopstate=function(event) {
-    //new ==========================================
+	//new ==========================================
+	if(event.state==undefined) return;
     var W_index=event.state.index;
     var V_index=0;
     var L=$vm.page_stack.length;

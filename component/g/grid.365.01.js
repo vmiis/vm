@@ -124,7 +124,15 @@ m.request_data=function(){
                 if(m.data_process!=undefined) m.data_process(data);
                 m.render();
             }
-        }
+            else if(this.readyState == 4 && this.status == 403){
+                $vm.alert("No permission");
+                callback({});
+            }
+            if(this.status == 404){
+                $vm.alert(m.endpoint+", 404 (Not found)");
+                callback({});
+            }
+}
         xmlHttp.open("GET", m.endpoint, true); // true for asynchronous
         xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
         xmlHttp.send();
