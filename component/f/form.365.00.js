@@ -201,15 +201,53 @@ m.submit=function(event){
         }
     }
     delete data[""];
-    var json={Data:JSON.stringify(data)}
-    //var json={JSON:data}
     //--------------------------------------------------------
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
+        /*
+        var addData=function(error, token){
+            var req = new XMLHttpRequest()  
+            req.open("POST", encodeURI(m.endpoint + m.req), true);  
+            //Set Bearer token  
+            req.setRequestHeader("Authorization", "Bearer " + token);  
+            req.setRequestHeader("Accept", "application/json");  
+            req.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
+            req.setRequestHeader("OData-MaxVersion", "4.0");  
+            req.setRequestHeader("OData-Version", "4.0");  
+            req.onreadystatechange = function () {  
+                if (this.readyState == 4 ) {  
+                    req.onreadystatechange = null;  
+                    if (this.status == 200) {  
+                    }  
+                    if (this.status == 204) {  
+                        var mt2=new Date().getTime();
+                        var tt_all=mt2-mt1;
+                        $vm.refresh=1;
+                        if(m.input.goback!=undefined) window.history.go(-1);            //from grid
+                        else $vm.alert('Your data has been successfully submitted');    //standalone
+                    }  
+                    else {  
+                        var error = JSON.parse(this.response).error;  
+                        if(error!=undefined) console.log(error.message);  
+                    }  
+                }  
+            };  
+            var mt1=new Date().getTime();
+            var d=JSON.stringify(data)
+            req.send(d); 
+        }
+        //m.req="/api/data/v9.1/"+m.Table;
+        $vm.m365.authContext.acquireToken(m.endpoint, addData);
+        */
         $vm.m365_msal.acquireTokenSilent($vm.m365_scope).then(function (tokenResponse) {
             var mt1=new Date().getTime();
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.onreadystatechange = function () {
+                /*
+                alert(1)
+                alert(this.status)
+                alert(this.readyState)
+                */
                 if (this.readyState == 4 && this.status == 201){
                     var mt2=new Date().getTime();
                     var tt_all=mt2-mt1;
@@ -222,7 +260,7 @@ m.submit=function(event){
             xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
             xmlHttp.setRequestHeader("Accept", "application/json");  
             xmlHttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
-            var ad={fields:json};
+            var ad={fields:data};
             var d=JSON.stringify(ad);
             xmlHttp.send(d);
         }).catch(function (error) {
@@ -230,6 +268,50 @@ m.submit=function(event){
         });
     }
     else if(rid!=undefined){
+        /*
+        var modifyData=function(error, token){
+            var req = new XMLHttpRequest()  
+            req.open("PATCH", encodeURI(m.endpoint + m.req), true);  
+            //req.open("POST", encodeURI(m.endpoint + m.req), true);  
+            //Set Bearer token  
+            req.setRequestHeader("Authorization", "Bearer " + token);  
+            req.setRequestHeader("Accept", "application/json");  
+            req.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
+            req.setRequestHeader("OData-MaxVersion", "4.0");  
+            req.setRequestHeader("OData-Version", "4.0");  
+            req.setRequestHeader("IF-MATCH", "*");  
+            
+            req.onreadystatechange = function () {  
+                if (this.readyState == 4 ) {  
+                    req.onreadystatechange = null;  
+                    if (this.status == 200) {  
+                        //var data = JSON.parse(this.response).value;  
+                        
+                        var mt2=new Date().getTime();
+                        var tt_all=mt2-mt1;
+                        
+                        //console.log(data);
+                    }  
+                    if (this.status == 204) {  
+                        var mt2=new Date().getTime();
+                        var tt_all=mt2-mt1;
+                        $vm.refresh=1;
+                        if(rid!=undefined) window.history.go(-1);     //modify
+                    }  
+                    else {  
+                        var error = JSON.parse(this.response).error;  
+                        console.log(error.message);  
+                    }  
+                }  
+            };  
+            var mt1=new Date().getTime();
+            var d=JSON.stringify(data)
+            req.send(d); 
+        }
+        //m.req="/api/data/v9.1/"+m.Table+"("+m.input.record._id+")";
+        $vm.m365.authContext.acquireToken(m.endpoint, modifyData);
+        */
+
         $vm.m365_msal.acquireTokenSilent($vm.m365_scope).then(function (tokenResponse) {
             var mt1=new Date().getTime();
             var xmlHttp = new XMLHttpRequest();
@@ -247,7 +329,7 @@ m.submit=function(event){
             xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
             xmlHttp.setRequestHeader("Accept", "application/json");  
             xmlHttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
-            var d=JSON.stringify(json);
+            var d=JSON.stringify(data);
             xmlHttp.send(d);
         }).catch(function (error) {
             console.log(error);
