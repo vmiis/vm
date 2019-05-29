@@ -39,7 +39,7 @@ $vm.load_component_include_and_run=function(lines,i,url,div,m_name){
 	var ver=localStorage.getItem(apppath+url+"ver");
 	var txt=localStorage.getItem(apppath+url+"txt");
 	var http127=0;
-	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1) http127=1;
+	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1 || url.indexOf('http://vmiis-local.com')!=-1) http127=1;
 	//------------------------------
 	if(ver!=$vm.ver[0] || http127==1 || txt==null || $vm.reload!=''){
 		var new_url=com_url+'?_v='+new Date().getTime();
@@ -89,7 +89,7 @@ $vm.load_component=function(name,div,input,dialog){
 	var ver=localStorage.getItem(apppath+url+"ver");
 	var txt=localStorage.getItem(apppath+url+"txt");
 	var http127=0;
-	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1) http127=1;
+	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1 || url.indexOf('http://vmiis-local.com')!=-1) http127=1;
 	//-----------------------------------
 	var create_and_run=function(txt,div){
 		if(txt.indexOf('VmInclude:')==-1) $vm.create_component_and_run(txt,url,div,name);

@@ -1,4 +1,12 @@
 //----------------------------------------------
+$vm.show_json_data=function(D){
+    var txt=JSON.stringify(D, null, '\t');
+    txt=txt.replace(/\n/g,"<br>");
+    txt=txt.replace(/\t/g,"&nbsp;&nbsp;&nbsp;&nbsp;");
+    var win=window.open("","JSON data");
+    win.document.body.innerHTML=txt+"<title>JSON data</title><style> body{ font-family:Courier New;font-size:12px; white-space: nowrap; } </style>";
+}
+//----------------------------------------------
 $vm.source=function(module_id,event){
 	if (event.altKey) {
 		if($vm.vm[module_id].url!==undefined){

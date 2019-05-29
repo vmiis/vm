@@ -348,7 +348,7 @@ $vm.load_component_include_and_run=function(lines,i,url,div,m_name){
 	var ver=localStorage.getItem(apppath+url+"ver");
 	var txt=localStorage.getItem(apppath+url+"txt");
 	var http127=0;
-	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1) http127=1;
+	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1 || url.indexOf('http://vmiis-local.com')!=-1) http127=1;
 	//------------------------------
 	if(ver!=$vm.ver[0] || http127==1 || txt==null || $vm.reload!=''){
 		var new_url=com_url+'?_v='+new Date().getTime();
@@ -398,7 +398,7 @@ $vm.load_component=function(name,div,input,dialog){
 	var ver=localStorage.getItem(apppath+url+"ver");
 	var txt=localStorage.getItem(apppath+url+"txt");
 	var http127=0;
-	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1) http127=1;
+	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1 || url.indexOf('http://vmiis-local.com')!=-1) http127=1;
 	//-----------------------------------
 	var create_and_run=function(txt,div){
 		if(txt.indexOf('VmInclude:')==-1) $vm.create_component_and_run(txt,url,div,name);
@@ -498,7 +498,7 @@ $vm.load_module=function(name,slot,input){
 		var ver=localStorage.getItem(apppath+storage_url+"_ver");
 		var txt=localStorage.getItem(apppath+storage_url+"_txt");
 		var http127_i=0;
-		if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1) http127_i=1;
+		if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1 || url.indexOf('http://vmiis-local.com')!=-1) http127_i=1;
 		var reload=0;
 		if(window.location.toString().indexOf('reload='+m_name)!=-1){
 			reload=1;
@@ -703,7 +703,7 @@ $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
 	var txt=localStorage.getItem(apppath+url+"_txt");
 
 	var http127_i=0;
-	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1) http127_i=1;
+	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1 || url.indexOf('http://vmiis-local.com')!=-1) http127_i=1;
 	else if($vm.localhost==true && url.indexOf('http://')==-1 && url.indexOf('https://')==-1){ //like modules/home.html
         http127_i=1;
         if(url[0]=='/') url=$vm.hosting_path+url;
@@ -1230,6 +1230,14 @@ $vm.signout_s=function(){
 	*/
 }
 //---------------------------------------------
+//----------------------------------------------
+$vm.show_json_data=function(D){
+    var txt=JSON.stringify(D, null, '\t');
+    txt=txt.replace(/\n/g,"<br>");
+    txt=txt.replace(/\t/g,"&nbsp;&nbsp;&nbsp;&nbsp;");
+    var win=window.open("","JSON data");
+    win.document.body.innerHTML=txt+"<title>JSON data</title><style> body{ font-family:Courier New;font-size:12px; white-space: nowrap; } </style>";
+}
 //----------------------------------------------
 $vm.source=function(module_id,event){
 	if (event.altKey) {
