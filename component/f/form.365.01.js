@@ -201,7 +201,8 @@ m.submit=function(event){
         }
     }
     delete data[""];
-    var json={Data:JSON.stringify(data)}
+    var json=data;
+    if(m.JSON==1) json={Data:JSON.stringify(data)}
     //var json={JSON:data}
     //--------------------------------------------------------
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
