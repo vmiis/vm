@@ -205,6 +205,9 @@ m.submit=function(event){
     if(m.JSON==1) json={Data:JSON.stringify(data)}
     //var json={JSON:data}
     //--------------------------------------------------------
+    var r=true;
+    if(m.before_submit!=undefined) r=m.before_submit(data);
+    if(r==false){$('#submit__ID').show(); return;}
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
         $vm.m365_msal.acquireTokenSilent($vm.m365_scope).then(function (tokenResponse) {
@@ -217,6 +220,10 @@ m.submit=function(event){
                     $vm.refresh=1;
                     if(m.input.goback!=undefined) window.history.go(-1);            //from grid
                     else $vm.alert('Your data has been successfully submitted');    //standalone
+                }
+                else if (this.readyState == 4 && (this.status == 400 || this.status == 500)) {
+                    var res=JSON.parse(this.responseText); 
+                    $vm.alert(res.error.message);
                 }
             }
             xmlHttp.open("POST", m.endpoint_a, true); // true for asynchronous
@@ -242,6 +249,10 @@ m.submit=function(event){
                     var tt_all=mt2-mt1;
                     $vm.refresh=1;
                     if(rid!=undefined) window.history.go(-1);     //modify
+                }
+                else if (this.readyState == 4 && (this.status == 400 || this.status == 500)) {
+                    var res=JSON.parse(this.responseText); 
+                    $vm.alert(res.error.message);
                 }
             }
             xmlHttp.open("PATCH", m.endpoint_u, true); // true for asynchronous
