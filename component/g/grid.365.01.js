@@ -77,40 +77,6 @@ m.set_req=function(){
 };
 //-------------------------------------
 m.request_data=function(){
-    /*
-    function retrieveData(error, token){
-        var req = new XMLHttpRequest()  
-        req.open("GET", encodeURI(m.endpoint + m.req), true);  
-        //Set Bearer token  
-        req.setRequestHeader("Authorization", "Bearer " + token);  
-        req.setRequestHeader("Accept", "application/json");  
-        req.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
-        req.setRequestHeader("OData-MaxVersion", "4.0");  
-        req.setRequestHeader("OData-Version", "4.0");  
-        req.onreadystatechange = function () {  
-            if (this.readyState == 4 ) {  
-                req.onreadystatechange = null;  
-                if (this.status == 200) {  
-                    var data = JSON.parse(this.response).value;  
-                    
-                    var mt2=new Date().getTime();
-                    var tt_all=mt2-mt1;
-                    $("#elapsed__ID").html( (this.response.length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms");
-                    
-                    if(m.data_process!=undefined) m.data_process(data);
-                    m.render();
-                }  
-                else {  
-                    var error = JSON.parse(this.response).error;  
-                    console.log(error.message);  
-                }  
-            }  
-        };  
-        var mt1=new Date().getTime();
-        req.send(); 
-    }
-    $vm.m365.authContext.acquireToken(m.endpoint, retrieveData);  
-    */
     $vm.m365_msal.acquireTokenSilent($vm.m365_scope).then(function (tokenResponse) {
         var mt1=new Date().getTime();
         var xmlHttp = new XMLHttpRequest();
@@ -132,7 +98,7 @@ m.request_data=function(){
                 $vm.alert(m.endpoint+", 404 (Not found)");
                 callback({});
             }
-}
+        }
         xmlHttp.open("GET", m.endpoint, true); // true for asynchronous
         xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
         xmlHttp.send();
