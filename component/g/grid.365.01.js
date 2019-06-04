@@ -484,3 +484,19 @@ m.set_file_link=function(records,I,field,td){
     })
 }
 //-------------------------------
+m.date_field=function(data,name){
+    var d=data[name];
+    if(d!="" && d!=null && d!=undefined) data[name]=$vm.date_to_string_yyyymmdd(new Date( data[name]));
+    else data[name]="";
+}
+//-------------------------------------
+m.string_array_field=function(data,name){
+    var d=data[name];
+    if(d!=undefined){
+        for(k in d){
+            var a=d[k];
+            data[a.replace(/ /g,'_').replace(/\//g,'__')]='on';
+        }
+    }
+}
+//-------------------------------------

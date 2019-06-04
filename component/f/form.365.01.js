@@ -348,3 +348,28 @@ $('#pdf__ID').on('click',function(){
     
 })
 //-------------------------------------
+m.boolean_field=function(data,name){
+    var d=data[name];
+    if(d==1) data[name]=true;
+    if(d==0) data[name]=false;
+}
+//-------------------------------------
+m.date_field=function(data,name){
+    var d=data[name];
+    if(d=="") delete data[name];
+}
+//-------------------------------------
+m.string_array_field=function(data,name,names){
+    var items=names.split(',');
+    //var d=data[name];
+
+    var as=[];
+    for(i in items){
+        var a=items[i];
+        if(data[a]=='on') as.push(a.replace(/__/g,'\/').replace(/_/g,' '));
+        delete data[a];
+    }
+    data[name]=as;
+    data[name+"@odata.type"]="Collection(Edm.String)";
+}
+//-------------------------------------
