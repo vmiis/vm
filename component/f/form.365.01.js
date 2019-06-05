@@ -215,6 +215,10 @@ m.submit=function(event){
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 201){
+                    if(m.after_insert!=undefined){
+                        var res=JSON.parse(this.responseText);  
+                        m.after_insert(data,res); return;
+                    }
                     var mt2=new Date().getTime();
                     var tt_all=mt2-mt1;
                     $vm.refresh=1;
@@ -243,6 +247,10 @@ m.submit=function(event){
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200){
+                    if(m.after_update!=undefined){
+                        var res=JSON.parse(this.responseText);  
+                        m.after_update(data,res); return;
+                    }
                     //callback(JSON.parse(this.responseText));
                     //var data=JSON.parse(this.responseText);  
                     var mt2=new Date().getTime();

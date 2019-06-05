@@ -104,6 +104,7 @@ m.request_data=function(){
         xmlHttp.send();
     }).catch(function (error) {
         console.log(error);
+        $vm.alert("You haven't signed in, or your previous session has expired.")
     });
 }
 //-------------------------------------
