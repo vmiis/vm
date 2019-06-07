@@ -9,7 +9,7 @@ $vm.deserialize=function(record,form_id){
                 var type = $el.attr('type');
                 switch(type){
                     case 'checkbox':
-                        if(value=='off' || value=='0' || value=='' ) $el.prop('checked', false);
+                        if(value=='off' || value=='0' || value=='' || value==undefined ) $el.prop('checked', false);
                         else $el.prop('checked', true);
                         break;
                     case 'radio':
