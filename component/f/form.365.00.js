@@ -337,6 +337,102 @@ m.submit=function(event){
 
     }
 }
+
+
+m.submit_v1=function(event){
+    //--------------------------------------------------------
+    event.preventDefault();
+    $('#submit__ID').hide();
+    //--------------------------------------------------------
+    var data={};
+    var data_new=$vm.serialize('#F__ID');
+    if(m.input.record!=undefined){
+        for(k in m.input.record.Data){
+            data[k]=m.input.record.Data[k];
+        }
+    }
+    if(data_new!=undefined){
+        for(k in data_new){
+            data[k]=data_new[k];
+        }
+    }
+    delete data[""];
+    var json=data;
+    if(m.JSON==1) json={Data:JSON.stringify(data)}
+    //var json={JSON:data}
+    //--------------------------------------------------------
+    var r=true;
+    if(m.before_submit!=undefined) r=m.before_submit(data);
+    if(r==false){$('#submit__ID').show(); return;}
+    var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
+    if(rid==undefined){
+        $vm.m365_msal.acquireTokenSilent(m.scope).then(function (tokenResponse) {
+            var mt1=new Date().getTime();
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 201){
+                    if(m.after_insert!=undefined){
+                        var res=JSON.parse(this.responseText);  
+                        m.after_insert(data,res); return;
+                    }
+                    var mt2=new Date().getTime();
+                    var tt_all=mt2-mt1;
+                    $vm.refresh=1;
+                    if(m.input.goback!=undefined) window.history.go(-1);            //from grid
+                    else $vm.alert('Your data has been successfully submitted');    //standalone
+                }
+                else if (this.readyState == 4 && (this.status == 400 || this.status == 500)) {
+                    var res=JSON.parse(this.responseText); 
+                    if(res.error!=undefined) $vm.alert(res.error.message);
+                    else if(res["odata.error"]!=undefined) $vm.alert(res["odata.error"].message.value);
+                }
+            }
+            xmlHttp.open("POST", m.endpoint_a, true); // true for asynchronous
+            xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
+            xmlHttp.setRequestHeader("Accept", "application/json");  
+            xmlHttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
+            var d=JSON.stringify(json);
+            xmlHttp.send(d);
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+    else if(rid!=undefined){
+        $vm.m365_msal.acquireTokenSilent(m.scope).then(function (tokenResponse) {
+            var mt1=new Date().getTime();
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 204){
+                    if(m.after_update!=undefined){
+                        var res=JSON.parse(this.responseText);  
+                        m.after_update(data,res); return;
+                    }
+                    //callback(JSON.parse(this.responseText));
+                    //var data=JSON.parse(this.responseText);  
+                    var mt2=new Date().getTime();
+                    var tt_all=mt2-mt1;
+                    $vm.refresh=1;
+                    if(rid!=undefined) window.history.go(-1);     //modify
+                }
+                else if (this.readyState == 4 && (this.status == 400 || this.status == 500)) {
+                    var res=JSON.parse(this.responseText); 
+                    $vm.alert(res.error.message);
+                }
+            }
+            xmlHttp.open("PATCH", m.endpoint_u, true); // true for asynchronous
+            xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
+            xmlHttp.setRequestHeader("Accept", "application/json");  
+            xmlHttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
+            xmlHttp.setRequestHeader("IF-MATCH", "*");  
+            var d=JSON.stringify(json);
+            xmlHttp.send(d);
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+}
+//--------------------------------------------------------
+
 //--------------------------------------------------------
 $('#D__ID').on('load',function(){ m.load();})
 $('#F__ID').submit(function(event){m.submit(event);})
