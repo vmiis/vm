@@ -134,9 +134,7 @@ m.cell_process=function(){
                     alert('Can not find "'+m.form_module+'" in the module list');
                     return;
                 }
-                $vm.load_module(prefix+m.form_module,$vm.root_layout_content_slot,{
-                    record:m.records[I],
-                });
+                $vm.load_module(prefix+m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
             })
         }
         //-------------------------

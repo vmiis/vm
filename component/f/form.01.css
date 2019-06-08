@@ -20,7 +20,42 @@
 #form_container__ID .row__ID:hover{
     background-color: #ddd;
 }
+
+
+
+
+
+.form_container__ID{
+    background-color:#fff;
+    margin-top:20px;
+    margin-left: auto;
+    margin-right: auto;
+
+    font-family: Verdana,sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+}
+.form_container__ID .row__ID{
+    padding:6px 5px;
+}
+.form_container__ID .row__ID:hover{
+    background-color: #ddd;
+}
+
+
+
+
+
+
 #header__ID{
+    background-color:#727b84;
+    color:#fff;
+    padding:10px 15px 10px 15px;
+    font-size:120%;
+    border:1px solid #bbb;
+    border-bottom-width: 0;
+}
+.header__ID{
     background-color:#727b84;
     color:#fff;
     padding:10px 15px 10px 15px;
@@ -42,6 +77,28 @@
     margin-bottom:200px;
 }
 #F__ID fieldset {
+    border: 0px solid #c0c0c0;
+    margin: 0;
+    padding: 0;
+}
+#FP1__ID{
+    border:1px solid #bbb;
+    border-top-width: 0;
+    padding:6px 15px 20px 15px;
+    margin-bottom:200px;
+}
+#FP1__ID fieldset {
+    border: 0px solid #c0c0c0;
+    margin: 0;
+    padding: 0;
+}
+#FP2__ID{
+    border:1px solid #bbb;
+    border-top-width: 0;
+    padding:6px 15px 20px 15px;
+    margin-bottom:200px;
+}
+#FP2__ID fieldset {
     border: 0px solid #c0c0c0;
     margin: 0;
     padding: 0;
