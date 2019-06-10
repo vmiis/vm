@@ -330,7 +330,7 @@ $vm.create_component_and_run=function(txt,url,div,m_name){
 	$('#D'+id).triggerHandler('load');
 }
 //------------------------------------------------
-$vm.load_component_include_and_run=function(lines,i,url,div,m_name){
+$vm.load_component_include_and_run=function(lines,i,url,div,m_name){ //Step B-2
 	var last_part=url.split('/').pop();
 	var c_path=url.replace(last_part,'');
 	
@@ -346,14 +346,17 @@ $vm.load_component_include_and_run=function(lines,i,url,div,m_name){
 	}
 	//------------------------------
 	var apppath=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
-	var ver=localStorage.getItem(apppath+url+"ver");
-	var txt=localStorage.getItem(apppath+url+"txt");
+	//var ver=localStorage.getItem(apppath+url+"ver"); //wrong!!!
+	//var txt=localStorage.getItem(apppath+url+"txt");
+	var ver=localStorage.getItem(apppath+com_url+"ver");
+	var txt=localStorage.getItem(apppath+com_url+"txt");
 	var http127=0;
 	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1 || url.indexOf('http://vmiis-local.com')!=-1) http127=1;
 	//------------------------------
 	if(ver!=$vm.ver[0] || http127==1 || txt==null || $vm.reload!=''){
 		var new_url=com_url+'?_v='+new Date().getTime();
-		if(url.indexOf('?')!==-1) new_url=url+'&_v='+($vm.ver[0]+$vm.reload).replace(/\./,'')+"&g="+_g_vm_chrom_loop++;
+		//if(url.indexOf('?')!==-1) new_url=url+'&_v='+($vm.ver[0]+$vm.reload).replace(/\./,'')+"&g="+_g_vm_chrom_loop++; //wrong
+		if(url.indexOf('?')!==-1) new_url=com_url+'&_v='+($vm.ver[0]+$vm.reload).replace(/\./,'')+"&g="+_g_vm_chrom_loop++;
 		console.log('loading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127+" re:"+$vm.reload)
 		$.get(new_url, function(data){
 			var c_m=$("<p>"+data+"</p>").filter('#D__ID').html();
@@ -365,18 +368,19 @@ $vm.load_component_include_and_run=function(lines,i,url,div,m_name){
 		},'text');
 	}
 	else{
-		console.log('loading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127+" re:"+$vm.reload)
+		//console.log('loading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127+" re:"+$vm.reload) //wrong!!!
+		console.log('loading from stotage. '+com_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127+" re:"+$vm.reload)
 		var current_all=$vm.replace_and_recreate_content(lines,i,txt)
 		create_and_run(current_all,div);
 	}
 }
 //------------------------------------------------
-$vm.process_component_include_and_run=function(txt,url,div,m_name){
+$vm.process_component_include_and_run=function(txt,url,div,m_name){ //Step A-2
 	var lines=txt.split('\n');
 	for(var i=0;i<lines.length;i++){
 		if(lines[i].length>10){
 			if(lines[i].indexOf('VmInclude:')!==-1){
-				$vm.load_component_include_and_run(lines,i,url,div,m_name); //Step B //only process the first include
+				$vm.load_component_include_and_run(lines,i,url,div,m_name); //Step B-1 //only process the first include
 				return;
 			}
 		}
@@ -410,7 +414,7 @@ $vm.load_component=function(name,div,input,dialog){
 	//-----------------------------------
 	var create_and_run=function(txt,div){
 		if(txt.indexOf('VmInclude:')==-1) $vm.create_component_and_run(txt,url,div,name);
-		else $vm.process_component_include_and_run(txt,url,div,name); //Step A
+		else $vm.process_component_include_and_run(txt,url,div,name); //Step A-1
 	}
 	//-----------------------------------
 	var reload=0;
