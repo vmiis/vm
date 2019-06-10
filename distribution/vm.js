@@ -413,13 +413,13 @@ $vm.load_component=function(name,div,input,dialog){
 	if(ver!=$vm.ver[0] || http127==1 || txt==null || $vm.reload!='' || reload==1){
 		$.get(url+'?_='+new Date().getTime(),function(new_txt){
 			localStorage.setItem(apppath+url+"txt",new_txt);
-			localStorage.setItem(apppath+url+"ver",$vm.ver[1]);
-			console.log('loading from url. '+url+' '+ver+'/'+$vm.ver[1]+" 127:"+http127);
+			localStorage.setItem(apppath+url+"ver",$vm.ver[0]);
+			console.log('loading from url. '+url+' '+ver+'/'+$vm.ver[0]+" 127:"+http127);
 			create_and_run(new_txt,div);
 		},'text');
 	}
 	else{
-		console.log('loading from storage. '+url+' '+ver+'/'+$vm.ver[1]+" 127:"+http127);
+		console.log('loading from storage. '+url+' '+ver+'/'+$vm.ver[0]+" 127:"+http127);
 		create_and_run(txt,div);
 	}
 };
