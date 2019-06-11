@@ -32,7 +32,7 @@ m.submit=function(event){
     var json={Data:JSON.stringify(data)}
     //--------------------------------------------------------
     var r=true;
-    if(m.before_submit_1!=undefined) r=m.before_submit_1(data);
+    if(m.before_submit!=undefined) r=m.before_submit(data);
     if(r==false){$('#submit__ID').show(); return;}
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
@@ -40,9 +40,9 @@ m.submit=function(event){
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 201){
-                    if(m.after_insert_1!=undefined){
+                    if(m.after_insert!=undefined){
                         var res=JSON.parse(this.responseText);  
-                        m.after_insert_1(data,res); return;
+                        m.after_insert(data,res); return;
                     }
                     $vm.refresh=1;
                     window.history.go(-1);
@@ -53,7 +53,7 @@ m.submit=function(event){
                     else if(res["odata.error"]!=undefined) $vm.alert(res["odata.error"].message.value);
                 }
             }
-            xmlHttp.open("POST", m.endpoint_1_a, true);
+            xmlHttp.open("POST", m.endpoint_a, true);
             xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
             xmlHttp.setRequestHeader("Accept", "application/json");  
             xmlHttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
@@ -80,7 +80,7 @@ m.submit=function(event){
                     $vm.alert(res.error.message);
                 }
             }
-            xmlHttp.open("PATCH", m.endpoint_1_u, true); // true for asynchronous
+            xmlHttp.open("PATCH", m.endpoint_u, true); // true for asynchronous
             xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
             xmlHttp.setRequestHeader("Accept", "application/json");  
             xmlHttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
