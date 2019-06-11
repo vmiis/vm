@@ -61,7 +61,7 @@ m.request_data=function(){
 
         m.records=res.result;
         m.res=res;
-        if(m.data_process!==undefined){ m.data_process(); }
+        if(m.data_process!==undefined){ m.data_process(res); }
         m.render();
         if(m.data_process_after_render!==undefined){ m.data_process_after_render('grid'); }
     })
