@@ -231,6 +231,36 @@ m.delete=function(rid){
 
 };
 //-------------------------------
+m.ajax=function(endpoint,tokenResponse,callback){
+    var mt1=new Date().getTime();
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200){
+            var data=JSON.parse(this.responseText);  
+            var mt2=new Date().getTime();
+            var tt_all=mt2-mt1;
+            console.log((this.response.length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms");
+            callback(data);
+        }
+        else if(this.readyState == 4 && this.status == 403){
+            $vm.alert("No permission");
+            callback({});
+        }
+        if(this.status == 404){
+            $vm.alert(endpoint+", 404 (Not found)");
+            callback({});
+        }
+    }
+    xmlHttp.open("GET", endpoint, true); // true for asynchronous
+    xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
+    xmlHttp.setRequestHeader("Accept", "application/json");  
+    xmlHttp.send();
+}
+//-------------------------------------
+
+
+
+
 /*
 m.export_records=function(){
     var req={cmd:"export",table:m.Table,search:$('#keyword__ID').val()}
