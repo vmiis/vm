@@ -29,7 +29,8 @@ m.submit=function(event){
         }
     }
     delete data[""];
-    var json={Data:JSON.stringify(data)}
+    var json=data;
+    if(m.JSON==1) json={Data:JSON.stringify(data)}
     //--------------------------------------------------------
     var r=true;
     if(m.before_submit!=undefined) r=m.before_submit(data);
