@@ -19,15 +19,18 @@
         function F__ID(){
             var editor=null;
             var file_url="";
+            var module_name="";
             //--------------------------------------------------------
             $('#D__ID').on('load',function(){
                 url="";
+                module_name="";
                 if($vm['ace-js']!=1) return; 
                 if(editor==null){
                     set_editor();
                 }
                 var input=$vm.module_list["__MODULE__"].input;
                 if(input.url!=undefined) file_url=input.url;
+                if(input.module_name!=undefined) module_name=input.module_name;
                 if(input.code!=undefined){
                     editor.setValue(input.code,-1);
                     $('#run__ID').triggerHandler('click');
@@ -86,6 +89,10 @@
                     console.log(this.readyState+" "+this.status);
                     if (this.readyState == 4 && this.status == 200){
                         $vm.alert(this.responseText);
+                        var url=$vm.module_list[module_name].url;
+                        var apppath=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
+		                localStorage.removeItem(apppath+url+"_ver");
+		                localStorage.removeItem(apppath+url+"_txt");
                     }
                 }
                 xmlHttp.open("POST", endpoint, true);
