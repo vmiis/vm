@@ -7,6 +7,7 @@ $vm.id=function(){
 //------------------------------------------------------------------
 $vm.load_content=function(name,slot,input,content){
 	var url=$vm.module_list[name]['url'];
+
 	var apppath=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
 	localStorage.setItem(apppath+url+"_txt",content);
 
@@ -15,7 +16,12 @@ $vm.load_content=function(name,slot,input,content){
 	if(id==undefined) id=$vm.id();
 	$vm.module_list[name].id=id;
 	$vm.vm[id]={};
-	$vm.vm[id].current_path=url;
+	
+	if(url[0]=='/') url=$vm.hosting_path+url;
+	var last_part=url.split('/').pop();
+    var current_path=url.replace(last_part,'');
+	$vm.vm[id].current_path=current_path;
+
 	if(content.indexOf('VmInclude:')==-1){
 		$vm.create_module_and_run_code(content,id,url,slot,name);
 		$vm.insert_and_trigger_load(id,slot,name);

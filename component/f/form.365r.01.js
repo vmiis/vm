@@ -40,7 +40,8 @@ m.submit=function(event){
         $vm.m365_msal.acquireTokenSilent(m.scope).then(function (tokenResponse) {
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 201){
+                console.log(this.readyState+" "+this.status)
+                if (this.readyState == 4 && (this.status == 200 || this.status == 201)){
                     if(m.after_insert!=undefined){
                         var res=JSON.parse(this.responseText);  
                         m.after_insert(data,res); return;
@@ -68,13 +69,17 @@ m.submit=function(event){
         $vm.m365_msal.acquireTokenSilent(m.scope).then(function (tokenResponse) {
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 204){
+                console.log(this.readyState+" "+this.status)
+                if (this.readyState == 4 && (this.status == 200 || this.status == 204)){
                     if(m.after_update!=undefined){
                         var res=JSON.parse(this.responseText);  
                         m.after_update(data,res); return;
                     }
                     $vm.refresh=1;
-                    if(rid!=undefined) window.history.go(-1);
+                    if(rid!=undefined){
+                        console.log('go back.')
+                        window.history.go(-1);
+                    }
                 }
                 else if (this.readyState == 4 && (this.status == 400 || this.status == 500)) {
                     var res=JSON.parse(this.responseText); 
