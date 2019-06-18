@@ -70,6 +70,7 @@
                 var nm="_module_test_"
                 $vm.module_list[nm]={url:file_url}
                 var code=editor.getValue();
+                $('#module__ID').html('');
                 $vm.load_content(nm,'module__ID',{},code);
             })
             //--------------------------------------------------------
