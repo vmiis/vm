@@ -266,6 +266,7 @@ $vm.init=function(callback){
 	
     $vm.request({cmd:'user-info'},function(res){
         $vm.user_name=res.records[0].user_name;
+        $vm.displayname=res.records[0].displayname;
         if(callback!==undefined) callback(res);
     })
 }

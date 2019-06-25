@@ -1,6 +1,7 @@
 //-------------------------------------
 var m=$vm.module_list['__MODULE__'];
 if(m.prefix==undefined) m.prefix="";
+//m.endpoint=$vm.m365.organizationURI;
 //-------------------------------------
 m.load=function(){
     $('#D__ID').scrollTop(0);
@@ -11,7 +12,99 @@ m.load=function(){
     $vm.deserialize(m.input.record,'#F__ID');
 }
 //-------------------------------
-m.submit=function(event){
+m.submit_g=function(event){
+    //--------------------------------------------------------
+    event.preventDefault();
+    $('#submit__ID').hide();
+    //--------------------------------------------------------
+    var data={};
+    var data_new=$vm.serialize('#F__ID');
+    if(m.input.record!=undefined){
+        for(k in m.input.record.Data){
+            data[k]=m.input.record.Data[k];
+        }
+    }
+    if(data_new!=undefined){
+        for(k in data_new){
+            data[k]=data_new[k];
+        }
+    }
+    delete data[""];
+    var json=data;
+    if(m.JSON==1) json={Data:JSON.stringify(data)}
+    //var json={JSON:data}
+    //--------------------------------------------------------
+    var r=true;
+    if(m.before_submit!=undefined) r=m.before_submit(data);
+    if(r==false){$('#submit__ID').show(); return;}
+    var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
+    if(rid==undefined){
+        $vm.m365_msal.acquireTokenSilent($vm.m365_scope).then(function (tokenResponse) {
+            var mt1=new Date().getTime();
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 201){
+                    if(m.after_insert!=undefined){
+                        var res=JSON.parse(this.responseText);  
+                        m.after_insert(data,res); return;
+                    }
+                    var mt2=new Date().getTime();
+                    var tt_all=mt2-mt1;
+                    $vm.refresh=1;
+                    if(m.input.goback!=undefined) window.history.go(-1);            //from grid
+                    else $vm.alert('Your data has been successfully submitted');    //standalone
+                }
+                else if (this.readyState == 4 && (this.status == 400 || this.status == 500)) {
+                    var res=JSON.parse(this.responseText); 
+                    $vm.alert(res.error.message);
+                }
+            }
+            xmlHttp.open("POST", m.endpoint_a, true); // true for asynchronous
+            xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
+            xmlHttp.setRequestHeader("Accept", "application/json");  
+            xmlHttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
+            var ad={fields:json};
+            var d=JSON.stringify(ad);
+            xmlHttp.send(d);
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+    else if(rid!=undefined){
+        $vm.m365_msal.acquireTokenSilent($vm.m365_scope).then(function (tokenResponse) {
+            var mt1=new Date().getTime();
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200){
+                    if(m.after_update!=undefined){
+                        var res=JSON.parse(this.responseText);  
+                        m.after_update(data,res); return;
+                    }
+                    //callback(JSON.parse(this.responseText));
+                    //var data=JSON.parse(this.responseText);  
+                    var mt2=new Date().getTime();
+                    var tt_all=mt2-mt1;
+                    $vm.refresh=1;
+                    if(rid!=undefined) window.history.go(-1);     //modify
+                }
+                else if (this.readyState == 4 && (this.status == 400 || this.status == 500)) {
+                    var res=JSON.parse(this.responseText); 
+                    $vm.alert(res.error.message);
+                }
+            }
+            xmlHttp.open("PATCH", m.endpoint_u, true); // true for asynchronous
+            xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
+            xmlHttp.setRequestHeader("Accept", "application/json");  
+            xmlHttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
+            var d=JSON.stringify(json);
+            xmlHttp.send(d);
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+    }
+}
+m.submit_r=function(event){
     //--------------------------------------------------------
     event.preventDefault();
     $('#submit__ID').hide();
@@ -38,16 +131,19 @@ m.submit=function(event){
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
         $vm.m365_msal.acquireTokenSilent(m.scope).then(function (tokenResponse) {
+            var mt1=new Date().getTime();
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.onreadystatechange = function () {
-                console.log(this.readyState+" "+this.status)
-                if (this.readyState == 4 && (this.status == 200 || this.status == 201)){
+                if (this.readyState == 4 && this.status == 201){
                     if(m.after_insert!=undefined){
                         var res=JSON.parse(this.responseText);  
                         m.after_insert(data,res); return;
                     }
+                    var mt2=new Date().getTime();
+                    var tt_all=mt2-mt1;
                     $vm.refresh=1;
-                    window.history.go(-1);
+                    if(m.input.goback!=undefined) window.history.go(-1);            //from grid
+                    else $vm.alert('Your data has been successfully submitted');    //standalone
                 }
                 else if (this.readyState == 4 && (this.status == 400 || this.status == 500)) {
                     var res=JSON.parse(this.responseText); 
@@ -55,7 +151,7 @@ m.submit=function(event){
                     else if(res["odata.error"]!=undefined) $vm.alert(res["odata.error"].message.value);
                 }
             }
-            xmlHttp.open("POST", m.endpoint_a, true);
+            xmlHttp.open("POST", m.endpoint_a, true); // true for asynchronous
             xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
             xmlHttp.setRequestHeader("Accept", "application/json");  
             xmlHttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
@@ -67,23 +163,20 @@ m.submit=function(event){
     }
     else if(rid!=undefined){
         $vm.m365_msal.acquireTokenSilent(m.scope).then(function (tokenResponse) {
+            var mt1=new Date().getTime();
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.onreadystatechange = function () {
-                console.log(this.readyState+" "+this.status)
-                if (this.readyState == 4 && (this.status == 200 || this.status == 204)){
+                if (this.readyState == 4 && this.status == 204){
                     if(m.after_update!=undefined){
                         var res=JSON.parse(this.responseText);  
                         m.after_update(data,res); return;
                     }
+                    //callback(JSON.parse(this.responseText));
+                    //var data=JSON.parse(this.responseText);  
+                    var mt2=new Date().getTime();
+                    var tt_all=mt2-mt1;
                     $vm.refresh=1;
-                    if(rid!=undefined){
-                        console.log('go back.');
-                        console.log(window.history.state.m_name);
-                        console.log(window.history);
-                        window.history.go(-1);
-                        console.log(window.history);
-                        console.log(window.history.state.m_name);
-                    }
+                    if(rid!=undefined) window.history.go(-1);     //modify
                 }
                 else if (this.readyState == 4 && (this.status == 400 || this.status == 500)) {
                     var res=JSON.parse(this.responseText); 
@@ -102,11 +195,12 @@ m.submit=function(event){
         });
     }
 }
+m.submit="";
 //--------------------------------------------------------
 $('#D__ID').on('load',function(){ m.load();})
 $('#F__ID').submit(function(event){m.submit(event);})
-$('#FP1__ID').submit(function(event){m.submit_p1(event);})
-$('#FP2__ID').submit(function(event){m.submit_p2(event);})
+$('#F2__ID').submit(function(event){m.submit2(event);})
+$('#F3__ID').submit(function(event){m.submit3(event);})
 //--------------------------------------------------------
 $('#delete__ID').on('click', function(){
     var record=m.input.record;    if(record==undefined) return;
@@ -160,6 +254,31 @@ $('#header__ID').on('click', function(event){
     }
 });
 //--------------------------------------------------------
+$('#pdf__ID').on('click',function(){
+    $('#D__ID').scrollTop(0);
+    $(window).scrollTop(0);
+    var h=$('#D__ID').css('height');
+    $('#D__ID').css('height',"210mm");
+    $('form_container__ID').css('height',"297mm");
+    $('#F__ID').css('border-bottom-width','0');
+    $('#submit__ID').hide();
+    $('#pdf__ID').hide();
+    var pdf=new jsPDF('p', 'pt', 'a4');
+    //pdf.internal.scaleFactor = 2.25;
+    var options = {
+        //pagesplit: true,
+        background: '#fff'
+    };
+    pdf.addHTML($('#form_container__ID'),options,function() {
+        pdf.save(m.Table+'.pdf');
+        $('#F__ID').css('border-bottom-width','1px');
+        $('#submit__ID').show();
+        $('#pdf__ID').show();
+        $('#D__ID').css('height',h);
+    });
+    
+})
+//-------------------------------------
 m.boolean_field=function(data,name){
     var d=data[name];
     if(d==1) data[name]=true;

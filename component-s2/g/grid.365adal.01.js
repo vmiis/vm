@@ -12,6 +12,58 @@ m.set_req_export=function(i1,i2){
 	m.req={cmd:'read',qid:m.qid,sql:sql,i1:i1,i2:i2};
 }
 //-----------------------------------------------
+/*
+m.request_data=function(){
+    var limit=parseInt($('#page_size__ID').val());
+    var skip=limit*parseInt($('#I__ID').text());
+    var mt1=new Date().getTime();
+    var c_cmd="count";
+    if(m.cmd_type=='s') c_cmd='count-s';
+    else if(m.cmd_type=='p1') c_cmd='count-p1';
+    else if(m.cmd_type=='p2') c_cmd='count-p2';
+    $vm.request({cmd:c_cmd,table:m.Table,query:m.query,I1:m.I1,search:$('#keyword__ID').val()},function(res){
+        if(res.status=='np'){
+            res.result=0;
+        }
+        var N=res.result;
+        $("#B__ID").text(N)
+        
+        m.max_I=Math.ceil(N/limit)-1;
+        var n2=skip+limit; if(n2>N) n2=N;
+        var a=(skip+1).toString()+"~"+(n2).toString()+" of ";
+        $("#A__ID").text(a);
+    });
+    var f_cmd="find";
+    if(m.cmd_type=='s') f_cmd='find-s';
+    else if(m.cmd_type=='p1') f_cmd='find-p1';
+    else if(m.cmd_type=='p2') f_cmd='find-p2';
+    $vm.request({cmd:f_cmd,table:m.Table,I1:m.I1,query:m.query,sort:m.sort,projection:m.projection,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
+        var mt2=new Date().getTime();
+        var tt_all=mt2-mt1;
+        var tt_server=parseInt(res.sys.elapsed_time);
+        if(tt_all<tt_server) tt_all=tt_server;
+        var db="<span style='color:#0919ec'>&#9679;</span> "; if(res.sys.db==1 || res.sys.db=='on') db="<span style='color:#0bbe0b'>&#9679;</span> ";
+        var tb="<span style='color:red'>&#9679;</span> ";     if(res.sys.tb==1 || res.sys.tb=='on') tb="<span style='color:#0bbe0b'>&#9679;</span> ";
+        $("#elapsed__ID").html(db+tb+(JSON.stringify(res.result).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
+        
+        if(res.status=='np' || res.result==undefined){
+            res.result=[];
+        }
+
+        if(res.status=='np'){
+            if(res.sys.tb=='on') $vm.alert("No permission. Private database table, ask the table's owner for permissions.");
+            else $vm.alert("No permission.");
+        }
+
+        m.records=res.result;
+        m.res=res;
+        if(m.data_process!==undefined){ m.data_process(); }
+        m.render();
+        if(m.data_process_after_render!==undefined){ m.data_process_after_render('grid'); }
+    })
+};
+*/
+//-------------------------------------
 m.select="";
 m.set_req=function(){
     m.req="/api/data/v9.1/"+m.Table+"?$top=30&$expand=createdby($select=firstname,lastname)"; 
@@ -25,7 +77,42 @@ m.set_req=function(){
 };
 //-------------------------------------
 m.request_data=function(){
-    $vm.m365_msal.acquireTokenSilent($vm.m365_scope).then(function (tokenResponse) {
+    /*
+    function retrieveData(error, token){
+        var req = new XMLHttpRequest()  
+        req.open("GET", encodeURI(m.endpoint + m.req), true);  
+        //Set Bearer token  
+        req.setRequestHeader("Authorization", "Bearer " + token);  
+        req.setRequestHeader("Accept", "application/json");  
+        req.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
+        req.setRequestHeader("OData-MaxVersion", "4.0");  
+        req.setRequestHeader("OData-Version", "4.0");  
+        req.onreadystatechange = function () {  
+            if (this.readyState == 4 ) {  
+                req.onreadystatechange = null;  
+                if (this.status == 200) {  
+                    var data = JSON.parse(this.response).value;  
+                    
+                    var mt2=new Date().getTime();
+                    var tt_all=mt2-mt1;
+                    $("#elapsed__ID").html( (this.response.length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms");
+                    
+                    if(m.data_process!=undefined) m.data_process(data);
+                    m.render();
+                }  
+                else {  
+                    var error = JSON.parse(this.response).error;  
+                    console.log(error.message);  
+                }  
+            }  
+        };  
+        var mt1=new Date().getTime();
+        req.send(); 
+    }
+    $vm.m365.authContext.acquireToken(m.endpoint, retrieveData);  
+    */
+   //$vm.m365_msal.acquireTokenSilent($vm.m365_scope).then(function (tokenResponse) {
+    $vm.m365.authContext.acquireToken(m.endpointA, function(error, token){;  
         var mt1=new Date().getTime();
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function () {
@@ -34,26 +121,19 @@ m.request_data=function(){
                 var data=JSON.parse(this.responseText);  
                 var mt2=new Date().getTime();
                 var tt_all=mt2-mt1;
-                $("#_sys_dev_info_elapsed").html( (this.response.length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms");
-                if(m.data_process!=undefined) m.data_process(data);
+                $("#elapsed__ID").html( (this.response.length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms");
+                if(m.data_process!=undefined) m.data_process(data.value);
                 m.render();
-            }
-            else if(this.readyState == 4 && this.status == 403){
-                $vm.alert("No permission");
-                callback({});
-            }
-            if(this.status == 404){
-                $vm.alert(m.endpoint+", 404 (Not found)");
-                callback({});
             }
         }
         xmlHttp.open("GET", m.endpoint, true); // true for asynchronous
-        xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
+        xmlHttp.setRequestHeader('Authorization', 'Bearer ' + token);
+        xmlHttp.setRequestHeader("Accept", "application/json");  
+        xmlHttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
+        xmlHttp.setRequestHeader("OData-MaxVersion", "4.0");  
+        xmlHttp.setRequestHeader("OData-Version", "4.0");  
         xmlHttp.send();
-    }).catch(function (error) {
-        console.log(error);
-        $vm.alert("You haven't signed in, or your previous session has expired.")
-    });
+    })
 }
 //-------------------------------------
 m.render=function(){
@@ -134,10 +214,7 @@ m.cell_process=function(){
                     alert('Can not find "'+m.form_module+'" in the module list');
                     return;
                 }
-                $vm.refresh=0;
-                $vm.load_module(prefix+m.form_module,$vm.root_layout_content_slot,{
-                    record:m.records[I],
-                });
+                $vm.load_module(prefix+m.form_module,$vm.root_layout_content_slot,{record:m.records[I]});
             })
         }
         //-------------------------
@@ -232,36 +309,6 @@ m.delete=function(rid){
 
 };
 //-------------------------------
-m.ajax=function(endpoint,tokenResponse,callback){
-    var mt1=new Date().getTime();
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200){
-            var data=JSON.parse(this.responseText);  
-            var mt2=new Date().getTime();
-            var tt_all=mt2-mt1;
-            console.log((this.response.length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms");
-            callback(data);
-        }
-        else if(this.readyState == 4 && this.status == 403){
-            $vm.alert("No permission");
-            callback({});
-        }
-        if(this.status == 404){
-            $vm.alert(endpoint+", 404 (Not found)");
-            callback({});
-        }
-    }
-    xmlHttp.open("GET", endpoint, true); // true for asynchronous
-    xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
-    xmlHttp.setRequestHeader("Accept", "application/json");  
-    xmlHttp.send();
-}
-//-------------------------------------
-
-
-
-
 /*
 m.export_records=function(){
     var req={cmd:"export",table:m.Table,search:$('#keyword__ID').val()}
@@ -432,19 +479,3 @@ m.set_file_link=function(records,I,field,td){
     })
 }
 //-------------------------------
-m.date_field=function(data,name){
-    var d=data[name];
-    if(d!="" && d!=null && d!=undefined) data[name]=$vm.date_to_string_yyyymmdd(new Date( data[name]));
-    else data[name]="";
-}
-//-------------------------------------
-m.string_array_field=function(data,name){
-    var d=data[name];
-    if(d!=undefined){
-        for(k in d){
-            var a=d[k];
-            data[a.replace(/ /g,'_').replace(/\//g,'__')]='on';
-        }
-    }
-}
-//-------------------------------------
