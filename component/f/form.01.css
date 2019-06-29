@@ -81,24 +81,24 @@
     margin: 0;
     padding: 0;
 }
-#FP1__ID{
+#F2__ID{
     border:1px solid #bbb;
     border-top-width: 0;
     padding:6px 15px 20px 15px;
     margin-bottom:200px;
 }
-#FP1__ID fieldset {
+#F2__ID fieldset {
     border: 0px solid #c0c0c0;
     margin: 0;
     padding: 0;
 }
-#FP2__ID{
+#F3__ID{
     border:1px solid #bbb;
     border-top-width: 0;
     padding:6px 15px 20px 15px;
     margin-bottom:200px;
 }
-#FP2__ID fieldset {
+#F3__ID fieldset {
     border: 0px solid #c0c0c0;
     margin: 0;
     padding: 0;
