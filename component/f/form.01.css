@@ -63,6 +63,7 @@
     border:1px solid #bbb;
     border-bottom-width: 0;
 }
+
 #F__ID div span{
     display:inline-block;
     padding-bottom:5px;
@@ -81,28 +82,26 @@
     margin: 0;
     padding: 0;
 }
-#F2__ID{
+
+.fm__ID div span{
+    display:inline-block;
+    padding-bottom:5px;
+}
+.fm__ID div label{
+    display:inline-block;
+}
+.fm__ID{
     border:1px solid #bbb;
     border-top-width: 0;
     padding:6px 15px 20px 15px;
     margin-bottom:200px;
 }
-#F2__ID fieldset {
+.fm__ID fieldset {
     border: 0px solid #c0c0c0;
     margin: 0;
     padding: 0;
 }
-#F3__ID{
-    border:1px solid #bbb;
-    border-top-width: 0;
-    padding:6px 15px 20px 15px;
-    margin-bottom:200px;
-}
-#F3__ID fieldset {
-    border: 0px solid #c0c0c0;
-    margin: 0;
-    padding: 0;
-}
+
 @media screen and (max-width:768px){
     #form_container__ID{
         padding:20px 10px 50px 10px;
