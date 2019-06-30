@@ -4,6 +4,7 @@ if(m.prefix==undefined) m.prefix="";
 m.query={};
 m.sort={_id:-1}
 m.projection={}
+if(m.title!=undefined) $('#title__ID').text(m.title);
 //-------------------------------------
 m.set_req=function(){
 };
