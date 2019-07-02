@@ -388,7 +388,11 @@ $('#D__ID').on('show',function(){
             m.request_data();
         }
     }
-    //else if($vm.refresh==1){$vm.refresh=0; m.request_and_render();}    
+    else if($vm.refresh==1){
+        $vm.refresh=0; 
+        m.set_req(); 
+        m.request_data();
+    }
 });
 //--------------------------------------------------------
 

@@ -1,7 +1,7 @@
 //-------------------------------------
 var m=$vm.module_list['__MODULE__'];
 if(m.prefix==undefined) m.prefix="";
-m.change_status=0;
+if(m.change_status==undefined) m.change_status=0;
 //-------------------------------------
 m.load=function(){
     //$('#D__ID').scrollTop(0);
