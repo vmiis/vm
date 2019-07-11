@@ -49,7 +49,7 @@ m.submit=function(event){
                     $vm.refresh=1;
                     window.history.go(-1);
                 }
-                else if (this.readyState == 4 && (this.status == 400 || this.status == 500)) {
+                else if (this.readyState == 4 && (this.status == 400 || this.status == 403  || this.status == 500)) {
                     var res=JSON.parse(this.responseText); 
                     if(res.error!=undefined) $vm.alert(res.error.message);
                     else if(res["odata.error"]!=undefined) $vm.alert(res["odata.error"].message.value);
@@ -85,7 +85,7 @@ m.submit=function(event){
                         console.log(window.history.state.m_name);
                     }
                 }
-                else if (this.readyState == 4 && (this.status == 400 || this.status == 500)) {
+                else if (this.readyState == 4 && (this.status == 400 || this.status == 403 || this.status == 500)) {
                     var res=JSON.parse(this.responseText); 
                     $vm.alert(res.error.message);
                 }
