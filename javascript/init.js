@@ -34,6 +34,7 @@ $vm.init_s=function(callback){
 		if(callback!==undefined) callback(res);
 
 		//------------------------------------------------------------------
+		/*
 		$vm.ip='';
 		try{
 			window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
@@ -51,7 +52,7 @@ $vm.init_s=function(callback){
 			$VmAPI.request({data:{cmd:'user_ip',ip:'0.0.0.0',name:$vm.user},callback:function(res){}})
 		}
 		//------------------------------------------------------------------
-
+		*/
 	}})
 	//-----------------------------------------------------
 };
