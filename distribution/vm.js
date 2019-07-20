@@ -1550,3 +1550,39 @@ $vm.xmlToJson=function(xml) {
     return obj;
 }
 //---------------------------------------------
+$vm.tool_table_info=function(user,op){
+    if(user==undefined) user=$vm.user_name;
+    if(op==undefined) op="find";
+    var rt=[]
+    var tables=[]
+    for(a in $vm.module_list){
+        if($vm.module_list[a].Table!=undefined && tables.indexOf($vm.module_list[a].Table)==-1){
+            tables.push($vm.module_list[a].Table);
+        }
+    }
+    var I=0;
+    var from_server=function(){
+        I++;
+        if(I==tables.length){
+            console.log(rt)
+        }
+    }
+    var to_server=function(tb){
+        $vm.request({cmd:'permission-check',data:{Table:tb,Operation:op,Login:user}},function(res){
+            var z1="Yes"; if(res.sys.tb=='off') z1='No ';
+            var z2="Yes"; if(res.sys.db=='0') z2='No ';
+            var z3="Yes"; if(res.status=='np') z3='No ';
+            rt.push("private-table: "+z1+", \t\tremote-db: "+z2+"\t\tfind: "+z3+"\t\t"+tb)
+            from_server();
+        });
+    }
+    var set_t=function(i){
+        setTimeout(function(){  
+            to_server(tables[i]);
+        }, 100*i);
+    }
+    for(var i=0;i<tables.length;i++){
+        set_t(i);
+    }
+}
+//---------------------------------------------
