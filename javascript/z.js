@@ -300,7 +300,7 @@ $vm.xmlToJson=function(xml) {
 //---------------------------------------------
 $vm.tool_table_info=function(user,op){
     if(user==undefined) user=$vm.user_name;
-    if(op==undefined) op="find";
+    if(op==undefined) op="Find";
     var rt=[]
     var tables=[]
     for(a in $vm.module_list){
