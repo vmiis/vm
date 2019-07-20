@@ -1572,7 +1572,7 @@ $vm.tool_table_info=function(user,op){
             var z1="Yes"; if(res.sys.tb=='off') z1='No ';
             var z2="Yes"; if(res.sys.db=='0') z2='No ';
             var z3="Yes"; if(res.status=='np') z3='No ';
-            rt.push("private-table: "+z1+", \t\tremote-db: "+z2+"\t\tfind: "+z3+"\t\t"+tb)
+            rt.push("private-table: "+z1+", \t\tremote-db: "+z2+"\t\t"+op+": "+z3+"\t\t"+tb)
             from_server();
         });
     }
