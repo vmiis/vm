@@ -21,6 +21,8 @@ m.request_data=function(){
     var mt1=new Date().getTime();
     var c_cmd="count";
     if(m.cmd_type=='s') c_cmd='count-s';
+    else if(m.cmd_type=='m') c_cmd='count-m';
+    else if(m.cmd_type=='d') c_cmd='count-d';
     else if(m.cmd_type=='p1') c_cmd='count-p1';
     else if(m.cmd_type=='p2') c_cmd='count-p2';
     else if(m.cmd_type=='table') c_cmd='count-table';
@@ -38,6 +40,8 @@ m.request_data=function(){
     });
     var f_cmd="find";
     if(m.cmd_type=='s') f_cmd='find-s';
+    else if(m.cmd_type=='m') f_cmd='find-m';
+    else if(m.cmd_type=='d') f_cmd='find-d';
     else if(m.cmd_type=='p1') f_cmd='find-p1';
     else if(m.cmd_type=='p2') f_cmd='find-p2';
     else if(m.cmd_type=='table') f_cmd='find-table';
