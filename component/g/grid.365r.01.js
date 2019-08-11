@@ -241,6 +241,7 @@ m.ajax=function(endpoint,tokenResponse,callback){
             var mt2=new Date().getTime();
             var tt_all=mt2-mt1;
             console.log((this.response.length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms");
+            $('#elapsed__ID').text((this.response.length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms")
             callback(data);
         }
         else if(this.readyState == 4 && this.status == 403){
@@ -255,6 +256,7 @@ m.ajax=function(endpoint,tokenResponse,callback){
     xmlHttp.open("GET", endpoint, true); // true for asynchronous
     xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
     xmlHttp.setRequestHeader("Accept", "application/json");  
+    if(m.odata_maxpagesize) xmlHttp.setRequestHeader("Prefer", "odata.maxpagesize="+m.odata_maxpagesize);  
     xmlHttp.send();
 }
 //-------------------------------------
