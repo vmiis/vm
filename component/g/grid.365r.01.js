@@ -256,7 +256,7 @@ m.ajax=function(endpoint,tokenResponse,callback){
     xmlHttp.open("GET", endpoint, true); // true for asynchronous
     xmlHttp.setRequestHeader('Authorization', 'Bearer ' + tokenResponse.accessToken);
     xmlHttp.setRequestHeader("Accept", "application/json");  
-    if(m.odata_maxpagesize) xmlHttp.setRequestHeader("Prefer", "odata.maxpagesize="+m.odata_maxpagesize);  
+    if(m.odata_maxpagesize!=undefined) xmlHttp.setRequestHeader("Prefer", "odata.maxpagesize="+m.odata_maxpagesize);  
     xmlHttp.send();
 }
 //-------------------------------------
