@@ -515,8 +515,10 @@ $vm.load_module=function(name,slot,input){
 	if($('#D'+module_id).length==0){
 		var apppath=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
         var storage_url=url;
-		var ver=localStorage.getItem(apppath+storage_url+"_ver");
-		var txt=localStorage.getItem(apppath+storage_url+"_txt");
+		//var ver=localStorage.getItem(apppath+storage_url+"_ver");
+		//var txt=localStorage.getItem(apppath+storage_url+"_txt");
+		var ver=localStorage.getItem(storage_url+"_ver");
+		var txt=localStorage.getItem(storage_url+"_txt");
 		var http127_i=0;
 		if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1 || url.indexOf('http://vmiis-local.com')!=-1) http127_i=1;
 		var reload=0;
@@ -536,8 +538,10 @@ $vm.load_module=function(name,slot,input){
 					data=data.replace(/__CURRENT_NAME__/g,nm);
 				}
 				//-----------------------------------
-				localStorage.setItem(apppath+storage_url+"_txt",data);
-				localStorage.setItem(apppath+storage_url+"_ver",$vm.ver[0]);
+				//localStorage.setItem(apppath+storage_url+"_txt",data);
+				//localStorage.setItem(apppath+storage_url+"_ver",$vm.ver[0]);
+				localStorage.setItem(storage_url+"_txt",data);
+				localStorage.setItem(storage_url+"_ver",$vm.ver[0]);
 				var current_all=data;
 				if(current_all.indexOf('VmInclude:')==-1){
 					$vm.create_module_and_run_code(current_all,module_id,url,slot,m_name);
