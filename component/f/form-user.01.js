@@ -38,30 +38,24 @@ m.submit=function(event){
     var rid=undefined; if(m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
         $vm.request({cmd:"insert-user",data:data},function(res){
-            if(res.sys.exist!=undefined){
-                alert("The user is existed.");
+			if(res.sys.count==1){
+				alert("The login name is existed in the system");
                 $('#submit__ID').show();
                 return;
             }
-            if(rid!=undefined){
-                $vm.refresh=1;
-                window.history.go(-1);       //from grid
-            }
-            else $vm.alert('Your data has been successfully submitted');    //standalone
+            $vm.refresh=1;
+            window.history.go(-1);       //from grid
         });
     }
     else if(rid!=undefined){
         $vm.request({cmd:"update-user",id:rid,data:data},function(res){
-            if(res.sys.exist!=undefined){
-                alert("The app or app/table is existed.");
-                $('#submit__ID').show();
+            if(res.status==0){
+                alert("System Error.");
+                //$('#submit__ID').show();
                 return;
             }
-            if(rid!=undefined){
-                $vm.refresh=1;
-                window.history.go(-1);       //from grid
-            }
-            else $vm.alert('Your data has been successfully submitted');    //standalone
+            $vm.refresh=1;
+            window.history.go(-1);       //from grid
         });
     }
 }

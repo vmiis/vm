@@ -18,7 +18,7 @@ m.request_data=function(){
     var limit=parseInt($('#page_size__ID').val());
     var skip=limit*parseInt($('#I__ID').text());
     var mt1=new Date().getTime();
-    $vm.request({cmd:"count-user",query:m.query,options:m.options},function(res){
+    $vm.request({cmd:"count-user",query:m.query,options:m.options,search:$('#keyword__ID').val()},function(res){
         var N=res.records[0].count;
         m.max_I=N/limit-1;
         $("#B__ID").text(N)
