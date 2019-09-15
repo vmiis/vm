@@ -23,6 +23,11 @@ $vm.date_day_diff=function(a,b){
     var ms=(b.getTimezoneOffset()-a.getTimezoneOffset())*60*1000;
 	return Math.floor( (b.getTime()-a.getTime()-ms)/1000/3600/24 );
 }
+$vm.first_day_of_current_week=function(){
+      var d=new Date();
+      var day = d.getDay(), diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
+      return new Date(d.setDate(diff));
+}
 $vm.first_day_of_current_month=function(){
 	var date = new Date(), y = date.getFullYear(), m = date.getMonth();
 	var firstDay = new Date(y, m, 1,0,0,0,0);
