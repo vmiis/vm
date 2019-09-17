@@ -4,7 +4,7 @@ if(m.prefix==undefined) m.prefix="";
 m.change_status=0;
 m.ref=0
 //---------------------------------------------
-$('#previous__ID').on('click',function(){   m.ref--;	m.set_ref();	m.request_and_render();	})
+$('#previous__ID').on('click',function(){ m.ref--;	m.set_ref();	m.request_and_render();	})
 $('#this__ID').on('click',    function(){	m.ref=0;    m.set_ref();	m.request_and_render();	})
 $('#next__ID').on('click',    function(){	m.ref++;	m.set_ref();	m.request_and_render();	})
 $('#refresh__ID').on('click', function(){	                            m.request_and_render();	})
@@ -71,7 +71,7 @@ m.calendar_render=function(html){
                 if(j==4) weekday="<span class=weekday>Friday</span>";
                 if(j==5) weekday="<span class=weekday>Saturday</span>";
                 if(j==6) weekday="<span class=weekday>Sunday</span>";
-                row+="<div class="+col_class+"><div class=day__ID style='"+lcolor+"'>"+N+"</div>"+weekday+"<div class=event_container>"+html+"</div></div>";
+                row+="<div class="+col_class+"><div class=day__ID style='"+lcolor+"'>"+N+"</div>"+weekday+"&nbsp;<div class=event_container>"+html+"</div></div>";
           }
           row+="</div>";
           $('#body__ID').append(row);

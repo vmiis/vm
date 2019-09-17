@@ -63,7 +63,7 @@ m.calendar_render=function(html){
                 if(j==4) weekday="<span class=weekday>Friday</span>";
                 if(j==5) weekday="<span class=weekday>Saturday</span>";
                 if(j==6) weekday="<span class=weekday>Sunday</span>";
-                row+="<div class=col__ID><div class=day__ID>"+N+"</div>"+weekday+"<div class=event_container__ID>"+html+"</div></div>";
+                row+="<div class=col__ID><div class=day__ID>"+N+"</div>"+weekday+"&nbsp;<div class=event_container__ID>"+html+"</div></div>";
           }
           row+="</div>";
           $('#body__ID').append(row);
