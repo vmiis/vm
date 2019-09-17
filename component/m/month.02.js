@@ -21,8 +21,8 @@ m.set_ref=function(){
     var d0=new Date(y,mm,1,0,0,0,0);
     var e=d0.getDay(); if(e===0) e=7;
     e=e-1; //0,1,...6 --- Monday....Sunday
-    var x=$vm.date_add_days(d0,-e-1);	m.first_day=$vm.date_to_yyyymmdd(x);
-    var y=$vm.date_add_days(d0,-e+41+1);  m.last_day= $vm.date_to_yyyymmdd(y);
+    var x=$vm.date_add_days(d0,-e-1);	m.first_day=x;
+    var y=$vm.date_add_days(d0,-e+41+1);  m.last_day=y;
 }
 m.set_ref();
 //---------------------------------------------
