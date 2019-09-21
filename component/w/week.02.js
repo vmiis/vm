@@ -90,6 +90,7 @@ m.calendar_render=function(){
         set_rect();
     })
     $('#calendar__ID .c_cell__ID').on('mouseup',function(){
+        var dd=drag_end-drag_start;
         var item=$('#item_list__ID').val();
         var day=$vm.date_to_yyyymmdd($vm.date_add_days(d,7*m.ref+parseInt(drag_d)-1));
         var time=$vm.pad(Math.floor((drag_start)/60),2)+":"+$vm.pad((drag_start)%60,2);
@@ -99,7 +100,9 @@ m.calendar_render=function(){
         drag_end=-1;
         $rect.html('&nbsp;');
         $rect.remove();
-        m.new_record({item:item,day:day,time:time,duration:duration});
+        if(dd>=0){
+            m.new_record({item:item,day:day,time:time,duration:duration,goback:1});
+        }
     })
     
     $('#calendar__ID .c_cell__ID').on('mouseover',function(){

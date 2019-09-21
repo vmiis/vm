@@ -182,6 +182,16 @@ $vm.whire_or_black_color=function(color){
     return c;
 }
 //--------------------------------------------------------
+$vm.white_or_black_color=function(color){
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+    var red=parseInt(result[1], 16);
+    var green=parseInt(result[2], 16);
+    var blue=parseInt(result[3], 16);
+    var c='#ffffff';
+    if ((red*0.299 + green*0.587 + blue*0.114) > 186 ) c='#000000';
+    return c;
+}
+//--------------------------------------------------------
 $vm.download_csv=function(fn,data){
     var CSV='';
     var row="";
