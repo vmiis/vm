@@ -383,7 +383,7 @@ $vm.sys_structure=function(){
             var c="url:"+"@1span class=c1@2"+$vm.module_list[m].url+"@1/span@2";
             var tb=$vm.module_list[m].Table;
             if(tb!=undefined) c=c+", table:"+"@1span class=c2@2"+tb+"@1/span@2";
-            txt+="\t\t<div id="+a+" module=@1span class=c@2"+m+"@1/span@2>"+c+"</div>\r\n";
+            txt+="\t\t\t<div id="+a+" module=@1span class=c@2"+m+"@1/span@2>"+c+"</div>\r\n";
         })
         txt+="\t\t</system>\r\n";
         txt+="\t</body>\r\n</html>";
