@@ -1605,3 +1605,60 @@ $vm.tool_table_info=function(user,op){
     }
 }
 //---------------------------------------------
+$vm.sys_structure=function(){
+    var txt="<html>\r\n\t<body>\r\n";
+        txt+="\t\t<header>\r\n";
+        $('#header >div').each(function(){
+            var a=$(this).attr('id');
+            var m=$(this).attr('module');
+            var c="url:"+"@1span class=c1@2"+$vm.module_list[m].url+"@1/span@2";
+            var tb=$vm.module_list[m].Table;
+            if(tb!=undefined) c=c+", table:"+"@1span class=c2@2"+tb+"@1/span@2";
+            txt+="\t\t\t<div id="+a+" module=@1span class=c@2"+m+"@1/span@2>"+c+"</div>\r\n";
+        })
+        txt+="\t\t</header>\r\n";
+        txt+="\t\t<content>\r\n";
+            $('#content >div').each(function(){
+            var a=$(this).attr('id');
+            var m=$(this).attr('module');
+            var c="url:"+"@1span class=c1@2"+$vm.module_list[m].url+"@1/span@2";
+            var tb=$vm.module_list[m].Table;
+            if(tb!=undefined) c=c+", table:"+"@1span class=c2@2"+tb+"@1/span@2";
+            txt+="\t\t\t<div id="+a+" module=@1span class=c@2"+m+"@1/span@2>"+c+"</div>\r\n";
+        })
+        txt+="\t\t</content>\r\n";
+        txt+="\t\t<footer>\r\n";
+            $('#footer >div').each(function(){
+            var a=$(this).attr('id');
+            var m=$(this).attr('module');
+            var c="url:"+"@1span class=c1@2"+$vm.module_list[m].url+"@1/span@2";
+            var tb=$vm.module_list[m].Table;
+            if(tb!=undefined) c=c+", table:"+"@1span class=c2@2"+tb+"@1/span@2";
+            txt+="\t\t\t<div id="+a+" module=@1span class=c@2"+m+"@1/span@2>"+c+"</div>\r\n";
+        })
+        txt+="\t\t</footer>\r\n";
+        txt+="\t\t<system>\r\n";
+            $('#system >div').each(function(){
+            var a=$(this).attr('id');
+            var m=$(this).attr('module');
+            var c="url:"+"@1span class=c1@2"+$vm.module_list[m].url+"@1/span@2";
+            var tb=$vm.module_list[m].Table;
+            if(tb!=undefined) c=c+", table:"+"@1span class=c2@2"+tb+"@1/span@2";
+            txt+="\t\t<div id="+a+" module=@1span class=c@2"+m+"@1/span@2>"+c+"</div>\r\n";
+        })
+        txt+="\t\t</system>\r\n";
+        txt+="\t</body>\r\n</html>";
+        txt=txt.replace(/</g,'&lt;');
+        txt=txt.replace(/>/g,'&gt;');
+        txt=txt.replace(/@1/g,'<');
+        txt=txt.replace(/@2/g,'>');
+    var win=window.open("","Systsm Infomation");
+    win.document.body.innerHTML="<pre>"+txt+"</pre><title>System Infomation</title><style> .c{color:red;} .c1{color:blue;} .c2{color:green;} body{ font-family:Courier New;font-size:12px; white-space: nowrap; } </style>";
+}
+//---------------------------------------------
+$vm.sys_settings=function(){
+    var path=window.location.href.split('?')[0].replace('/index.html','')
+    localStorage.setItem("__temp1001_"+path,JSON.stringify($vm.module_list));
+    window.open('/sitedev/index.html?path='+path)
+}
+//---------------------------------------------
