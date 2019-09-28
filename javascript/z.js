@@ -399,7 +399,7 @@ $vm.sys_settings=function(){
     var path=window.location.href.split('?')[0].replace('/index.html','')
     var sites=window.location.href.indexOf('/sites/');
     localStorage.setItem("__temp1001_"+path,JSON.stringify($vm.module_list));
-    if(sites==-1) window.open('/sitedev/index.html?path='+path);
-    else window.open(window.location.href.split('/sites/')[0]+'/sites/sitedev/index.html?path='+path);
+    if(sites==-1) window.open('/057/index.html?path='+path);
+    else window.open(window.location.href.split('/sites/')[0]+'/sites/057/index.html?path='+path);
 }
 //---------------------------------------------
