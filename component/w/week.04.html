@@ -1,0 +1,69 @@
+<div>
+    <div id=toolbar__ID class="navbar navbar-default" style='margin-bottom:0px;padding-left:6px;'>
+        <div class="navbar-form navbar-left">
+                <select id=item_list__ID class="form-control" style='margin-right:3px;width:auto;float:left;display:none'></select>
+                <span class="tool__ID">
+                    <button type=button class='btn btn-secondary' id=previous__ID><i class="fa fa-arrow-left"></i></button>
+                    <button type=button class='btn btn-secondary' id=this__ID>This Week</button>
+                    <button type=button class='btn btn-secondary' id=next__ID><i class="fa fa-arrow-right"></i></button>
+                </span>
+                <button type=button class='btn btn-secondary' id=refresh__ID>Refresh</button>
+                <span style='margin-left:20px' id=info__ID></span>
+            </div>
+            <span id=elapsed__ID style='float:right'></span>
+        </div>
+    <div id=calendar__ID></div>
+</div>
+<style>
+	#toolbar__ID{
+		background-color:#ccc;
+		padding-left:2px;
+		margin-bottom:0px;
+		overflow:hidden
+	}
+    #calendar__ID .c_hd_row__ID{
+        display:grid;
+        grid-template-columns: 1fr;
+        background-color: #868e96;
+        color:#fff;
+        font-weight:bold;
+        text-align:center;
+    }
+    #calendar__ID .c_row__ID{
+        display:grid;
+        grid-template-columns: 1fr;
+    }
+    #calendar__ID .c_T__ID{
+        min-height:12px;
+        font-size:11px;
+        padding-left:6px;
+        width:60px;
+    }
+    #calendar__ID .c_C__ID{
+        min-height:12px;
+        font-size:11px;
+        padding-left:6px;
+    }
+    #calendar__ID .c_hd_cell__ID{
+        display:inline-block;
+        width:14.285%;
+        border-left:1px solid #eee;
+        position:relative;
+        padding:6px 0;
+    }
+    #calendar__ID .c_cell__ID{
+        padding-top:6px;
+        vertical-align: top;
+        display:inline-block;
+        width:14.285%;
+        border-left:1px solid #eee;
+        position:relative;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        height:100%;
+    }
+    #calendar__ID .rect_b__ID:hover{
+        border-color: red;
+    }
+</style>
