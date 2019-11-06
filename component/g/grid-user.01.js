@@ -20,7 +20,7 @@ m.request_data=function(){
     var mt1=new Date().getTime();
     $vm.request({cmd:"count-user",query:m.query,options:m.options,search:$('#keyword__ID').val()},function(res){
         var N=res.records[0].count;
-        m.max_I=N/limit-1;
+        m.max_I=Math.ceil(N/limit)-1;
         $("#B__ID").text(N)
         var n2=skip+limit; if(n2>N) n2=N;
         var a=(skip+1).toString()+"~"+(n2).toString()+" of ";
