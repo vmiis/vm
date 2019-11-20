@@ -120,7 +120,7 @@ m.render=function(){
             if(value==undefined) value="";
             value=value.toString();
             value=$('<div/>').text(value).html();
-            value=value.replace(/\n/g,'<br>');
+            value=value.replace(/\n/g,'<br>').replace(/\r/g,'');
             var print='';
             if(m.field_header[j][0]=='_') print='class=c_print';
             txt+="<td data-id="+b+" "+print+" >"+value+"</td>";
