@@ -403,3 +403,13 @@ $vm.sys_settings=function(){
     else window.open(window.location.href.split('/sites/')[0]+'/sites/057/index.html?path='+path);
 }
 //---------------------------------------------
+$vm.getB64Str=function(buffer) {
+    var binary = '';
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+}
+//--------------------------------------------------------

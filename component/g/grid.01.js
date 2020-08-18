@@ -411,3 +411,72 @@ m.set_file_link=function(records,I,field,td){
     })
 }
 //-------------------------------
+m.set_file_link_s0=function(records,I,field,td){
+    var filename=records[I].Data[field];
+    td.html("<u style='cursor:pointer'>"+filename+"</u>");
+    td.find('u').on('click',function(){
+        var rid=records[I].UID;
+        var done=0;
+        var get_file_from_server=function(){
+            if(done==0){
+                $vm.request({cmd:"file",id:rid,table:m.Table,uid:records[I].UID, field:field,filename:filename},function(res, status, xhr){
+                    try{
+                        if(res=="404"){
+                            alert("No such file.");
+                            return;
+                        };
+                    }
+                    catch(e){}
+                    if('caches' in window){
+                        caches.open('VM').then(cache => {
+                            var aHeaders = new Headers();
+                            aHeaders.append('last-modifie',xhr.getResponseHeader('last-modified'));
+                            var rs=new Response(res, { "headers" :aHeaders} );
+                            cache.put(m.Table+"-"+rid+"-"+field,rs);
+                            return;
+                        })
+                    }
+                    var link=document.createElement('a');
+                    var url = window.URL || window.webkitURL;
+                    link.href=url.createObjectURL(res);
+                    link.download=filename;
+                    link.click();
+                    //document.body.removeChild(link);
+                });
+            }
+        }
+        var get_file_from_cache=function(){
+            if('caches' in window){
+                caches.open('VM').then(
+                    cache => {
+                        cache.match(m.Table+"-"+rid+"-"+field).then(response => {
+                            if(response){
+                                $vm.request({cmd:"file",id:rid,table:m.Table,uid:records[I].UID, field:field,filename:filename,datetime:1},function(res){
+                                    var dtA=new Date(response.headers.get('last-modifie')).getTime();
+                                    var dtB=new Date(res.result).getTime();
+                                    dtA=dtA-dtA%1000;
+                                    dtB=dtB-dtB%1000;
+                                    if(dtA==dtB){
+                                        response.blob().then(function(myBlob) {
+                                            var link=document.createElement('a');
+                                            var url = window.URL || window.webkitURL;
+                                            link.href=url.createObjectURL(myBlob);
+                                            link.download=filename;
+                                            link.click();
+                                        });
+                                    }
+                                    else get_file_from_server();
+                                })
+                            }
+                            else{
+                                get_file_from_server();
+                            }
+                        })
+                    }
+                )
+            }
+        }
+        get_file_from_cache();
+    })
+}
+//-------------------------------
