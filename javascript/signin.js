@@ -9,6 +9,12 @@ $vm.signin=function(){
 	}
 }
 //---------------------------------------------
+$vm.adsignin=function(){
+	if($vm.user_name=='guest'){
+		window.open($vm.api_address+"/signinad.html","Sign In","width=600, height=700");
+	}
+}
+//---------------------------------------------
 $vm.signin_s=function(){
 	if($vm.user=='guest'){
 		window.open($VmAPI.api_base+"signin.html?url="+window.location.href,"Sign In","width=600, height=700");
