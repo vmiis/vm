@@ -412,4 +412,6 @@ $vm.getB64Str=function(buffer) {
     }
     return window.btoa(binary);
 }
+//---------------------------------------------
+$vm.alert=function(txt){ alert(txt); }
 //--------------------------------------------------------
