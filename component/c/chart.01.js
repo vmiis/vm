@@ -15,6 +15,9 @@ m.set_req_export=function(i1,i2){
 }
 //-----------------------------------------------
 m.request_data=function(){
+    if(m.input!=undefined && m.input.silence==1){
+        return;
+    }
     var mt1=new Date().getTime();
     var f_cmd="find";
     if(m.cmd_type=='s') f_cmd='find-s';

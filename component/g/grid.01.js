@@ -16,6 +16,9 @@ m.set_req_export=function(i1,i2){
 }
 //-----------------------------------------------
 m.request_data=function(){
+    if(m.input!=undefined && m.input.silence==1){
+        return;
+    }
     var limit=parseInt($('#page_size__ID').val());
     var skip=limit*parseInt($('#I__ID').text());
     var mt1=new Date().getTime();
