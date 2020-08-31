@@ -551,7 +551,8 @@ $vm.load_module=function(name,slot,input){
 				var current_all=data;
 				if(current_all.indexOf('VmInclude:')==-1){
 					$vm.create_module_and_run_code(current_all,module_id,url,slot,m_name);
-					$vm.insert_and_trigger_load(module_id,slot,m_name);
+					if(input !=undefined && input.silence==1){}
+					else $vm.insert_and_trigger_load(module_id,slot,m_name);
 				}
 				else{
 					$vm.process_first_include(current_all,module_id,slot,url,m_name);
@@ -565,7 +566,8 @@ $vm.load_module=function(name,slot,input){
 			var current_all=txt;
 			if(current_all.indexOf('VmInclude:')==-1){
 				$vm.create_module_and_run_code(current_all,module_id,url,slot,m_name);
-				$vm.insert_and_trigger_load(module_id,slot,m_name);
+				if(input !=undefined && input.silence==1){}
+				else $vm.insert_and_trigger_load(module_id,slot,m_name);
 			}
 			else{
 				$vm.process_first_include(current_all,module_id,slot,url,m_name);
@@ -762,7 +764,9 @@ $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
 			var current_all=$vm.replace_and_recreate_content(lines,i,data)
 			if(current_all.indexOf('VmInclude:')==-1){
 				$vm.create_module_and_run_code(current_all,module_id,url_0,slot,m_name);
-				$vm.insert_and_trigger_load(module_id,slot,m_name);
+				var input=$vm.vm[module_id].input;
+				if(input !=undefined && input.silence==1){}
+				else $vm.insert_and_trigger_load(module_id,slot,m_name);
 			}
 			else{
 				$vm.process_first_include(current_all,module_id,slot,url_0,m_name);
@@ -775,7 +779,9 @@ $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
 		var current_all=$vm.replace_and_recreate_content(lines,i,txt)
 		if(current_all.indexOf('VmInclude:')==-1){
 			$vm.create_module_and_run_code(current_all,module_id,url_0,slot,m_name);
-			$vm.insert_and_trigger_load(module_id,slot,m_name);
+			var input=$vm.vm[module_id].input;
+			if(input!=undefined && input.silence==1){}
+			else $vm.insert_and_trigger_load(module_id,slot,m_name);
 		}
 		else{
 			$vm.process_first_include(current_all,module_id,slot,url_0,m_name);
