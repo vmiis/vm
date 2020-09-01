@@ -27,7 +27,7 @@ m.calendar_render=function(){
         txt+="<div class=c_cell__ID "+a+" d=4 >&nbsp;</div>";
         txt+="<div class=c_cell__ID "+a+" d=5 >&nbsp;</div>";
         txt+="<div class=c_cell__ID "+a+" d=6 >&nbsp;</div>";
-        txt+="<div class=c_cell__ID "+a+" d=7 >&nbsp;</div>";
+        txt+="<div class=c_cell__ID "+a+" d=0 >&nbsp;</div>";
         return txt;
     }
     var d=$vm.first_day_of_current_week();
@@ -78,6 +78,7 @@ m.calendar_render=function(){
         var h=$(this).attr("h");
         var q=$(this).attr("q");
         var d=$(this).attr("d");
+        if(d==0) d=7;
         var p=parseInt(h)*60+(parseInt(q)-1)*15;
         drag_start=p;
         drag_end=p;
