@@ -28,7 +28,7 @@ $vm.signout=function(){
 	}
 	$vm.clear_token();
 	sessionStorage["signinout"]=1;
-	location.reload(true);
+	location.reload();
 }
 //---------------------------------------------
 $vm.signout_s=function(){
