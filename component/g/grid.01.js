@@ -53,10 +53,10 @@ m.request_data=function(){
         var tt_all=mt2-mt1;
         var tt_server=parseInt(res.sys.elapsed_time);
         if(tt_all<tt_server) tt_all=tt_server;
-        var db="<span style='color:#0919ec'>&#9679;</span> "; if(res.sys.db==1 || res.sys.db=='on') db="<span style='color:#0bbe0b'>&#9679;</span> ";
-        var tb="<span style='color:red'>&#9679;</span> ";     if(res.sys.tb==1 || res.sys.tb=='on') tb="<span style='color:#0bbe0b'>&#9679;</span> ";
+        //var db="<span style='color:#0919ec'>&#9679;</span> "; if(res.sys.db==1 || res.sys.db=='on') db="<span style='color:#0bbe0b'>&#9679;</span> ";
+        var tb="<span style='color:red'>&#9679;</span> ";     if(res.tb==1 || res.tb=='on') tb="<span style='color:#0bbe0b'>&#9679;</span> ";
         $("#elapsed__ID").html(/*db+*/tb+(JSON.stringify(res.result).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
-        $("#_sys_dev_info_elapsed").html(m.Table+" "+db+tb+(JSON.stringify(res.result).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
+        //$("#_sys_dev_info_elapsed").html(m.Table+" "+db+tb+(JSON.stringify(res.result).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
         
         if(res.status=='np' || res.result==undefined){
             res.result=[];
