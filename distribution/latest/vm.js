@@ -74,7 +74,7 @@ window.onpopstate=function(event){
 		
 		if($vm.show!=undefined){ $vm.show(event.state.m_name); }
     }
-    console.log($vm.page_stack);
+    //console.log($vm.page_stack);
     //new ==========================================
     return;
 
@@ -1063,6 +1063,10 @@ $vm.replace_and_recreate_content=function(lines,I,replace){
 $vm.show_module=function(name,input){
     var m=$vm.module_list[name];
 	m.input=input;
+	if(m.parent!=undefined){
+		var pm=$vm.module_list[m.parent];
+		$vm.insert_and_trigger_load(pm.id,pm.slot,m.parent);	
+	}
     $vm.insert_and_trigger_load(m.id,m.slot,name);
 }
 //-----------------------------------

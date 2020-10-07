@@ -74,7 +74,7 @@ window.onpopstate=function(event){
 		
 		if($vm.show!=undefined){ $vm.show(event.state.m_name); }
     }
-    console.log($vm.page_stack);
+    //console.log($vm.page_stack);
     //new ==========================================
     return;
 
