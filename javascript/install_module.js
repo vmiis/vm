@@ -1,50 +1,10 @@
-//-----------------------------------------------------------------
-$vm.id=function(){
-	if($vm._id==undefined) $vm._id=0;
-	$vm._id++;
-	return "_"+$vm._id.toString();
-}
-//------------------------------------------------------------------
-$vm.load_content=function(name,slot,input,content){
-	var url=$vm.module_list[name]['url'];
-
-	var apppath=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
-	localStorage.setItem(apppath+url+"_txt",content);
-
-	if(slot=='') slot=$vm.root_layout_content_slot;
-	var id=$vm.module_list[name].id;
-	if(id==undefined) id=$vm.id();
-	$vm.module_list[name].id=id;
-	$vm.vm[id]={};
-	
-	if(url[0]=='/') url=$vm.hosting_path+url;
-	var last_part=url.split('/').pop();
-    var current_path=url.replace(last_part,'');
-	$vm.vm[id].current_path=current_path;
-
-	if(content.indexOf('VmInclude:')==-1){
-		$vm.create_module_and_run_code(content,id,url,slot,name);
-		$vm.insert_and_trigger_load(id,slot,name);
-	}
-	else{
-		$vm.process_first_include(content,id,slot,url,name);
-	}
-}
-//------------------------------------------------------------------
-_g_current_path='';
-$vm.load_module=function(name,slot,input){
+$vm.install_module=function(name,slot,input,callback){
     if(name==undefined) return;
-	//if($vm.name==undefined) $vm.name={}
 	if($vm.vm==undefined) $vm.vm={}
-    _g_vm_chrom_loop=0;
-	//$vm.load_module_by_name(name,slot_1,op);
-    if(input==undefined) input={};
 	var slot_1=$vm.root_layout_content_slot;
 	if(slot!=undefined && slot!="") slot_1=slot;
-	if(slot=="hidden") slot_1=undefined;
-
     slot=slot_1
-
+    $vm.module_list[name].slot=slot;
 	if($vm.module_list[name]===undefined){
 		alert("The module '"+name+"' is not in the module list.");
 		return;
@@ -52,23 +12,19 @@ $vm.load_module=function(name,slot,input){
     var url=$vm.module_list[name]['url'];
     if(url===undefined) return;
     url=$vm.url(url);
-	var id=$vm.module_list[name].id;
-	if(id==undefined) id=$vm.id();
+	var id=$vm.id();
 	$vm.module_list[name].id=id;
-	//$vm.name[id]=name;
 	var m=$vm.module_list[name];
-	m.input=input;
-
 	var m_name=name;
 	var module_id	=id;
 	if(url[0]=='/') url=$vm.hosting_path+url;
 	var last_part=url.split('/').pop();
-    _g_current_path=url.replace(last_part,'');
+    var current_path=url.replace(last_part,'');
 	if($('#D'+module_id).length===0){
 		$vm.vm[module_id]={};
 	}
 	if($vm.vm[module_id]==undefined) $vm.vm[module_id]={};
-	$vm.vm[module_id].current_path=_g_current_path;
+	$vm.vm[module_id].current_path=current_path;
     $vm.vm[module_id].input=input;
     $vm.vm[module_id].name=name;
     $vm.vm[module_id].url=url;
@@ -76,8 +32,6 @@ $vm.load_module=function(name,slot,input){
 	if($('#D'+module_id).length==0){
 		var apppath=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
         var storage_url=url;
-		//var ver=localStorage.getItem(apppath+storage_url+"_ver");
-		//var txt=localStorage.getItem(apppath+storage_url+"_txt");
 		var ver=localStorage.getItem(storage_url+"_ver");
 		var txt=localStorage.getItem(storage_url+"_txt");
 		var http127_i=0;
@@ -99,18 +53,16 @@ $vm.load_module=function(name,slot,input){
 					data=data.replace(/__CURRENT_NAME__/g,nm);
 				}
 				//-----------------------------------
-				//localStorage.setItem(apppath+storage_url+"_txt",data);
-				//localStorage.setItem(apppath+storage_url+"_ver",$vm.ver[0]);
 				localStorage.setItem(storage_url+"_txt",data);
 				localStorage.setItem(storage_url+"_ver",$vm.ver[0]);
 				var current_all=data;
 				if(current_all.indexOf('VmInclude:')==-1){
-					$vm.create_module_and_run_code(current_all,module_id,url,slot,m_name);
+					$vm.install_create_module_and_run_code(current_all,module_id,url,slot,m_name,callback);
 					if(input !=undefined && input.silence==1){}
-					else $vm.insert_and_trigger_load(module_id,slot,m_name);
+					//else $vm.insert_and_trigger_load(module_id,slot,m_name);
 				}
 				else{
-					$vm.process_first_include(current_all,module_id,slot,url,m_name);
+					$vm.install_process_first_include(current_all,module_id,slot,url,m_name);
 				}
 			}).fail(function() {
 			    alert( "The module '"+url+"' doesn't exist or you have AdBlock that blocks this remote module to be loaded." );
@@ -120,20 +72,19 @@ $vm.load_module=function(name,slot,input){
 			console.log('loading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
 			var current_all=txt;
 			if(current_all.indexOf('VmInclude:')==-1){
-				$vm.create_module_and_run_code(current_all,module_id,url,slot,m_name);
+				$vm.install_create_module_and_run_code(current_all,module_id,url,slot,m_name,callback);
 				if(input !=undefined && input.silence==1){}
-				else $vm.insert_and_trigger_load(module_id,slot,m_name);
+				//else $vm.insert_and_trigger_load(module_id,slot,m_name);
 			}
 			else{
-				$vm.process_first_include(current_all,module_id,slot,url,m_name);
+				$vm.install_process_first_include(current_all,module_id,slot,url,m_name);
 			}
 		}
 	}
-	else $vm.insert_and_trigger_load(module_id,slot,m_name);
-};
-$vm.load_module_v2=$vm.load_module;
-//---------------------------------------------
-$vm.create_module_and_run_code=function(txt,module_id,url,slot,m_name){
+	//else $vm.insert_and_trigger_load(module_id,slot,m_name);
+}
+//-----------------------------------
+$vm.install_create_module_and_run_code=function(txt,module_id,url,slot,m_name,callback){
 	//txt=txt.replace(/__CURRENT_PATH__/g,_g_current_path);
 	txt=txt.replace(/__CURRENT_PATH__/g,$vm.vm[module_id].current_path);
 	var content=txt;
@@ -154,7 +105,6 @@ $vm.create_module_and_run_code=function(txt,module_id,url,slot,m_name){
 	content=content.replace(/<!--([\s\S]*?)-->/mig, '');
 	//-----------------
 	if(slot!='body'){
-		//content="<div id=D"+module_id+" module='"+m_name+"' class=vm_module style='display:none'><!--"+url+"-->"+content+"</div>"
 		content="<div id=D"+module_id+" module='"+m_name+"' style='display:none'><!--"+url+"-->"+content+"</div>"
 		$("#D"+module_id).remove();
 		if(slot=='' || slot==undefined) slot=$vm.root_layout_content_slot;
@@ -179,121 +129,34 @@ $vm.create_module_and_run_code=function(txt,module_id,url,slot,m_name){
 		event.stopPropagation();
 		$vm.source(''+module_id,event);
 	});
-	//-------------------------------------
-	//if($vm.vm_module_border!==undefined){
-	//	$('div.vm_module').css("border","1px solid red");
-	//}
-	//-------------------------------------
+    //-------------------------------------
+    if(callback!=undefined) callback(m_name,module_id);
 }
 //-----------------------------------
-$vm.insert_and_trigger_load=function(module_id,slot,m_name){
-	if(slot!="body"){
-		$vm.insert_module({module_id:module_id,slot:slot,m_name:m_name});
-		$('#D'+module_id).triggerHandler('load');
-		window.scrollTo(0,0);
-	}
-	$('#vm_loader').hide();
-}
-//-----------------------------------
-$vm.insert_module=function(options){
-    if($vm.page_stack==undefined){
-        $vm.page_stack=[];
-        $vm.page_stack_index=0;
-    }
-	var module_id		=options.module_id;
-	var slot	=options.slot;
-    if(module_id===undefined) return;
-	if(slot===undefined || slot=="") return;
-    //new =================================
-    var L=$vm.page_stack.length;
-    if(L!=0){
-        var top=$vm.page_stack[L-1];
-        if(top!=undefined && top.slot==slot){
-            $('#D'+top.ID).css('display','none');
-            $('#D'+top.ID).triggerHandler('hide');
-        }
-    }
-    //$vm.push_to_slot({div:module_id,slot:slot});
-	$('#'+slot+' >div').css('display','none');
-	$('#D'+module_id).css('display','block');
-	$('#D'+module_id).triggerHandler('show');
-
-	//if(slot!=$vm.root_layout_content_slot) return;
-
-	$vm.page_stack_index++;
-	var parent_id='';
-    $vm.page_stack.push({m_name:options.m_name,ID:module_id,parent_id:parent_id,slot:slot,index:$vm.page_stack_index});
-	var pp=null;
-	//if($vm.vm_router!=undefined){
-    //if($vm.module_list[$vm.vm[module_id].name].router!=undefined){
-	if($vm.module_list[options.m_name].router!=undefined){
-		var dd="";
-		var q=window.location.href.split('?');
-		if(q.length==2){
-			if(q[1].length>0){
-				if(q[1][0]!='/'){
-					//.com/?xxx
-					//.com/index.html?xxx
-					dd="&"+q[1]; //&xxx
-				}
-				else{
-					//.com/?/xxx
-					//.com/?/xxx&yyy
-					//.com/index.html?/xxx
-					//.com/index.html?/xxx&yyy
-					//q[1]=/xxx
-					//q[1]=/xxx&yyy
-					var s=q[1].split('&')[0];
-					//s=/xxx
-					dd=q[1].replace(s,''); //remove /xxx
-				}
-			}
-			else{
-				// .com/?
-			}
-		}
-		var ext=q[0].split('.').pop();
-		if(ext=='html') pp=q[0]+"?/"+$vm.vm[module_id].name.replace(/_/g,'\/')+dd;
-		else            pp=$vm.hosting_path+"/?/"+$vm.vm[module_id].name.replace(/_/g,'\/')+dd;
-	}
-	else{
-		pp=window.location.href.split('?')[0];
-	}
-    window.history.pushState({m_name:options.m_name,ID:module_id,slot:slot,index:$vm.page_stack_index}, null, pp);
-	//if($vm.change_meta!=undefined){ $vm.change_meta(module_id); }
-	if($vm.show!=undefined){ $vm.show(options.m_name); }
-	else if($vm.first_module==undefined) $vm.first_module=options.m_name;
-//    console.log($vm.page_stack)
-    //=====================================
-    return;
-};
-//------------------------------------
-$vm.process_first_include=function(txt,module_id,slot,url_0,m_name){
+$vm.install_process_first_include=function(txt,module_id,slot,url_0,m_name,callback){
 	var lines=txt.split('\n');
 	for(var i=0;i<lines.length;i++){
 		if(lines[i].length>10){
 			if(lines[i].indexOf('VmInclude:')!==-1){
-				$vm.load_include(lines,i,module_id,slot,url_0,m_name); //find the first include and process
+				$vm.install_load_include(lines,i,module_id,slot,url_0,m_name,callback); //find the first include and process
 				return;
 			}
 		}
 	}
 }
 //-----------------------------------
-$vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
+$vm.install_load_include=function(lines,i,module_id,slot,url_0,m_name,callback){
 	var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
 	name=name.replace(/\'/g,'');
 	name=name.replace(/\"/g,'');
 	var items=name.split('|');
 	var url=$vm.url(items[0]);
 	if(url[0]=='/') url=$vm.hosting_path+url;
-	//url=url.replace('__CURRENT_PATH__',_g_current_path);
 	url=url.replace('__CURRENT_PATH__',$vm.vm[module_id].current_path);
 	//------------------------------
 	var apppath=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
 	var ver=localStorage.getItem(apppath+url+"_ver");
 	var txt=localStorage.getItem(apppath+url+"_txt");
-
 	var http127_i=0;
 	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1 || url.indexOf('http://vmiis-local.com')!=-1) http127_i=1;
 	else if($vm.localhost==true && url.indexOf('http://')==-1 && url.indexOf('https://')==-1){ //like modules/home.html
@@ -323,13 +186,13 @@ $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
 			localStorage.setItem(apppath+url+"_ver",$vm.ver[0]);
 			var current_all=$vm.replace_and_recreate_content(lines,i,data)
 			if(current_all.indexOf('VmInclude:')==-1){
-				$vm.create_module_and_run_code(current_all,module_id,url_0,slot,m_name);
+				$vm.install_create_module_and_run_code(current_all,module_id,url_0,slot,m_name,callback);
 				var input=$vm.vm[module_id].input;
 				if(input !=undefined && input.silence==1){}
-				else $vm.insert_and_trigger_load(module_id,slot,m_name);
+				//else $vm.insert_and_trigger_load(module_id,slot,m_name);
 			}
 			else{
-				$vm.process_first_include(current_all,module_id,slot,url_0,m_name);
+				$vm.install_process_first_include(current_all,module_id,slot,url_0,m_name,callback);
 			}
 		},'text');
 
@@ -338,29 +201,14 @@ $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
 		console.log('loading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
 		var current_all=$vm.replace_and_recreate_content(lines,i,txt)
 		if(current_all.indexOf('VmInclude:')==-1){
-			$vm.create_module_and_run_code(current_all,module_id,url_0,slot,m_name);
+			$vm.install_create_module_and_run_code(current_all,module_id,url_0,slot,m_name,callback);
 			var input=$vm.vm[module_id].input;
 			if(input!=undefined && input.silence==1){}
-			else $vm.insert_and_trigger_load(module_id,slot,m_name);
+			//else $vm.insert_and_trigger_load(module_id,slot,m_name);
 		}
 		else{
-			$vm.process_first_include(current_all,module_id,slot,url_0,m_name);
+			$vm.install_process_first_include(current_all,module_id,slot,url_0,m_name,callback);
 		}
 	}
-}
-//-----------------------------------
-$vm.replace_and_recreate_content=function(lines,I,replace){
-	lines[I]=replace;
-	var all="";
-	for(var j=0;j<lines.length;j++){
-		all+=lines[j]+'\n';
-	}
-	return all;
-}
-//-----------------------------------
-$vm.show_module=function(name,input){
-    var m=$vm.module_list[name];
-	m.input=input;
-    $vm.insert_and_trigger_load(m.id,m.slot,name);
 }
 //-----------------------------------
