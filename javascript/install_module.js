@@ -77,7 +77,7 @@ $vm.install_module=function(name,slot,input,callback){
 				//else $vm.insert_and_trigger_load(module_id,slot,m_name);
 			}
 			else{
-				$vm.install_process_first_include(current_all,module_id,slot,url,m_name);
+				$vm.install_process_first_include(current_all,module_id,slot,url,m_name,callback);
 			}
 		}
 	}
