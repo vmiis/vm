@@ -253,8 +253,13 @@ $vm.insert_module=function(options){
 			}
 		}
 		var ext=q[0].split('.').pop();
+		/*
+		?????????
 		if(ext=='html') pp=q[0]+"?/"+$vm.vm[module_id].name.replace(/_/g,'\/')+dd;
 		else            pp=$vm.hosting_path+"/?/"+$vm.vm[module_id].name.replace(/_/g,'\/')+dd;
+		*/
+		if(ext=='html') pp=q[0]+"?/"+$vm.vm[module_id].name+dd;
+		else            pp=$vm.hosting_path+"/?/"+$vm.vm[module_id].name+dd;
 	}
 	else{
 		pp=window.location.href.split('?')[0];
