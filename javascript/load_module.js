@@ -359,6 +359,10 @@ $vm.replace_and_recreate_content=function(lines,I,replace){
 }
 //-----------------------------------
 $vm.show_module=function(name,input){
+	if($vm.module_list[name]===undefined){
+		alert("The module '"+name+"' is not in the module list.");
+		return;
+	}
     var m=$vm.module_list[name];
 	m.input=input;
 	if(m.parent!=undefined){
