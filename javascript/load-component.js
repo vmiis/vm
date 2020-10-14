@@ -47,7 +47,7 @@ $vm.load_component_include_and_run=function(lines,i,url,div,m_name){ //Step B-2
 		var new_url=com_url+'?_v='+new Date().getTime();
 		//if(url.indexOf('?')!==-1) new_url=url+'&_v='+($vm.ver[0]+$vm.reload).replace(/\./,'')+"&g="+_g_vm_chrom_loop++; //wrong
 		if(url.indexOf('?')!==-1) new_url=com_url+'&_v='+($vm.ver[0]+$vm.reload).replace(/\./,'')+"&g="+_g_vm_chrom_loop++;
-		console.log('%cloading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127+" re:"+$vm.reload,"color:#555")
+		console.log('%cloading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127+" re:"+$vm.reload,"color:#b55")
 		$.get(new_url, function(data){
 			var c_m=$("<p>"+data+"</p>").filter('#D__ID').html();
 			if(c_m!=undefined && c_m!='' && c_m!=null){ data=c_m;}
@@ -115,7 +115,7 @@ $vm.load_component=function(name,div,input,dialog){
 		$.get(url+'?_='+new Date().getTime(),function(new_txt){
 			localStorage.setItem(apppath+url+"txt",new_txt);
 			localStorage.setItem(apppath+url+"ver",$vm.ver[0]);
-			console.log('%cloading from url. '+url+' '+ver+'/'+$vm.ver[0]+" 127:"+http127,"color:#555");
+			console.log('%cloading from url. '+url+' '+ver+'/'+$vm.ver[0]+" 127:"+http127,"color:#b55");
 			create_and_run(new_txt,div);
 		},'text');
 	}
