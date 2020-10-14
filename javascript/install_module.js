@@ -71,7 +71,7 @@ $vm.install_module=function(name,slot,input,callback){
 		}
 		else{
 			//console.log('loading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
-			console.log('%cloading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#555")
+			console.log('%cloading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#055")
 			var current_all=txt;
 			if(current_all.indexOf('VmInclude:')==-1){
 				$vm.install_create_module_and_run_code(current_all,module_id,url,slot,m_name,callback);
@@ -202,7 +202,7 @@ $vm.install_load_include=function(lines,i,module_id,slot,url_0,m_name,callback){
 	}
 	else{
 		//console.log('loading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
-		console.log('%cloading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#555")
+		console.log('%cloading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#055")
 		var current_all=$vm.replace_and_recreate_content(lines,i,txt)
 		if(current_all.indexOf('VmInclude:')==-1){
 			$vm.install_create_module_and_run_code(current_all,module_id,url_0,slot,m_name,callback);
