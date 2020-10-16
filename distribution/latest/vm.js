@@ -367,7 +367,6 @@ $vm.install_module=function(name,slot,input,callback){
     slot=slot_1
     $vm.module_list[name].slot=slot;
 	if($vm.module_list[name]===undefined){
-		//alert("The module '"+name+"' is not in the module list.");
 		console.log("%cThe module '"+name+"' is not in the module list.","color:red");
 		return;
 	}
@@ -398,14 +397,9 @@ $vm.install_module=function(name,slot,input,callback){
 		var txt=localStorage.getItem(storage_url+"_txt");
 		var http127_i=0;
 		if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1 || url.indexOf('http://vmiis-local.com')!=-1) http127_i=1;
-		var reload=0;
-		if(window.location.toString().indexOf('reload='+m_name)!=-1){
-			reload=1;
-		}
-		if(ver!=$vm.ver[0] || http127_i==1 || txt==null || $vm.reload!='' || reload==1){
+		if(ver!=$vm.ver[0] || http127_i==1 || txt==null){
 			var new_url=url+'?_v='+new Date().getTime();
 			if(url.indexOf('?')!==-1) new_url=url+'&_v='+($vm.ver[0]+$vm.reload).replace(/\./,'');
-			//console.log('loading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
 			console.log('%cloading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#b55")
             if(window.location.hostname!='127.0.0.1' && window.location.hostname!='localhost')	$('#vm_loader').show();
 			$.get(new_url, function(data){
@@ -421,36 +415,28 @@ $vm.install_module=function(name,slot,input,callback){
 				var current_all=data;
 				if(current_all.indexOf('VmInclude:')==-1){
 					$vm.install_create_module_and_run_code(current_all,module_id,url,slot,m_name,callback);
-					if(input !=undefined && input.silence==1){}
-					//else $vm.insert_and_trigger_load(module_id,slot,m_name);
 				}
 				else{
 					$vm.install_process_first_include(current_all,module_id,slot,url,m_name,callback);
 				}
 			}).fail(function() {
-			    //alert( "The module '"+url+"' doesn't exist or you have AdBlock that blocks this remote module to be loaded." );
 				console.log("%cThe module '"+url+"' doesn't exist or you have AdBlock that blocks this remote module to be loaded.","color:red");
 			});
 		}
 		else{
-			//console.log('loading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
 			console.log('%cloading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#055")
 			var current_all=txt;
 			if(current_all.indexOf('VmInclude:')==-1){
 				$vm.install_create_module_and_run_code(current_all,module_id,url,slot,m_name,callback);
-				if(input !=undefined && input.silence==1){}
-				//else $vm.insert_and_trigger_load(module_id,slot,m_name);
 			}
 			else{
 				$vm.install_process_first_include(current_all,module_id,slot,url,m_name,callback);
 			}
 		}
 	}
-	//else $vm.insert_and_trigger_load(module_id,slot,m_name);
 }
 //-----------------------------------
 $vm.install_create_module_and_run_code=function(txt,module_id,url,slot,m_name,callback){
-	//txt=txt.replace(/__CURRENT_PATH__/g,_g_current_path);
 	txt=txt.replace(/__CURRENT_PATH__/g,$vm.vm[module_id].current_path);
 	var content=txt;
 	if(m_name!=undefined && $vm.module_list[m_name]!=undefined){
@@ -468,7 +454,7 @@ $vm.install_create_module_and_run_code=function(txt,module_id,url,slot,m_name,ca
 	content=content.replace(/__ID/g, module_id);
 	content=content.replace(/__MODULE__/g, m_name);
 	content=content.replace(/<!--([\s\S]*?)-->/mig, '');
-	//-----------------
+	
 	if(slot!='body'){
 		content="<div id=D"+module_id+" module='"+m_name+"' style='display:none'><!--"+url+"-->"+content+"</div>"
 		$("#D"+module_id).remove();
@@ -487,7 +473,7 @@ $vm.install_create_module_and_run_code=function(txt,module_id,url,slot,m_name,ca
 			var module=url;
 			if(module===undefined) module=module_id;
 			//alert(err+"\r\nThis error happend in the module\r\n"+module);
-			console.log("%c"+err+" --- This error happend in the module:"+module,"color:red");
+			console.log("%c"+err+" --- This error happend in the module "+module,"color:red");
 		}
 	}
 	//-----------------------------------------
@@ -531,10 +517,8 @@ $vm.install_load_include=function(lines,i,module_id,slot,url_0,m_name,callback){
         else url=$vm.hosting_path+"/"+url;
     }
 	if(ver!=$vm.ver[0] || http127_i==1 || txt==null || $vm.reload!=''){
-		//var new_url=url+'?_v='+($vm.ver[0]+$vm.reload).replace(/\./,'')+"&g="+_g_vm_chrom_loop++;
 		var new_url=url+'?_v='+new Date().getTime();
 		if(url.indexOf('?')!==-1) new_url=url+'&_v='+($vm.ver[0]+$vm.reload).replace(/\./,'')+"&g="+_g_vm_chrom_loop++;
-		//console.log('loading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
 		console.log('%cloading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#b55")
 		$.get(new_url, function(data){
 			var c_m=$("<p>"+data+"</p>").filter('#D__ID').html();
@@ -565,8 +549,7 @@ $vm.install_load_include=function(lines,i,module_id,slot,url_0,m_name,callback){
 
 	}
 	else{
-		//console.log('loading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
-		console.log('%cloading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#055")
+		//console.log('%cloading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#055")
 		var current_all=$vm.replace_and_recreate_content(lines,i,txt)
 		if(current_all.indexOf('VmInclude:')==-1){
 			$vm.install_create_module_and_run_code(current_all,module_id,url_0,slot,m_name,callback);
@@ -1072,13 +1055,50 @@ $vm.show_module=function(name,input){
 		alert("The module '"+name+"' is not in the module list.");
 		return;
 	}
-    var m=$vm.module_list[name];
+	var m=$vm.module_list[name];
+	var install_this=function(){
+		m.input=input;	
+		var id=$vm.module_list[name].id;
+		if(id==undefined){ 
+			var slot=$vm.root_layout_content_slot;
+			if(m.parent!=undefined)	slot='content'+$vm.module_list[m.parent].id;
+			$vm.install_module(name,slot,{}, function(name,id){
+				//console.log('%c'+name + ' is installed','color:green');
+				if(m.parent!=undefined){
+					var pm=$vm.module_list[m.parent];
+					$vm.insert_and_trigger_load(pm.id,pm.slot,m.parent);	
+				}
+				$vm.insert_and_trigger_load(m.id,m.slot,name);
+			})
+		}
+		else{
+			if(m.parent!=undefined){
+				var pm=$vm.module_list[m.parent];
+				$vm.insert_and_trigger_load(pm.id,pm.slot,m.parent);	
+			}
+			$vm.insert_and_trigger_load(m.id,m.slot,name);
+		}
+	}
+	if(m.parent!=undefined){
+		if($vm.module_list[m.parent].id==undefined){ //install parent first
+			$vm.install_module(m.parent,$vm.root_layout_content_slot,{},function(name,id){
+				//console.log('%c'+name + ' is installed','color:green');
+				install_this();	
+			})
+		}
+		else install_this(); //parent is installed already
+	}
+	else install_this(); //no parent;
+	
+	/*
+	var m=$vm.module_list[name];
 	m.input=input;
 	if(m.parent!=undefined){
 		var pm=$vm.module_list[m.parent];
 		$vm.insert_and_trigger_load(pm.id,pm.slot,m.parent);	
 	}
-    $vm.insert_and_trigger_load(m.id,m.slot,name);
+	$vm.insert_and_trigger_load(m.id,m.slot,name);
+	*/
 }
 //-----------------------------------
 //-----------------------------------------------------------------
@@ -2041,3 +2061,35 @@ $vm.getB64Str=function(buffer) {
 //---------------------------------------------
 $vm.alert=function(txt){ alert(txt); }
 //--------------------------------------------------------
+$vm.load_resource=function(link,callback){
+    console.log(link);
+    var nm=link.split('/').pop();
+    nm=nm.replace(/\./g,'-');
+    if($vm[nm]==1){
+        callback(link);
+    }
+    else{
+        var e=link.split('.').pop();
+        if(e=='css'){
+            $('head').append("<link rel='stylesheet' href='"+link+"'>");
+            if(callback!=undefined) callback(link);
+        }
+        else if(e=='js'){
+            $vm.load_js_link(link,callback);
+        }
+    }
+}
+//------------------------------------
+$vm.load_js_link=function(link,callback){
+    $.ajaxSetup({cache:true});
+    $.getScript(link,function(data, textStatus, jqxhr){
+        var nm=link.split('/').pop();
+        nm=nm.replace(/\./g,'-');
+        $vm[nm]=1;
+        if(callback!=undefined) callback(link);
+        if(nm=='loader-js'){
+            google.charts.load('current', {packages: ['corechart']});
+        }
+    });
+}
+//------------------------------------

@@ -415,3 +415,35 @@ $vm.getB64Str=function(buffer) {
 //---------------------------------------------
 $vm.alert=function(txt){ alert(txt); }
 //--------------------------------------------------------
+$vm.load_resource=function(link,callback){
+    console.log(link);
+    var nm=link.split('/').pop();
+    nm=nm.replace(/\./g,'-');
+    if($vm[nm]==1){
+        callback(link);
+    }
+    else{
+        var e=link.split('.').pop();
+        if(e=='css'){
+            $('head').append("<link rel='stylesheet' href='"+link+"'>");
+            if(callback!=undefined) callback(link);
+        }
+        else if(e=='js'){
+            $vm.load_js_link(link,callback);
+        }
+    }
+}
+//------------------------------------
+$vm.load_js_link=function(link,callback){
+    $.ajaxSetup({cache:true});
+    $.getScript(link,function(data, textStatus, jqxhr){
+        var nm=link.split('/').pop();
+        nm=nm.replace(/\./g,'-');
+        $vm[nm]=1;
+        if(callback!=undefined) callback(link);
+        if(nm=='loader-js'){
+            google.charts.load('current', {packages: ['corechart']});
+        }
+    });
+}
+//------------------------------------
