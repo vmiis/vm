@@ -6,7 +6,8 @@ $vm.install_module=function(name,slot,input,callback){
     slot=slot_1
     $vm.module_list[name].slot=slot;
 	if($vm.module_list[name]===undefined){
-		alert("The module '"+name+"' is not in the module list.");
+		//alert("The module '"+name+"' is not in the module list.");
+		console.log("%cThe module '"+name+"' is not in the module list.","color:red");
 		return;
 	}
     var url=$vm.module_list[name]['url'];
@@ -66,7 +67,8 @@ $vm.install_module=function(name,slot,input,callback){
 					$vm.install_process_first_include(current_all,module_id,slot,url,m_name,callback);
 				}
 			}).fail(function() {
-			    alert( "The module '"+url+"' doesn't exist or you have AdBlock that blocks this remote module to be loaded." );
+			    //alert( "The module '"+url+"' doesn't exist or you have AdBlock that blocks this remote module to be loaded." );
+				console.log("%cThe module '"+url+"' doesn't exist or you have AdBlock that blocks this remote module to be loaded.","color:red");
 			});
 		}
 		else{
@@ -123,7 +125,8 @@ $vm.install_create_module_and_run_code=function(txt,module_id,url,slot,m_name,ca
 		catch(err){
 			var module=url;
 			if(module===undefined) module=module_id;
-			alert(err+"\r\nThis error happend in the module\r\n"+module);
+			//alert(err+"\r\nThis error happend in the module\r\n"+module);
+			console.log("%c"+err+" --- This error happend in the module:"+module,"color:red");
 		}
 	}
 	//-----------------------------------------
