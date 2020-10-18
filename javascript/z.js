@@ -416,7 +416,6 @@ $vm.getB64Str=function(buffer) {
 $vm.alert=function(txt){ alert(txt); }
 //--------------------------------------------------------
 $vm.load_resource=function(link,callback){
-    console.log(link);
     var nm=link.split('/').pop();
     nm=nm.replace(/\./g,'-');
     if($vm[nm]==1){
