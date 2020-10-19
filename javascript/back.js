@@ -1,7 +1,9 @@
 //-------------------------------------------------------------
 $vm.set_block=function(name){
-	var parent=$vm.module_list[name].parent;
-	if(parent!=undefined){
+	var prefix=$vm.module_list[name].prefix;
+	if(prefix==undefined) prefix="";
+	var parent=prefix+$vm.module_list[name].parent;
+	if($vm.module_list[name].parent!=undefined){
 		var slot=$vm.module_list[parent].slot;
 		var id=$vm.module_list[parent].id;
 		if(slot==undefined) slot=$vm.root_layout_content_slot;

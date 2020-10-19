@@ -363,33 +363,37 @@ $vm.show_module=function(name,input){
 		alert("The module '"+name+"' is not in the module list.");
 		return;
 	}
+	var prefix=$vm.module_list[name].prefix;
+	if(prefix==undefined) prefix="";
 	var m=$vm.module_list[name];
 	var install_this=function(){
+		var parent=prefix+m.parent;
 		m.input=input;	
 		var id=$vm.module_list[name].id;
 		if(id==undefined){ 
 			var slot=$vm.root_layout_content_slot;
-			if(m.parent!=undefined)	slot='content'+$vm.module_list[m.parent].id;
+			if(m.parent!=undefined)	slot='content'+$vm.module_list[parent].id;
 			$vm.install_module(name,slot,{}, function(name,id){
 				//console.log('%c'+name + ' is installed','color:green');
 				if(m.parent!=undefined){
-					var pm=$vm.module_list[m.parent];
-					$vm.insert_and_trigger_load(pm.id,pm.slot,m.parent);	
+					var pm=$vm.module_list[parent];
+					$vm.insert_and_trigger_load(pm.id,pm.slot,parent);	
 				}
 				$vm.insert_and_trigger_load(m.id,m.slot,name);
 			})
 		}
 		else{
 			if(m.parent!=undefined){
-				var pm=$vm.module_list[m.parent];
-				$vm.insert_and_trigger_load(pm.id,pm.slot,m.parent);	
+				var pm=$vm.module_list[parent];
+				$vm.insert_and_trigger_load(pm.id,pm.slot,parent);	
 			}
 			$vm.insert_and_trigger_load(m.id,m.slot,name);
 		}
 	}
 	if(m.parent!=undefined){
-		if($vm.module_list[m.parent].id==undefined){ //install parent first
-			$vm.install_module(m.parent,$vm.root_layout_content_slot,{},function(name,id){
+		var parent=prefix+m.parent;
+		if($vm.module_list[parent].id==undefined){ //install parent first
+			$vm.install_module(parent,$vm.root_layout_content_slot,{},function(name,id){
 				//console.log('%c'+name + ' is installed','color:green');
 				install_this();	
 			})
