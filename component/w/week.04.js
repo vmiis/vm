@@ -25,7 +25,7 @@ m.calendar_render=function(hml){
         txt+="<div class=c_cell__ID "+a+" d=4 >"+hml+"</div>";
         txt+="<div class=c_cell__ID "+a+" d=5 >"+hml+"</div>";
         txt+="<div class=c_cell__ID "+a+" d=6 >"+hml+"</div>";
-        txt+="<div class=c_cell__ID "+a+" d=7 >"+hml+"</div>";
+        txt+="<div class=c_cell__ID "+a+" d=0 >"+hml+"</div>";
         return txt;
     }
     var fd=$vm.first_day_of_current_week();
