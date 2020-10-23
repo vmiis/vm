@@ -203,15 +203,19 @@ m.submit=function(event){
     }
     delete data[""];
     var file=$vm.serialize_file('#F__ID');
+    var big_file_size=0;
     var FN=0; $('#F__ID').find('input[type=file]').each(function(evt){ 
         if(this.files.length==1) FN++; 
         //*******************
         if(this.files[0].size>20000000){
+            big_file_size=1;
             alert('File size must be less than 20M.');
             return false;                
         }
         //*******************
     });
+    if(big_file_size==1) return;
+
     var r=true;
     if(m.before_submit!=undefined) r=m.before_submit(data,index);
     if(r==false){$('#submit__ID').show(); return;}
