@@ -203,7 +203,15 @@ m.submit=function(event){
     }
     delete data[""];
     var file=$vm.serialize_file('#F__ID');
-    var FN=0; $('#F__ID').find('input[type=file]').each(function(evt){ if(this.files.length==1) FN++; });
+    var FN=0; $('#F__ID').find('input[type=file]').each(function(evt){ 
+        if(this.files.length==1) FN++; 
+        //*******************
+        if(this.files[0].size>20000000){
+            alert('File size must be less than 20M.');
+            return false;                
+        }
+        //*******************
+    });
     var r=true;
     if(m.before_submit!=undefined) r=m.before_submit(data,index);
     if(r==false){$('#submit__ID').show(); return;}
