@@ -59,9 +59,18 @@ m.request_data=function(){
         var tt_all=mt2-mt1;
         var tt_server=parseInt(res.sys.elapsed_time);
         if(tt_all<tt_server) tt_all=tt_server;
-        var db="<span style='color:#0919ec'>&#9679;</span> "; if(res.sys.db!=undefined) db="<span style='color:#0bbe0b'>&#9679;</span> ";
+        //var db="<span style='color:#0919ec'>&#9679;</span> "; if(res.sys.db!=undefined) db="<span style='color:#0bbe0b'>&#9679;</span> ";
         var tb="<span style='color:red'>&#9679;</span> "; if(res.sys.tb=="on") tb="<span style='color:#0bbe0b'>&#9679;</span> ";
-        $("#elapsed__ID").html(db+tb+(JSON.stringify(res.result).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
+        $("#elapsed__ID").html(tb+(JSON.stringify(res.result).length/1000).toFixed(1)+"kb/"+tt_all.toString()+"ms/"+tt_server+'ms');
+
+        if(res.status=='np' || res.result==undefined){
+            res.result=[];
+        }
+
+        if(res.status=='np'){
+            if(res.sys.tb=='on') $vm.alert("No permission. Private database table, ask the table's owner for permissions.");
+            else $vm.alert("No permission.");
+        }
 
         m.records=res.result;
         m.res=res;
