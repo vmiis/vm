@@ -207,7 +207,7 @@ m.submit=function(event){
     var FN=0; $('#F__ID').find('input[type=file]').each(function(evt){ 
         if(this.files.length==1) FN++; 
         //*******************
-        if(this.files[0].size>20000000){
+        if(this.files.length==1 && this.files[0].size>20000000){
             big_file_size=1;
             alert('File size must be less than 20M.');
             return false;                
