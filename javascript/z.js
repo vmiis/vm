@@ -447,16 +447,17 @@ $vm.load_js_link=function(link,callback){
 }
 //------------------------------------
 $vm.responsive=function(a){
-    var bp=document.getElementById(id).getAttribute("bp"); if(bp==null) return;
     var dw=a[0].contentRect.width;
     var id=a[0].target.id;
+    var bp=document.getElementById(id).getAttribute("bp"); 
+    if(bp==null) return;
     var bps=bp.split('|');
     var n0=10000000; if(bps.length>0) n0=parseInt(bps[0]);
     var n1=20000000; if(bps.length>1) n1=parseInt(bps[1]);
     var n2=30000000; if(bps.length>2) n2=parseInt(bps[2]);
     var n3=40000000; if(bps.length>3) n3=parseInt(bps[3]);
 
-    var divs = document.getElementById('container__ID').getElementsByTagName('div');
+    var divs = document.getElementById(id).getElementsByTagName('div');
     for( i=0; i< divs.length; i++ ){
         var vmw=divs[i].getAttribute("w");
         if(vmw!=null){
@@ -464,20 +465,16 @@ $vm.responsive=function(a){
             divs[i].style['box-sizing']='border-box';
             divs[i].parentElement.style['border-width']=0;
             divs[i].parentElement.style['box-sizing']='border-box';
-            divs[i].parentElement.style['padding']=0;
-            divs[i].parentElement.style['margin']=0;
             divs[i].parentElement.style['display']="flow-root";
             var ws=vmw.split('|');
             var pw=parseFloat(getComputedStyle(divs[i].parentElement, null).getPropertyValue('width').replace('.px',''));
             var LR1=parseFloat(getComputedStyle(divs[i].parentElement, null).getPropertyValue('padding-left').replace('.px',''))+
                     parseFloat(getComputedStyle(divs[i].parentElement, null).getPropertyValue('padding-right').replace('.px',''))+
-                    //parseFloat(getComputedStyle(divs[i].parentElement, null).getPropertyValue('margin-left').replace('.px',''))+
-                    //parseFloat(getComputedStyle(divs[i].parentElement, null).getPropertyValue('margin-right').replace('.px',''))+
                     parseFloat(getComputedStyle(divs[i].parentElement, null).getPropertyValue('border-left-width').replace('.px',''))+
                     parseFloat(getComputedStyle(divs[i].parentElement, null).getPropertyValue('border-right-width').replace('.px',''));
             pw=pw-LR1;
             
-            var nw0=768; if(ws.length>0) nw0=(pw*ws[0]/100);
+            var nw0=576; if(ws.length>0) nw0=(pw*ws[0]/100);
             var nw1=nw0; if(ws.length>1) nw1=(pw*ws[1]/100);
             var nw2=nw1; if(ws.length>2) nw2=(pw*ws[2]/100);
             var nw3=nw2; if(ws.length>3) nw3=(pw*ws[3]/100);
@@ -490,7 +487,6 @@ $vm.responsive=function(a){
             if(dw>=n2 && dw<n3) nw=nw3;
             if(dw>=n3)          nw=nw4;
             divs[i].style.width=nw+"px"; 
-
         }
     }                    
 }
