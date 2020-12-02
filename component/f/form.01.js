@@ -2,6 +2,7 @@
 var m=$vm.module_list['__MODULE__'];
 if(m.prefix==undefined) m.prefix="";
 if(m.change_status==undefined) m.change_status=0;
+m.lock=0;
 //-------------------------------------
 m.load=function(){
     //$('#D__ID').scrollTop(0);
@@ -224,7 +225,7 @@ m.submit=function(event){
     if(rid==undefined){
         var i_cmd="insert";
         if(m.cmd_type=='table') i_cmd='insert-table';
-        $vm.request({cmd:i_cmd,table:m.Table,data:data,index:index,file:file},function(res){
+        $vm.request({cmd:i_cmd,table:m.Table,data:data,index:index,lock:m.lock,file:file},function(res){
             if(res.status=="np"){
                 alert("No permission to insert a new record in to the database.");
                 if(m.input!=undefined && m.input.goback!=undefined){
@@ -259,7 +260,7 @@ m.submit=function(event){
         if(m.cmd_type=='p1') cmd='update-p1';
         if(m.cmd_type=='p2') cmd='update-p2';
         if(m.cmd_type=='table') cmd='update-table';
-        $vm.request({cmd:cmd,id:rid,table:m.Table,data:data,index:index,file:file},function(res){
+        $vm.request({cmd:cmd,id:rid,table:m.Table,data:data,index:index,lock:m.lock,file:file},function(res){
             //-----------------------------
             if(res.status=="lk"){
                 $vm.alert("This record is locked.");
@@ -327,7 +328,7 @@ m.submit_s0=function(event){
     var after_read_files=function(){
         if(rid==undefined){
             var i_cmd="insert";
-            $vm.request({cmd:i_cmd,table:m.Table,data:data,index:index,fdata:files},
+            $vm.request({cmd:i_cmd,table:m.Table,data:data,index:index,lock:m.lock,fdata:files},
                 function(res){
                     close_model__ID();
                     if(res.status=="np"){
@@ -365,7 +366,7 @@ m.submit_s0=function(event){
             if(m.cmd_type=='table') cmd='update-table';
 
             $vm.request(
-                {cmd:cmd,id:rid,table:m.Table,data:data,index:index,fdata:files},
+                {cmd:cmd,id:rid,table:m.Table,data:data,lock:m.lock,index:index,fdata:files},
                 function(res){
                     close_model__ID();
                     //-----------------------------
