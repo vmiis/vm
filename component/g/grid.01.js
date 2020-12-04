@@ -223,6 +223,7 @@ m.delete=function(rid){
                 m.after_delete(res); return;
             }
             m.request_data();
+            if(m.parent!=undefined) $vm.module_list[m.parent].change_status=-1;
         }
         after_delete(res);
     });
@@ -398,7 +399,12 @@ $('#new__ID').on('click', function(){
 $('#D__ID').on('load',function(){  /*m.input=$vm.vm['__ID'].input;*/ if(m.preload==true) return; if(m.load!=undefined) m.load(); m.set_req(); m.request_data(); })
 //$('#D__ID').on('show',function(){  if($vm.refresh==1){$vm.refresh=0; m.set_req(); m.request_data();} })
 $('#D__ID').on('show',function(){
-    if($vm.module_list[m.prefix+m.form_module]!=undefined){
+    if(m.change_status==-1){
+        m.change_status=0;
+        m.set_req(); 
+        m.request_data();
+    }
+    else if($vm.module_list[m.prefix+m.form_module]!=undefined){
         var s=$vm.module_list[m.prefix+m.form_module].change_status;
         if(m.change_status!=s){
             m.change_status=s;
