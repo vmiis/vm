@@ -5,6 +5,9 @@
 #nav__ID a {
     color:black;
 }
+#nav__ID a:hover {
+    color:red;
+}
 #D__ID{
     height:100%;
     overflow:auto;
