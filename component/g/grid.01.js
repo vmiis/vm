@@ -223,7 +223,7 @@ m.delete=function(rid){
                 m.after_delete(res); return;
             }
             m.request_data();
-            if(m.parent!=undefined) $vm.module_list[m.parent].change_status=-1;
+            if(m.parent_change!=undefined) $vm.module_list[m.parent_change].change_status=-1;
         }
         after_delete(res);
     });

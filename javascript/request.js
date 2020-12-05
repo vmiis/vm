@@ -1,9 +1,10 @@
 //-----------------------------------------------------------------
 $vm.request=function(req,callback,progress){
     $vm.sys_N++;
+    var this_N=$vm.sys_N;
     $vm.sys_token="guest|where|when|scode";
     if($vm.debug_message===true){
-        console.log("%c"+req.cmd+'('+$vm.sys_N+') TO ',"color:orange",req);
+        console.log("%c"+req.cmd+'('+this_N+') TO ',"color:orange",req);
     }
     var dt1=new Date().getTime();
     $vm.ajax_server_error=0;
@@ -25,8 +26,8 @@ $vm.request=function(req,callback,progress){
         success: function(c,textStatus, request){
             var dt2=new Date().getTime();
             if($vm.debug_message===true){
-                if(c.status=='ok' || req.cmd=='file')  console.log("%c"+req.cmd+'('+$vm.sys_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms","color:lightgreen",c);
-                else                                    console.log("%c"+req.cmd+'('+$vm.sys_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms","color:red",c);
+                if(c.status=='ok' || req.cmd=='file')  console.log("%c"+req.cmd+'('+this_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms","color:lightgreen",c);
+                else                                    console.log("%c"+req.cmd+'('+this_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms","color:red",c);
             }
             if($vm.ajax_server_error==1) return;
             try{
