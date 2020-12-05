@@ -522,3 +522,9 @@ $('#pdf__ID').on('click',function(){
     
 })
 //-------------------------------------
+$('#nav__ID a').on('click',function(e){
+    e.preventDefault();
+    var module_name=$(this).attr('href');
+    if(module_name!="") $vm.show_module(m.prefix+module_name,{})
+})
+//--------------------------------------------------------

@@ -1,3 +1,10 @@
+#nav__ID {
+    background-color:#aaa;
+    padding:3px 0 0 10px;
+}
+#nav__ID a {
+    color:black;
+}
 #D__ID{
     height:100%;
     overflow:auto;
