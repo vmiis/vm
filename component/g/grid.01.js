@@ -2,6 +2,7 @@
 var m=$vm.module_list['__MODULE__'];
 if(m.prefix==undefined) m.prefix="";
 m.query={};
+m.options={}
 m.sort={_id:-1}
 m.projection={}
 if(m.title!=undefined) $('#title__ID').text(m.title);
@@ -29,7 +30,7 @@ m.request_data=function(){
     else if(m.cmd_type=='p1') c_cmd='count-p1';
     else if(m.cmd_type=='p2') c_cmd='count-p2';
     else if(m.cmd_type=='table') c_cmd='count-table';
-    $vm.request({cmd:c_cmd,table:m.Table,query:m.query,I1:m.I1,search:$('#keyword__ID').val()},function(res){
+    $vm.request({cmd:c_cmd,table:m.Table,query:m.query,options:m.options,I1:m.I1,search:$('#keyword__ID').val()},function(res){
         if(res.status=='np'){
             res.result=0;
         }
@@ -48,7 +49,7 @@ m.request_data=function(){
     else if(m.cmd_type=='p1') f_cmd='find-p1';
     else if(m.cmd_type=='p2') f_cmd='find-p2';
     else if(m.cmd_type=='table') f_cmd='find-table';
-    $vm.request({cmd:f_cmd,table:m.Table,I1:m.I1,query:m.query,sort:m.sort,projection:m.projection,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
+    $vm.request({cmd:f_cmd,table:m.Table,I1:m.I1,query:m.query,options:m.options,sort:m.sort,projection:m.projection,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
         var mt2=new Date().getTime();
         var tt_all=mt2-mt1;
         var tt_server=parseInt(res.sys.elapsed_time);
@@ -399,8 +400,8 @@ $('#new__ID').on('click', function(){
 $('#D__ID').on('load',function(){  /*m.input=$vm.vm['__ID'].input;*/ if(m.preload==true) return; if(m.load!=undefined) m.load(); m.set_req(); m.request_data(); })
 //$('#D__ID').on('show',function(){  if($vm.refresh==1){$vm.refresh=0; m.set_req(); m.request_data();} })
 $('#D__ID').on('show',function(){
-    if(m.change_status==-1){
-        m.change_status=0;
+    if($vm["_sys_refresh_"+m.Table]==1){
+        $vm["_sys_refresh_"+m.Table]=0;
         m.set_req(); 
         m.request_data();
     }
