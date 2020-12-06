@@ -1,9 +1,12 @@
 #nav__ID {
-    background-color:#aaa;
-    padding:3px 0 0 10px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size:13px;
+    background-color:#bbb;
+    padding:0px 0 0 10px;
 }
 #nav__ID a {
     color:black;
+    text-decoration-line: underline;
 }
 #nav__ID a:hover {
     color:red;

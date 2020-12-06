@@ -400,6 +400,7 @@ $('#new__ID').on('click', function(){
 $('#D__ID').on('load',function(){  /*m.input=$vm.vm['__ID'].input;*/ if(m.preload==true) return; if(m.load!=undefined) m.load(); m.set_req(); m.request_data(); })
 //$('#D__ID').on('show',function(){  if($vm.refresh==1){$vm.refresh=0; m.set_req(); m.request_data();} })
 $('#D__ID').on('show',function(){
+    if(m.nav!=undefined) m.nav();
     if($vm["_sys_refresh_"+m.Table]==1){
         $vm["_sys_refresh_"+m.Table]=0;
         m.set_req(); 
@@ -500,9 +501,3 @@ m.set_file_link_s0=function(records,I,field,td){
     })
 }
 //-------------------------------
-$('#nav__ID a').on('click',function(e){
-    e.preventDefault();
-    var module_name=$(this).attr('href');
-    if(module_name!="") $vm.show_module(m.prefix+module_name,{})
-})
-//--------------------------------------------------------

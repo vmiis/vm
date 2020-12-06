@@ -53,13 +53,13 @@ m.set_file_link_s0=function(tag){
         $('#x_'+tag+'__ID').show();
     }
     $('#link_'+tag+'__ID').html(filename);
-    $('#link_'+tag+'__ID').on('click',function(){
+    $('#link_'+tag+'__ID').off().on('click',function(){
         if(record._id!==undefined && filename!=""){
             var rid=record.UID;
             var done=0;
             var get_file_from_server=function(){
                 if(done==0){
-                    $vm.request({cmd:"file",id:rid,table:m.Table,uid:record.UID, field:tag,filename:filename,options:m.options},function(res, xhr){
+                    $vm.request({cmd:"file",id:rid,table:m.Table,uid:record.UID, field:tag,filename:filename,options:m.options},function(res, textStatus, xhr){
                         try{
                             if(res=="404"){
                                 alert("No such file.");
@@ -522,9 +522,3 @@ $('#pdf__ID').on('click',function(){
     
 })
 //-------------------------------------
-$('#nav__ID a').on('click',function(e){
-    e.preventDefault();
-    var module_name=$(this).attr('href');
-    if(module_name!="") $vm.show_module(m.prefix+module_name,{})
-})
-//--------------------------------------------------------
