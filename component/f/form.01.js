@@ -9,6 +9,7 @@ m.load=function(){
     //$(window).scrollTop(0);
     $('#F__ID')[0].reset();
     $('#submit__ID').show();
+    $('#draft__ID').show();
     $('#delete__ID').hide(); if(m.input!=undefined && m.input.record!=undefined && m.input.record._id!==undefined) $('#delete__ID').show();
     if(m.input!=undefined) $vm.deserialize(m.input.record,'#F__ID');
 }
@@ -188,6 +189,7 @@ m.submit=function(event){
     //--------------------------------------------------------
     event.preventDefault();
     $('#submit__ID').hide();
+    $('#draft__ID').hide();
     //--------------------------------------------------------
     var data={};
     var index={};
@@ -219,7 +221,7 @@ m.submit=function(event){
 
     var r=true;
     if(m.before_submit!=undefined) r=m.before_submit(data,index);
-    if(r==false){$('#submit__ID').show(); return;}
+    if(r==false){$('#submit__ID').show(); $('#draft__ID').show(); return;}
     //--------------------------------------------------------
     var rid=undefined; if(m.input!=undefined && m.input.record!=undefined) rid=m.input.record._id;
     if(rid==undefined){
@@ -299,6 +301,7 @@ m.submit_s0=function(event){
     //-------------------------------------
     event.preventDefault();
     $('#submit__ID').hide();
+    $('#draft__ID').hide();
     //-------------------------------------
     var rid=undefined; if(m.input!=undefined && m.input.record!=undefined) rid=m.input.record._id;
     var data={};
@@ -322,7 +325,7 @@ m.submit_s0=function(event){
     //index
     var r=true;
     if(m.before_submit!=undefined) r=m.before_submit(data,index);
-    if(r==false){$('#submit__ID').show(); return;}
+    if(r==false){ $('#submit__ID').show(); $('#draft__ID').show(); return;}
     //-------------------------------------
     //after files
     var after_read_files=function(){
