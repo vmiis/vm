@@ -138,7 +138,7 @@ m.render=function(){
 //-------------------------------------
 m.cell_process=function(){
     //cell render
-    $('#grid__ID td').each(function(){
+    $('#grid__ID td').each(function(index){
         var col = $(this).parent().children().index($(this));
         var row = $(this).parent().parent().children().index($(this).parent())-1; var I=row;
         var column_name=$('#grid__ID th:nth-child('+(col+1)+')').attr('data-header');
@@ -168,6 +168,17 @@ m.cell_process=function(){
                     m.delete(rid);
                 }
             })
+        }
+        //-------------------------
+        if(column_name=='Submitted_by'){
+            var display_name=m.records[I].Submit_name;
+            var v= $(this).html();
+            var v1=v.split('@')[0];
+            if(display_name==undefined) display_name=v1;
+            if(v1+!v){
+                $(this).html(display_name);
+                $(this).attr('title',v);
+            }
         }
         //-------------------------
         if(m.cell_render!==undefined){ m.cell_render(m.records,row,column_name,$(this)); }
