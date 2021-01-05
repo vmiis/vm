@@ -491,3 +491,47 @@ $vm.responsive=function(a){
     }                    
 }
 //------------------------------------
+$vm.contenteditable_filter=function(c){
+    if(c!=undefined){
+        c=c.replace(/<div>/g,'@#@%1');
+        c=c.replace(/<\/div>/g,'@#@%2');
+        c=c.replace(/<img/g,'@#@%3');
+        c=$vm.text(c);
+        c=c.replace(/@#@%1/g,'<div>');
+        c=c.replace(/@#@%2/g,'</div>');
+        c=c.replace(/@#@%3/g,'<img');
+        return c;
+    }
+    else return "undefined";
+}
+$vm.onpaste=function(e){
+    var items = e.clipboardData.items;
+    if(items != undefined){
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") != -1){
+                break;
+            }
+            else if(items[i].type.indexOf("text/plain") != -1 || items[i].type.indexOf("text/html") != -1){
+                e.stopPropagation();
+                e.preventDefault();
+                var txt=e.clipboardData.getData("Text");
+                var sel, range;
+                if (window.getSelection) {
+                    sel = window.getSelection();
+                    if (sel.getRangeAt && sel.rangeCount) {
+                        range = sel.getRangeAt(0);
+                        range.deleteContents();
+                        range.insertNode( document.createTextNode(txt) );
+                    }
+                } else if (document.selection && document.selection.createRange) {
+                    document.selection.createRange().text = txt;
+                }
+                break;
+            }
+            else{
+                e.stopPropagation();
+                e.preventDefault();
+            }
+        }
+    };
+}
