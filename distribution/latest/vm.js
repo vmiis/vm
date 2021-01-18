@@ -2188,3 +2188,20 @@ $vm.onpaste=function(e){
         }
     };
 }
+//---------------------------------------
+$vm.msflow=function (url,data){
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+        }
+        else if (this.readyState == 4 && this.status == 403) {
+        }
+        if (this.status == 404) {
+            $vm.alert(url + ", 404 (Not found)");
+        }
+    }
+    xmlHttp.open("POST", url, true); // true for asynchronous
+    xmlHttp.setRequestHeader("Content-Type", "application/json");
+    xmlHttp.send(JSON.stringify(data));
+}
+//---------------------------------------
