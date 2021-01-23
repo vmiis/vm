@@ -362,6 +362,13 @@ $vm.init_s=function(callback){
 };
 //------------------------------------------------------------------
 $vm.install_module=function(name,slot,input,callback){
+	//---
+	var id0=$vm.module_list[name].id;
+	if(id0!=undefined){ //all ready installed
+		callback(name,id0);
+		return; 
+	}
+	//---
     if(name==undefined) return;
 	if($vm.vm==undefined) $vm.vm={}
 	var slot_1=$vm.root_layout_content_slot;
@@ -375,7 +382,10 @@ $vm.install_module=function(name,slot,input,callback){
     var url=$vm.module_list[name]['url'];
     if(url===undefined) return;
     url=$vm.url(url);
+	
+	
 	var id=$vm.id();
+	
 	$vm.module_list[name].id=id;
 	var m=$vm.module_list[name];
 	m.input=input;	
