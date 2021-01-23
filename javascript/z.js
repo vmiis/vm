@@ -536,15 +536,16 @@ $vm.onpaste=function(e){
     };
 }
 //---------------------------------------
-$vm.msflow=function (url,data){
+$vm.vmpost=function (url,data,callback){
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
+            callback(200);
         }
         else if (this.readyState == 4 && this.status == 403) {
         }
         if (this.status == 404) {
-            $vm.alert(url + ", 404 (Not found)");
+            callback(404);
         }
     }
     xmlHttp.open("POST", url, true); // true for asynchronous

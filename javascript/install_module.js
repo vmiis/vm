@@ -15,6 +15,7 @@ $vm.install_module=function(name,slot,input,callback){
 	var id=$vm.id();
 	$vm.module_list[name].id=id;
 	var m=$vm.module_list[name];
+	m.input=input;	
 	var m_name=name;
 	var module_id	=id;
 	if(url[0]=='/') url=$vm.hosting_path+url;

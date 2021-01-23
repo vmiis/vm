@@ -378,6 +378,7 @@ $vm.install_module=function(name,slot,input,callback){
 	var id=$vm.id();
 	$vm.module_list[name].id=id;
 	var m=$vm.module_list[name];
+	m.input=input;	
 	var m_name=name;
 	var module_id	=id;
 	if(url[0]=='/') url=$vm.hosting_path+url;
@@ -1509,6 +1510,64 @@ $vm.get_image_url=function(tag,record,expires,callback){
 }
 //---------------------------------------------
 //--------------------------------------------------------
+$vm.add_value_to_select=function($el, v){
+	var exists = false;
+	$el.find('option').each(function(index){
+		if (this.value == v) {
+			exists = true;
+			return false;
+		}
+	});    
+	if(exists==false){
+		$el.append(new Option(v, v));
+	}
+}
+$vm.deserialize=function(record,form_id){
+	if(record==undefined || record.Data==undefined) return;
+	$.each(record.Data, function(name, value){
+		if(name!=''){
+			var $els = $(form_id+' *[name='+name+']');
+			$els.each(function(){
+				var $el=$(this);
+				var type = $el.attr('type');
+				switch(type){
+					case 'checkbox':
+						if(value=='off' || value=='0' || value=='' || value==undefined ) $el.prop('checked', false);
+						else $el.prop('checked', true);
+						break;
+					case 'radio':
+						if($el.attr('value')==value){
+							$el.prop('checked', true);
+						}
+						break;
+					case 'file':
+						break;
+					case 'text':
+					case 'email':
+					case 'textarea':
+					case 'select':
+						$el.val(value);
+						break;
+					case 'undefined':
+						break;
+					default:
+						var type1=$(this).prop('nodeName');
+						switch(type1){
+							case "SELECT":
+								$vm.add_value_to_select($el,value);
+								$el.val(value);
+								break;
+							default: 
+								console.log(type+"---"+type1)				
+								$el.val(value); break;
+						}
+						break;
+				}
+			});
+		}
+	});
+}
+/*
 $vm.deserialize=function(record,form_id){
     if(record==undefined || record.Data==undefined) return;
     $.each(record.Data, function(name, value){
@@ -1546,6 +1605,7 @@ $vm.deserialize=function(record,form_id){
         }
     });
 }
+*/
 $vm.deserialize_s=function(record,form_id){
     if(record==undefined) return;
     $.each(record, function(name, value){
@@ -2189,15 +2249,16 @@ $vm.onpaste=function(e){
     };
 }
 //---------------------------------------
-$vm.msflow=function (url,data){
+$vm.vmpost=function (url,data,callback){
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
+            callback(200);
         }
         else if (this.readyState == 4 && this.status == 403) {
         }
         if (this.status == 404) {
-            $vm.alert(url + ", 404 (Not found)");
+            callback(404);
         }
     }
     xmlHttp.open("POST", url, true); // true for asynchronous
