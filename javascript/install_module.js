@@ -148,7 +148,9 @@ $vm.install_process_first_include=function(txt,module_id,slot,url_0,m_name,callb
 }
 //-----------------------------------
 $vm.install_load_include=function(lines,i,module_id,slot,url_0,m_name,callback){
-	var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
+	//var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
+	var name=lines[i].replace('<!--VmInclude:','').replace('/*VmInclude:','').replace('//VmInclude:','').replace('VmInclude:','').trim();
+	name=name.replace('-->','').replace('*/','').trim();
 	name=name.replace(/\'/g,'');
 	name=name.replace(/\"/g,'');
 	var items=name.split('|');

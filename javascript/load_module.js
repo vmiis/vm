@@ -281,7 +281,8 @@ $vm.process_first_include=function(txt,module_id,slot,url_0,m_name){
 }
 //-----------------------------------
 $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
-	var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
+	var name=lines[i].replace('<!--VmInclude:','').replace('/*VmInclude:','').replace('//VmInclude:','').replace('VmInclude:','').trim();
+	name=name.replace('-->','').replace('*/','').trim();
 	name=name.replace(/\'/g,'');
 	name=name.replace(/\"/g,'');
 	var items=name.split('|');
@@ -373,7 +374,7 @@ $vm.show_module=function(name,input){
 		if(id==undefined){ 
 			var slot=$vm.root_layout_content_slot;
 			if(m.parent!=undefined)	slot='content'+$vm.module_list[parent].id;
-			$vm.install_module(name,slot,{}, function(name,id){
+			$vm.install_module(name,slot,input, function(name,id){
 				//console.log('%c'+name + ' is installed','color:green');
 				if(m.parent!=undefined){
 					var pm=$vm.module_list[parent];

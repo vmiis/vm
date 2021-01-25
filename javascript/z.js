@@ -539,12 +539,10 @@ $vm.onpaste=function(e){
 $vm.vmpost=function (url,data,callback){
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            callback(200);
-        }
-        else if (this.readyState == 4 && this.status == 403) {
-        }
-        if (this.status == 404) {
+        if (this.readyState == 4){
+            callback(this.status);
+        } 
+        else if (this.status == 404) {
             callback(404);
         }
     }

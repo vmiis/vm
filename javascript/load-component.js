@@ -24,7 +24,9 @@ $vm.load_component_include_and_run=function(lines,i,url,div,m_name){ //Step B-2
 	var last_part=url.split('/').pop();
 	var c_path=url.replace(last_part,'');
 	
-	var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
+	//var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
+	var name=lines[i].replace('<!--VmInclude:','').replace('/*VmInclude:','').replace('//VmInclude:','').replace('VmInclude:','').trim();
+	name=name.replace('-->','').replace('*/','').trim();
 	name=name.replace(/\'/g,'').replace(/\"/g,'');
 	var com_url=$vm.url(name);
 	if(com_url[0]=='/') com_url=$vm.hosting_path+com_url;

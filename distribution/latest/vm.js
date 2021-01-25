@@ -511,7 +511,9 @@ $vm.install_process_first_include=function(txt,module_id,slot,url_0,m_name,callb
 }
 //-----------------------------------
 $vm.install_load_include=function(lines,i,module_id,slot,url_0,m_name,callback){
-	var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
+	//var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
+	var name=lines[i].replace('<!--VmInclude:','').replace('/*VmInclude:','').replace('//VmInclude:','').replace('VmInclude:','').trim();
+	name=name.replace('-->','').replace('*/','').trim();
 	name=name.replace(/\'/g,'');
 	name=name.replace(/\"/g,'');
 	var items=name.split('|');
@@ -602,7 +604,9 @@ $vm.load_component_include_and_run=function(lines,i,url,div,m_name){ //Step B-2
 	var last_part=url.split('/').pop();
 	var c_path=url.replace(last_part,'');
 	
-	var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
+	//var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
+	var name=lines[i].replace('<!--VmInclude:','').replace('/*VmInclude:','').replace('//VmInclude:','').replace('VmInclude:','').trim();
+	name=name.replace('-->','').replace('*/','').trim();
 	name=name.replace(/\'/g,'').replace(/\"/g,'');
 	var com_url=$vm.url(name);
 	if(com_url[0]=='/') com_url=$vm.hosting_path+com_url;
@@ -986,7 +990,8 @@ $vm.process_first_include=function(txt,module_id,slot,url_0,m_name){
 }
 //-----------------------------------
 $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
-	var name=lines[i].replace('//VmInclude:','').replace('VmInclude:','').trim();
+	var name=lines[i].replace('<!--VmInclude:','').replace('/*VmInclude:','').replace('//VmInclude:','').replace('VmInclude:','').trim();
+	name=name.replace('-->','').replace('*/','').trim();
 	name=name.replace(/\'/g,'');
 	name=name.replace(/\"/g,'');
 	var items=name.split('|');
@@ -1078,7 +1083,7 @@ $vm.show_module=function(name,input){
 		if(id==undefined){ 
 			var slot=$vm.root_layout_content_slot;
 			if(m.parent!=undefined)	slot='content'+$vm.module_list[parent].id;
-			$vm.install_module(name,slot,{}, function(name,id){
+			$vm.install_module(name,slot,input, function(name,id){
 				//console.log('%c'+name + ' is installed','color:green');
 				if(m.parent!=undefined){
 					var pm=$vm.module_list[parent];
@@ -2262,12 +2267,10 @@ $vm.onpaste=function(e){
 $vm.vmpost=function (url,data,callback){
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            callback(200);
-        }
-        else if (this.readyState == 4 && this.status == 403) {
-        }
-        if (this.status == 404) {
+        if (this.readyState == 4){
+            callback(this.status);
+        } 
+        else if (this.status == 404) {
             callback(404);
         }
     }
