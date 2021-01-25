@@ -1,0 +1,43 @@
+<div id=D__ID>
+    <section style='height:100%'>
+        <div id=toolbar__ID>
+            <span id=msg__ID></span>
+        </div>
+        <textarea id=code__ID style='border:0'></textarea>
+    </section>
+    <script>
+        function F__ID(){
+            //--------------------------------------------------------
+            $('#D__ID').on('load',function(){
+                $('#msg__ID').text($vm.vm['__ID'].input.msg);
+                //var top1=$('#code__ID').offset().top;
+                var code=$vm.vm['__ID'].input.code;
+                $('#code__ID').val(code)
+                $('#code__ID').css("width",'100%');
+                $('#code__ID').height("1px");
+                var a = document.getElementById("code__ID").scrollHeight;             
+                $('#code__ID').height(a+"px");
+                $('#code__ID').css("min-height",$vm.min_height);
+            })
+            //--------------------------------------------------------
+        }
+    </script>
+    <style>
+        #toolbar__ID{
+            padding:6px;
+            background-color:#ddd;
+            color:#000;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size:11pt;
+            border-bottom: 1px solid #aaa;
+        }
+        #code__ID{
+            white-space:nowrap;
+            color:#000;
+            font-size:12px;
+            line-height:15px;
+            font-family: Courier;
+            overflow: hidden;
+        }
+    </style>
+</div>

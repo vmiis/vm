@@ -1,0 +1,37 @@
+#D__ID{
+    background-color:#fff;
+	color:#000;
+    font-size:13px;
+    font-family: Helvetica, Arial, sans-serif;
+	height:100%;
+	overflow: hidden;
+	animation: vm_module_fadein 1.0s;
+}
+
+@media print {
+    #content_container_0{
+        position:absolute;
+        overflow:visible;
+    }
+    html,body{
+        width:100%;
+        height:100%;
+        overflow:visible;
+    }
+    #D__ID{
+        width:100%;
+        height:100px;
+        overflow:visible;
+    }
+    body * {
+        visibility: hidden;
+    }
+    .c_print {
+        display: none;
+    }
+}
+@media screen and (max-width:900px){
+    #elapsed__ID{
+        display:none;
+    }
+}

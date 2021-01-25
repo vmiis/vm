@@ -1,0 +1,40 @@
+<div id=toolbar__ID class="navbar navbar-default" style='margin-bottom:0px;padding-left:6px;'>
+        <div class="form-inline">
+            <button style='display:none' id=new__ID  type=button class='btn btn-secondary' title='Add new'><i class="fa fa-plus"></i></button>
+            <select id=item_list__ID class="form-control" style='margin-right:3px;width:auto;float:left;display:none'></select>
+            <button type=button class='btn btn-secondary' id=this__ID>Today</button>
+            <button type=button class='btn btn-secondary' id=previous__ID><i class="fa fa-arrow-left"></i></button>
+            <input  type=date   class="form-control"      id=date__ID style='width:180px;display:inline-block' />
+            <button type=button class='btn btn-secondary' id=next__ID><i class="fa fa-arrow-right"></i></button>
+            <button type=button class='btn btn-secondary' id=refresh__ID>Refresh</button>
+        </div>
+        <span id=elapsed__ID style='float:right'></span>
+    </div>
+    <div style='overflow-x:auto;white-space: nowrap; padding-left:2px;padding-right:2px'>
+        <table id=table__ID>
+            <thead id=thead__ID></thead>
+            <tbody id=tbody__ID></tbody>
+        </table>
+    </div>
+    <style>
+        #table__ID   {	min-width:1200px; width:100%;	border: 1px #888 solid; 	font-size:9pt; 	font-family:Verdana; 	border-spacing: 0;	border-collapse: collapse;	table-layout:fixed;}
+        #table__ID th{ 	border: 1px solid #ddd; 	padding:0px; 	margin:0px; 	text-align:center;	background-color:#bbb}
+        #table__ID td{ 	border: 1px solid #ddd;		padding-top:2px; 	padding-bottom:2px; 	margin:0px; 	white-space: nowrap; }
+        #D__ID{ background-color:#fff;}
+        #table__ID thead tr{
+            height:28px;
+        }
+        #table__ID u{
+            cursor:pointer;
+        }
+        #toolbar__ID{
+            background-color:#ccc;
+            padding:5px 0px;
+            margin-bottom:0px;
+            overflow:hidden
+        }
+        #toolbar__ID *{
+            margin-right:3px;
+        }
+    </style>
+    
