@@ -1572,9 +1572,13 @@ $vm.deserialize=function(record,form_id){
 								$vm.add_value_to_select($el,value);
 								$el.val(value);
 								break;
+							case "TEXTAREA":
+                                $el.val(value); 
+                                break;
 							default: 
 								console.log(type+"---"+type1)				
-								$el.val(value); break;
+                                $el.val(value); 
+                                break;
 						}
 						break;
 				}
