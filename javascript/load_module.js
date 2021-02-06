@@ -308,6 +308,7 @@ $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
 		if(url.indexOf('?')!==-1) new_url=url+'&_v='+($vm.ver[0]+$vm.reload).replace(/\./,'')+"&g="+_g_vm_chrom_loop++;
 		console.log('loading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
 		$.get(new_url, function(data){
+            data=$vm.url(data);
 			var c_m=$("<p>"+data+"</p>").filter('#D__ID').html();
 			if(c_m!=undefined && c_m!='' && c_m!=null){ data=c_m;}
 			if(items.length>1){
