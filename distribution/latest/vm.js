@@ -416,6 +416,7 @@ $vm.install_module=function(name,slot,input,callback){
 			console.log('%cloading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#b55")
             if(window.location.hostname!='127.0.0.1' && window.location.hostname!='localhost')	$('#vm_loader').show();
 			$.get(new_url, function(data){
+				data=$vm.url(data);
 				//-----------------------------------
 				//for images belong to this module
 				if(data.indexOf('__CURRENT_NAME__')!=-1){
