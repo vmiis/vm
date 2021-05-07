@@ -1,5 +1,12 @@
 //-----------------------------------------------------------------
 $vm.request=function(req,callback,progress){
+    var api_url=$vm.api_address;
+    var token_name="vm_token";
+    if(req.api!=undefined){
+        api_url=$vm.api_addresses[req.api];
+        token_name=req.api+" token";
+    }
+    
     $vm.sys_N++;
     var this_N=$vm.sys_N;
     $vm.sys_token="guest|where|when|scode";
@@ -8,7 +15,8 @@ $vm.request=function(req,callback,progress){
     }
     var dt1=new Date().getTime();
     $vm.ajax_server_error=0;
-    var token=sessionStorage.getItem("vm_token");
+    //var token=sessionStorage.getItem("vm_token");
+    var token=sessionStorage.getItem(token_name);
     if(token==undefined) token="";
     
     var param={

@@ -30,7 +30,7 @@ m.request_data=function(){
     else if(m.cmd_type=='p1') c_cmd='count-p1';
     else if(m.cmd_type=='p2') c_cmd='count-p2';
     else if(m.cmd_type=='table') c_cmd='count-table';
-    $vm.request({cmd:c_cmd,table:m.Table,query:m.query,options:m.options,I1:m.I1,search:$('#keyword__ID').val()},function(res){
+    $vm.request({api:m.api,cmd:c_cmd,table:m.Table,query:m.query,options:m.options,I1:m.I1,search:$('#keyword__ID').val()},function(res){
         if(res.status=='np'){
             res.result=0;
         }
@@ -49,7 +49,7 @@ m.request_data=function(){
     else if(m.cmd_type=='p1') f_cmd='find-p1';
     else if(m.cmd_type=='p2') f_cmd='find-p2';
     else if(m.cmd_type=='table') f_cmd='find-table';
-    $vm.request({cmd:f_cmd,table:m.Table,I1:m.I1,query:m.query,options:m.options,sort:m.sort,projection:m.projection,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
+    $vm.request({api:m.api,cmd:f_cmd,table:m.Table,I1:m.I1,query:m.query,options:m.options,sort:m.sort,projection:m.projection,search:$('#keyword__ID').val(),skip:skip,limit:limit},function(res){
         var mt2=new Date().getTime();
         var tt_all=mt2-mt1;
         var tt_server=parseInt(res.sys.elapsed_time);
@@ -218,7 +218,7 @@ m.create_header=function(){
 m.delete=function(rid){
     var d_cmd="delete";
     if(m.cmd_type=='table') d_cmd='delete-table';
-    $vm.request({cmd:d_cmd,id:rid,table:m.Table},function(res){
+    $vm.request({api:m.api,cmd:d_cmd,id:rid,table:m.Table},function(res){
         //-----------------------------
         if(res.status=="lk"){
             $vm.alert("This record is locked.");
@@ -243,7 +243,7 @@ m.delete=function(rid){
 //-------------------------------
 m.export_records=function(){
     //var req={cmd:"export",table:m.Table,I1:m.I1,search:$('#keyword__ID').val()}
-    var req={cmd:"export",table:m.Table,query:m.query,I1:m.I1,search:$('#keyword__ID').val()}
+    var req={api:m.api,cmd:"export",table:m.Table,query:m.query,I1:m.I1,search:$('#keyword__ID').val()}
     open_model__ID();
     $vm.request(req,function(N,i,txt){
         console.log(i+"/"+N);
@@ -322,7 +322,7 @@ m.handleFileSelect=function(evt){
                                             before_submit(rd,dbv);
                                         }
                                         jQuery.ajaxSetup({async:false});
-                                        $vm.request({cmd:"insert",table:m.Table,data:rd,index:dbv,builder:builder,file:{}},function(res){
+                                        $vm.request({api:m.api,cmd:"insert",table:m.Table,data:rd,index:dbv,builder:builder,file:{}},function(res){
                                             status=res.status;
                                         });
                                         //console.log(rd)
@@ -451,7 +451,7 @@ m.set_file_link_s0=function(records,I,field,td){
         var done=0;
         var get_file_from_server=function(){
             if(done==0){
-                $vm.request({cmd:"file",id:rid,table:m.Table,uid:records[I].UID, field:field,filename:filename},function(res, status, xhr){
+                $vm.request({api:m.api,cmd:"file",id:rid,table:m.Table,uid:records[I].UID, field:field,filename:filename},function(res, status, xhr){
                     try{
                         if(res=="404"){
                             alert("No such file.");
@@ -483,7 +483,7 @@ m.set_file_link_s0=function(records,I,field,td){
                     cache => {
                         cache.match(m.Table+"-"+rid+"-"+field).then(response => {
                             if(response){
-                                $vm.request({cmd:"file",id:rid,table:m.Table,uid:records[I].UID, field:field,filename:filename,datetime:1},function(res){
+                                $vm.request({api:m.api,cmd:"file",id:rid,table:m.Table,uid:records[I].UID, field:field,filename:filename,datetime:1},function(res){
                                     var dtA=new Date(response.headers.get('last-modifie')).getTime();
                                     var dtB=new Date(res.result).getTime();
                                     dtA=dtA-dtA%1000;

@@ -60,7 +60,7 @@ m.set_file_link_s0=function(tag){
             var done=0;
             var get_file_from_server=function(){
                 if(done==0){
-                    $vm.request({cmd:"file",id:rid,table:m.Table,uid:record.UID, field:tag,filename:filename,options:m.options},function(res, textStatus, xhr){
+                    $vm.request({api:m.api,cmd:"file",id:rid,table:m.Table,uid:record.UID, field:tag,filename:filename,options:m.options},function(res, textStatus, xhr){
                         try{
                             if(res=="404"){
                                 alert("No such file.");
@@ -92,7 +92,7 @@ m.set_file_link_s0=function(tag){
                         cache => {
                             cache.match(m.Table+"-"+rid+"-"+tag).then(response => {
                                 if(response){
-                                    $vm.request({cmd:"file",id:rid,table:m.Table,uid:record.UID, field:tag,filename:filename,datetime:1,options:m.options},function(res){
+                                    $vm.request({api:m.api,cmd:"file",id:rid,table:m.Table,uid:record.UID, field:tag,filename:filename,datetime:1,options:m.options},function(res){
                                         var dtA=new Date(response.headers.get('last-modifie')).getTime();
                                         var dtB=new Date(res.result).getTime();
                                         dtA=dtA-dtA%1000;
@@ -165,7 +165,7 @@ m.set_image_url=function(tag){
         else{
             var expires=7*24*3600;
             var url=record.Table+"/"+record.UID+"-"+tag+"-"+filename;
-            $vm.request({cmd:"s3_download_url",id:record._id,table:record.Table,filename:filename,url:url,expires:expires,options:m.options},function(res){
+            $vm.request({api:m.api,cmd:"s3_download_url",id:record._id,table:record.Table,filename:filename,url:url,expires:expires,options:m.options},function(res){
                 if(res.status=="np"){
                     alert("No permission.")
                     return;
@@ -227,7 +227,7 @@ m.submit=function(event){
     if(rid==undefined){
         var i_cmd="insert";
         if(m.cmd_type=='table') i_cmd='insert-table';
-        $vm.request({cmd:i_cmd,table:m.Table,data:data,index:index,file:file,options:m.options},function(res){
+        $vm.request({api:m.api,cmd:i_cmd,table:m.Table,data:data,index:index,file:file,options:m.options},function(res){
             if(res.status=="np"){
                 alert("No permission to insert a new record in to the database.");
                 if(m.input!=undefined && m.input.goback!=undefined){
@@ -262,7 +262,7 @@ m.submit=function(event){
         if(m.cmd_type=='p1') cmd='update-p1';
         if(m.cmd_type=='p2') cmd='update-p2';
         if(m.cmd_type=='table') cmd='update-table';
-        $vm.request({cmd:cmd,id:rid,table:m.Table,data:data,index:index,file:file,options:m.options},function(res){
+        $vm.request({api:m.api,cmd:cmd,id:rid,table:m.Table,data:data,index:index,file:file,options:m.options},function(res){
             //-----------------------------
             if(res.status=="lk"){
                 $vm.alert("This record is locked.");
@@ -331,7 +331,7 @@ m.submit_s0=function(event){
     var after_read_files=function(){
         if(rid==undefined){
             var i_cmd="insert";
-            $vm.request({cmd:i_cmd,table:m.Table,data:data,index:index,fdata:files,options:m.options},
+            $vm.request({api:m.api,cmd:i_cmd,table:m.Table,data:data,index:index,fdata:files,options:m.options},
                 function(res){
                     close_model__ID();
                     if(res.status=="np"){
@@ -369,7 +369,7 @@ m.submit_s0=function(event){
             if(m.cmd_type=='table') cmd='update-table';
 
             $vm.request(
-                {cmd:cmd,id:rid,table:m.Table,data:data,index:index,fdata:files,options:m.options},
+                {api:m.api,cmd:cmd,id:rid,table:m.Table,data:data,index:index,fdata:files,options:m.options},
                 function(res){
                     close_model__ID();
                     //-----------------------------
@@ -450,7 +450,7 @@ $('#delete__ID').on('click', function(){
     if(confirm("Are you sure to delete?\n")){
         var d_cmd="delete";
         if(m.cmd_type=='table') cmd='delete-table';
-        $vm.request({cmd:d_cmd,id:rid,table:m.Table,options:m.options},function(res){
+        $vm.request({api:m.api,cmd:d_cmd,id:rid,table:m.Table,options:m.options},function(res){
             //-----------------------------
             if(res.status=="lk"){
                 $vm.alert("This record is locked.");
