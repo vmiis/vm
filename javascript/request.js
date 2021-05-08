@@ -29,13 +29,14 @@ $vm.request=function(req,callback,progress){
         error: function(jqXHR,error, errorThrown){ 
             if(error && req.cmd=='file'){callback(404);}
             if(jqXHR.status) {} 
-            else {}},
+            else {}
+        },
         data: JSON.stringify(req),
         success: function(c,textStatus, request){
             var dt2=new Date().getTime();
             if($vm.debug_message===true){
                 if(c.status=='ok' || req.cmd=='file')  console.log("%c"+req.cmd+'('+this_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms","color:lightgreen",c);
-                else                                    console.log("%c"+req.cmd+'('+this_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms","color:red",c);
+                else                                   console.log("%c"+req.cmd+'('+this_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms","color:red",c);
             }
             if($vm.ajax_server_error==1) return;
             try{
