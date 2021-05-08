@@ -551,3 +551,83 @@ $vm.vmpost=function (url,data,callback){
     xmlHttp.send(JSON.stringify(data));
 }
 //---------------------------------------
+$vm.jwt_decode=function(token){
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+};
+//-----------------------------------------------------------------
+$vm.json_to_table=function(jdata,table_id){
+    var txt="";
+    var J=jdata[0].length;
+    for(var i=0;i<jdata.length;i++){
+        txt+="<tr>"
+        if(i==0) txt+="<th></th>";
+        else txt+="<td>"+i+"</td>"
+        for(var j=0;j<J;j++){
+            if(i==0) txt+="<th>"+jdata[i][j]+"</th>";
+            else{
+                var c="";
+                if(j<jdata[i].length) c=jdata[i][j];
+                if(c==undefined) c="";
+                txt+="<td>"+c+"</td>";
+            }
+        }
+        txt+="</tr>";
+    }
+    return txt
+}
+//-------------------------------
+$vm.get_file=function(table,UID,field,filename,callback){
+    var get_file_from_server=function(){
+        $vm.request({cmd:"file2",table:table,uid:UID,field:field,filename:filename},function(res, status, xhr){
+            if(res.status=='np') alert("No permissaion.");
+            else if(res.status=='err') alert("Error code: "+res.result);
+            if('caches' in window){
+                caches.open('VM').then(cache => {
+                    var aHeaders = new Headers();
+                    aHeaders.append('last-modifie',xhr.getResponseHeader('last-modified'));
+                    var rs=new Response(res, { "headers" :aHeaders} );
+                    cache.put(table+"-"+UID+"-"+field,rs);
+                    return;
+                })
+            }
+            callback(res);
+        });
+    }
+    var get_file_from_cache=function(){
+        if('caches' in window){
+            caches.open('VM').then(
+                cache => {
+                    cache.match(table+"-"+UID+"-"+field).then(response => {
+                        if(response){
+                            $vm.request({cmd:"file2",table:table,uid:UID,field:field,filename:filename,datetime:1},function(res){
+                                if(res.status=="np"){
+                                    alert("No permissaion.");
+                                    return;
+                                };
+                                var dtA=new Date(response.headers.get('last-modifie')).getTime();
+                                var dtB=new Date(res.result).getTime();
+                                dtA=dtA-dtA%1000;
+                                dtB=dtB-dtB%1000;
+                                if(dtA==dtB){
+                                    callback(response.result);
+                                    console.log(response)
+                                }
+                                else get_file_from_server();
+                            })
+                        }
+                        else{
+                            get_file_from_server();
+                        }
+                    })
+                }
+            )
+        }
+    }
+    get_file_from_cache();
+}
+//-------------------------------
