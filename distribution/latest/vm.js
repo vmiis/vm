@@ -1128,6 +1128,13 @@ $vm.show_module=function(name,input){
 //-----------------------------------
 //-----------------------------------------------------------------
 $vm.request=function(req,callback,progress){
+    var api_url=$vm.api_address;
+    var token_name="vm_token";
+    if(req.api!=undefined){
+        api_url=$vm.api_addresses[req.api];
+        token_name=req.api+" token";
+    }
+    
     $vm.sys_N++;
     var this_N=$vm.sys_N;
     $vm.sys_token="guest|where|when|scode";
@@ -1136,7 +1143,8 @@ $vm.request=function(req,callback,progress){
     }
     var dt1=new Date().getTime();
     $vm.ajax_server_error=0;
-    var token=sessionStorage.getItem("vm_token");
+    //var token=sessionStorage.getItem("vm_token");
+    var token=sessionStorage.getItem(token_name);
     if(token==undefined) token="";
     
     var param={
@@ -1149,13 +1157,14 @@ $vm.request=function(req,callback,progress){
         error: function(jqXHR,error, errorThrown){ 
             if(error && req.cmd=='file'){callback(404);}
             if(jqXHR.status) {} 
-            else {}},
+            else {}
+        },
         data: JSON.stringify(req),
         success: function(c,textStatus, request){
             var dt2=new Date().getTime();
             if($vm.debug_message===true){
                 if(c.status=='ok' || req.cmd=='file')  console.log("%c"+req.cmd+'('+this_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms","color:lightgreen",c);
-                else                                    console.log("%c"+req.cmd+'('+this_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms","color:red",c);
+                else                                   console.log("%c"+req.cmd+'('+this_N+') FROM'+" --- "+(dt2-dt1).toString()+"ms","color:red",c);
             }
             if($vm.ajax_server_error==1) return;
             try{
