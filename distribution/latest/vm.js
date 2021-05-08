@@ -1150,7 +1150,7 @@ $vm.request=function(req,callback,progress){
     var param={
         headers:{'Authorization':'Bearer ' + token},
         type: "POST",
-        url: $vm.api_address,
+        url: api_url,
         contentType: "application/json",
         charset:"utf-8",
         dataType: "json",
