@@ -185,17 +185,21 @@ $vm.date_day_diff=function(a,b){
 	return Math.floor( (b.getTime()-a.getTime()-ms)/1000/3600/24 );
 }
 $vm.first_day_of_current_week=function(){
-      var d=new Date();
+      var d=new Date(); d.setHours(0,0,0,0);
       var day = d.getDay(), diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
       return new Date(d.setDate(diff));
 }
 $vm.first_day_of_current_month=function(){
-	var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+	var date = new Date();
+    date.setHours(0,0,0,0);
+    var y = date.getFullYear(), m = date.getMonth();
 	var firstDay = new Date(y, m, 1,0,0,0,0);
 	return firstDay;
 }
 $vm.first_day_of_current_year=function(){
-	var date = new Date(), y = date.getFullYear();
+	var date = new Date();
+    date.setHours(0,0,0,0);
+    var y = date.getFullYear();
 	var firstDay = new Date(y, 0, 1);
 	return $vm.date_to_string_dmy(firstDay);
 }
