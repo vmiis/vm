@@ -2379,3 +2379,41 @@ $vm.get_file=function(table,UID,field,filename,callback){
     get_file_from_cache();
 }
 //-------------------------------
+$vm.download_txt=function(fn,txt){
+    //-----------------------
+    var bytes = [];
+        bytes.push(239);
+        bytes.push(187);
+        bytes.push(191);
+    for (var i = 0; i < txt.length; i++) {
+        if(txt.charCodeAt(i)<128) {
+            bytes.push(txt.charCodeAt(i));
+        }
+        else if(txt.charCodeAt(i)<2048) {
+            bytes.push(( (txt.charCodeAt(i) & 192) >> 6 ) + ((txt.charCodeAt(i) & 1792)>>6 ) +192); //xC0>>6 + x700>>8 +xE0
+            bytes.push(txt.charCodeAt(i) & 63 + 128); //x3F + x80
+        }
+        else if(txt.charCodeAt(i)<65536) {
+            bytes.push(((txt.charCodeAt(i) & 61440) >>12) + 224 ); //xF00>>12 + xE0
+            bytes.push(( (txt.charCodeAt(i) & 192) >> 6 ) + ((txt.charCodeAt(i) & 3840)>>6 ) +128); //xC0>>6 + xF00>>8 +x80
+            bytes.push(txt.charCodeAt(i) & 63 + 128); //x3F + x80
+        }
+    }
+    var u8 = new Uint8Array(bytes);
+    var blob = new Blob([u8]);
+    //-----------------------
+    if (navigator.appVersion.toString().indexOf('.NET') > 0){
+        window.navigator.msSaveBlob(blob, fn);
+    }
+    else{
+        var link = document.createElement("a");
+        link.setAttribute("href", window.URL.createObjectURL(blob));
+        link.setAttribute("download", fn);
+        link.style = "visibility:hidden";
+        link.download = fn;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
+//---------------------------------------------
