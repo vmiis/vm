@@ -581,9 +581,9 @@ $vm.json_to_table=function(jdata,table_id){
     return txt
 }
 //-------------------------------
-$vm.get_file=function(table,UID,field,filename,callback){
+$vm.get_file=function(api,table,UID,field,filename,callback){
     var get_file_from_server=function(){
-        $vm.request({cmd:"file2",table:table,uid:UID,field:field,filename:filename},function(res, status, xhr){
+        $vm.request({api:api,cmd:"file2",table:table,uid:UID,field:field,filename:filename},function(res, status, xhr){
             if(res.status=='np') alert("No permissaion.");
             else if(res.status=='err') alert("Error code: "+res.result);
             if('caches' in window){
