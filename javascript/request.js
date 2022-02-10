@@ -55,7 +55,7 @@ $vm.request=function(req,callback,progress){
             return xhr ;
         }
     }
-    if(req.cmd=="export"){
+    if(req.cmd=="export" || req.cmd=="export2"){
         param.xhr=function(){
             var i=1;
             var xhr = new window.XMLHttpRequest();
