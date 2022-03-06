@@ -1,5 +1,5 @@
 //------------------------------------------------
-$vm.create_component_and_run=function(txt,url,div,m_name){
+$vm.create_component_and_run=function(txt,url,div,m_name,callback){
 	var last_part=url.split('/').pop();
 	var c_path=url.replace(last_part,'');
 	txt=txt.replace(/__CURRENT_PATH__/g,c_path);
@@ -18,9 +18,10 @@ $vm.create_component_and_run=function(txt,url,div,m_name){
 	}
 	$('#D'+id).attr('module',m_name);
 	$('#D'+id).triggerHandler('load');
+    if(callback!=undefined) callback(m_name);
 }
 //------------------------------------------------
-$vm.load_component_include_and_run=function(lines,i,url,div,m_name){ //Step B-2
+$vm.load_component_include_and_run=function(lines,i,url,div,m_name,callback){ //Step B-2
 	var last_part=url.split('/').pop();
 	var c_path=url.replace(last_part,'');
 	
@@ -32,9 +33,9 @@ $vm.load_component_include_and_run=function(lines,i,url,div,m_name){ //Step B-2
 	if(com_url[0]=='/') com_url=$vm.hosting_path+com_url;
 	com_url=com_url.replace('__CURRENT_PATH__',c_path);
 	//------------------------------
-	var create_and_run=function(all_txt,div){
-		if(all_txt.indexOf('VmInclude:')==-1) $vm.create_component_and_run(all_txt,url,div,m_name);
-		else $vm.process_component_include_and_run(all_txt,url,div,m_name); //Step C
+	var create_and_run=function(all_txt,div,callback){
+		if(all_txt.indexOf('VmInclude:')==-1) $vm.create_component_and_run(all_txt,url,div,m_name,callback);
+		else $vm.process_component_include_and_run(all_txt,url,div,m_name,callback); //Step C
 	}
 	//------------------------------
 	var apppath=window.location.href.substring(0, window.location.href.lastIndexOf('/')).split('\/?')[0];
@@ -56,29 +57,30 @@ $vm.load_component_include_and_run=function(lines,i,url,div,m_name){ //Step B-2
 			localStorage.setItem(apppath+url+"_txt",data);
 			localStorage.setItem(apppath+url+"_ver",$vm.ver[0]);
 			var current_all=$vm.replace_and_recreate_content(lines,i,data);
-			create_and_run(current_all,div);
+			create_and_run(current_all,div,callback);
 		},'text');
 	}
 	else{
 		//console.log('loading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127+" re:"+$vm.reload) //wrong!!!
 		console.log('%cloading from stotage. '+com_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127+" re:"+$vm.reload,"color:#055")
 		var current_all=$vm.replace_and_recreate_content(lines,i,txt)
-		create_and_run(current_all,div);
+		create_and_run(current_all,div,callback);
 	}
 }
 //------------------------------------------------
-$vm.process_component_include_and_run=function(txt,url,div,m_name){ //Step A-2
+$vm.process_component_include_and_run=function(txt,url,div,m_name,callback){ //Step A-2
 	var lines=txt.split('\n');
 	for(var i=0;i<lines.length;i++){
 		if(lines[i].length>10){
 			if(lines[i].indexOf('VmInclude:')!==-1){
-				$vm.load_component_include_and_run(lines,i,url,div,m_name); //Step B-1 //only process the first include
+				$vm.load_component_include_and_run(lines,i,url,div,m_name,callback); //Step B-1 //only process the first include
 				return;
 			}
 		}
 	}
 }
 //------------------------------------------------
+/*
 $vm.load_component=function(name,div,input,dialog){
 	if($vm.module_list[name]==undefined && dialog==undefined){
 		alert("The module '"+name+"' is not in the module list.");
@@ -86,6 +88,17 @@ $vm.load_component=function(name,div,input,dialog){
 	}
 	var url=$vm.module_list[name].url;
 	if(url==undefined && dialog==undefined){
+		alert("The module '"+name+"' does not have url.");
+		return;
+	}
+*/
+$vm.load_component=function(name,div,input,callback){
+	if($vm.module_list[name]==undefined){
+		alert("The module '"+name+"' is not in the module list.");
+		return;
+	}
+	var url=$vm.module_list[name].url;
+	if(url==undefined){
 		alert("The module '"+name+"' does not have url.");
 		return;
 	}
@@ -104,9 +117,9 @@ $vm.load_component=function(name,div,input,dialog){
 	var http127=0;
 	if(url.indexOf('http://127.0.0.1')!=-1 || url.indexOf('http://localhost')!=-1 || url.indexOf('http://vmiis-local.com')!=-1) http127=1;
 	//-----------------------------------
-	var create_and_run=function(txt,div){
-		if(txt.indexOf('VmInclude:')==-1) $vm.create_component_and_run(txt,url,div,name);
-		else $vm.process_component_include_and_run(txt,url,div,name); //Step A-1
+	var create_and_run=function(txt,div,callback){
+		if(txt.indexOf('VmInclude:')==-1) $vm.create_component_and_run(txt,url,div,name,callback);
+		else $vm.process_component_include_and_run(txt,url,div,name,callback); //Step A-1
 	}
 	//-----------------------------------
 	var reload=0;
@@ -118,12 +131,16 @@ $vm.load_component=function(name,div,input,dialog){
 			localStorage.setItem(apppath+url+"txt",new_txt);
 			localStorage.setItem(apppath+url+"ver",$vm.ver[0]);
 			console.log('%cloading from url. '+url+' '+ver+'/'+$vm.ver[0]+" 127:"+http127,"color:#b55");
-			create_and_run(new_txt,div);
+			create_and_run(new_txt,div,callback);
 		},'text');
 	}
 	else{
 		console.log('%cloading from storage. '+url+' '+ver+'/'+$vm.ver[0]+" 127:"+http127,"color:#055");
-		create_and_run(txt,div);
+		create_and_run(txt,div,callback);
 	}
 };
+//------------------------------------------------
+$vm.install_component=function(name,div,input,callback){
+    $vm.load_component(name,div,input,callback);
+}
 //------------------------------------------------

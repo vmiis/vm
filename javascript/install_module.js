@@ -1,3 +1,4 @@
+//------------------------------------------------
 $vm.install_module=function(name,slot,input,callback){
 	//---
 	var id0=$vm.module_list[name].id;
