@@ -119,7 +119,9 @@ $vm.install_create_module_and_run_code=function(txt,module_id,url,slot,m_name,ca
 	//-----------------
 	if (typeof window['F'+module_id] == 'function') {
 		try{
-			eval('F'+module_id+"()");
+			var m=$vm.module_list[m_name];
+			eval('F'+module_id)(m);
+			//eval('F'+module_id+"()");
 		}
 		catch(err){
 			var module=url;

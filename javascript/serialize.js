@@ -33,6 +33,9 @@ $vm.deserialize=function(record,form_id){
 						break;
 					case 'text':
 					case 'email':
+					case 'date':
+					case 'time':
+					case 'tel':
 					case 'textarea':
 					case 'select':
 						$el.val(value);
