@@ -232,3 +232,39 @@
     transform: rotate(45deg);
   }
   /* checkbox end ---------------------------------------------------------------------------------------------*/
+
+  #form_container__ID{
+      background-color:#fff;
+      margin-top:20px;
+      margin-left: auto;
+      margin-right: auto;
+
+      font-family: Verdana,sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+  }
+  #F__ID{
+    border:1px solid #bbb;
+    border-top-width: 0;
+    padding:6px 15px 20px 15px;
+    margin-bottom:200px;
+  }
+
+
+
+  #header__ID{
+    background-color:#727b84;
+    color:#fff;
+    padding:10px 15px 10px 15px;
+    font-size:120%;
+    border:1px solid #bbb;
+    border-bottom-width: 0;
+}
+.header__ID{
+    background-color:#727b84;
+    color:#fff;
+    padding:10px 15px 10px 15px;
+    font-size:120%;
+    border:1px solid #bbb;
+    border-bottom-width: 0;
+}
