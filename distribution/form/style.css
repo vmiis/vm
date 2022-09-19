@@ -1,0 +1,234 @@
+#F__ID > div{
+    padding:15px 5px;
+}
+#F__ID > div:hover{
+    background-color: #ddd;
+}
+#F__ID > div div{
+    padding-left: 15px;
+    padding-right: 15px;
+}
+#F__ID input[type=text]:focus,
+#F__ID input[type=email]:focus,
+#F__ID input[type=tel]:focus,
+#F__ID input[type=time]:focus,
+#F__ID input[type=date]:focus,
+#F__ID textarea:focus
+{
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+#F__ID input[type=text],
+#F__ID input[type=email],
+#F__ID input[type=tel],
+#F__ID input[type=time],
+#F__ID input[type=date],
+#F__ID select,
+#F__ID textarea
+{
+    font-size: 1em;
+    border-radius: 4px;
+    border: 1px solid;
+    display: block;
+    padding: 0 .625em;
+    outline: 0;
+    margin: 0;
+    text-align: left;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    border-color: #c3cad8;
+    color: #2c3345;
+    height: 2.5em;
+}
+
+
+
+.file__ID{
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    width: 100%; 
+    height: 80px; 
+    padding-top:6px;
+}
+#F__ID button{
+    display: inline-block;
+    font-weight: 400;
+    color: #212529;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+
+}
+#F__ID button:hover {
+    color: #fff;
+    background-color: #545b62;
+    border-color: #4e555b;
+}
+
+
+/* radio start ---------------------------------------------------------------------------------------------*/
+/* Customize the label (the container) */
+.r__ID {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    _font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  } 
+  /* Hide the browser's default radio button */
+  .r__ID input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    _height: 0;
+    _width: 0;
+  }
+  
+  /* Create a custom radio button */
+  .r__ID span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 21px;
+    width: 21px;
+    background-color: #eee;
+    border-radius: 50%;
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .r__ID:hover input ~ span {
+    background-color: #ccc;
+  }
+  
+  /* When the radio button is checked, add a blue background */
+  .r__ID input:checked ~ span {
+    background-color: #266698;
+  }
+  
+  /* Create the indicator (the dot/circle - hidden when not checked) */
+  ._r__ID span:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  /* Show the indicator (dot/circle) when checked */
+  .r__ID input:checked ~ span:after {
+    display: block;
+  }
+  
+  /* Style the indicator (dot/circle) */
+  .r__ID span:after {
+    content: "";
+    position: absolute;
+    display: none;
+    top: 7px;
+    left: 7px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+  }
+/* radio end ---------------------------------------------------------------------------------------------*/
+/* checkbox start ----------------------------------------------------------------------------------------*/
+/* The container */
+.c__ID {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    _font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Hide the browser's default checkbox */
+  .c__ID input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    _height: 0;
+    _width: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .c__ID span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 21px;
+    width: 21px;
+    background-color: #eee;
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .c__ID:hover input ~ span {
+    background-color: #ccc;
+  }
+  
+  /* When the checkbox is checked, add a blue background */
+  .c__ID input:checked ~ span {
+    background-color: #266698;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  span:after {
+  }
+  
+  /* Show the checkmark when checked */
+  .c__ID input:checked ~ span:after {
+    display: block;
+  }
+  
+  /* Style the checkmark/indicator */
+  .c__ID span:after {
+    content: "";
+    position: absolute;
+    display: none;
+    
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+  /* checkbox end ---------------------------------------------------------------------------------------------*/
