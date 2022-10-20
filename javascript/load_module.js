@@ -261,7 +261,24 @@ $vm.insert_module=function(options){
 	else{
 		pp=window.location.href.split('?')[0];
 	}
-    window.history.pushState({m_name:options.m_name,ID:module_id,slot:slot,index:$vm.page_stack_index}, null, pp);
+
+    //---------------------------------------------------------
+    var parameters="";
+    var href=window.location.href;
+    if(href.split('?').length==2){                               // www.abc.com?a=1&b=2
+        if(parameters.length>0 && parameters[0]=='/'){
+            var p1=parameters.split('&')[0];                     //    /m&a=1&b=2  p1=/m
+            parameters=parameters.replace(p1,'');
+            parameters="?"+parameters;                    
+        }
+        else{
+            parameters="?"+href.split('?')[1];                    
+        }
+    }
+    //---------------------------------------------------------
+
+
+    window.history.pushState({m_name:options.m_name,ID:module_id,slot:slot,index:$vm.page_stack_index}, null, pp+parameters);
 	//if($vm.change_meta!=undefined){ $vm.change_meta(module_id); }
 	if($vm.show!=undefined){ $vm.show(options.m_name); }
 	else if($vm.first_module==undefined) $vm.first_module=options.m_name;
