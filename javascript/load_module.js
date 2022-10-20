@@ -266,14 +266,12 @@ $vm.insert_module=function(options){
     var parameters="";
     var href=window.location.href;
     if(href.split('?').length==2){                               // www.abc.com?a=1&b=2
-        if(parameters.length>0 && parameters[0]=='/'){
+        parameters=href.split('?')[1];
+        if(parameters.length>1 && parameters[0]=='/'){
             var p1=parameters.split('&')[0];                     //    /m&a=1&b=2  p1=/m
             parameters=parameters.replace(p1,'');
-            parameters="?"+parameters;                    
         }
-        else{
-            parameters="?"+href.split('?')[1];                    
-        }
+        parameters="?"+parameters;                    
     }
     //---------------------------------------------------------
 
