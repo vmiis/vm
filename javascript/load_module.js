@@ -271,7 +271,7 @@ $vm.insert_module=function(options){
             var p1=parameters.split('&')[0];                     //    /m&a=1&b=2  p1=/m
             parameters=parameters.replace(p1,'');
         }
-        parameters="?"+parameters;                    
+        if(parameters!="") parameters="?"+parameters;                    
     }
     //---------------------------------------------------------
 
