@@ -442,7 +442,10 @@ m.submit_s0=function(event){
 }
 //--------------------------------------------------------
 $('#D__ID').on('load',function(){ m.load();})
-$('#F__ID').submit(function(event){if(m.storage_type=='s0') m.submit_s0(event); else m.submit(event);})
+$('#F__ID').submit(function(event){
+    if(m.form_process!=undefined) m.form_process();
+    if(m.storage_type=='s0') m.submit_s0(event); else m.submit(event);}
+)
 //--------------------------------------------------------
 $('#delete__ID').on('click', function(){
     var record=m.input.record;    if(record==undefined) return;
