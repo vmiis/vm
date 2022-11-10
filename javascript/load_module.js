@@ -89,7 +89,7 @@ $vm.load_module=function(name,slot,input){
 		if(ver!=$vm.ver[0] || http127_i==1 || txt==null || $vm.reload!='' || reload==1){
 			var new_url=url+'?_v='+new Date().getTime();
 			if(url.indexOf('?')!==-1) new_url=url+'&_v='+($vm.ver[0]+$vm.reload).replace(/\./,'');
-			console.log('loading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
+			if($vm.loading_url_info==1) console.log('loading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
             if(window.location.hostname!='127.0.0.1' && window.location.hostname!='localhost')	$('#vm_loader').show();
 			$.get(new_url, function(data){
 				//-----------------------------------
@@ -309,7 +309,7 @@ $vm.load_include=function(lines,i,module_id,slot,url_0,m_name){
 		//var new_url=url+'?_v='+($vm.ver[0]+$vm.reload).replace(/\./,'')+"&g="+_g_vm_chrom_loop++;
 		var new_url=url+'?_v='+new Date().getTime();
 		if(url.indexOf('?')!==-1) new_url=url+'&_v='+($vm.ver[0]+$vm.reload).replace(/\./,'')+"&g="+_g_vm_chrom_loop++;
-		console.log('loading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
+		if($vm.loading_url_info==1) console.log('loading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" 127:"+http127_i+" re:"+$vm.reload)
 		$.get(new_url, function(data){
             data=$vm.url(data);
 			var c_m=$("<p>"+data+"</p>").filter('#D__ID').html();

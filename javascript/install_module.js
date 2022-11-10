@@ -51,7 +51,7 @@ $vm.install_module=function(name,slot,input,callback){
 		if(ver!=$vm.ver[0] || http127_i==1 || txt==null){
 			var new_url=url+'?_v='+new Date().getTime();
 			if(url.indexOf('?')!==-1) new_url=url+'&_v='+($vm.ver[0]+$vm.reload).replace(/\./,'');
-			console.log('%cloading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#b55")
+			if($vm.loading_url_info==1) console.log('%cloading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#b55")
             if(window.location.hostname!='127.0.0.1' && window.location.hostname!='localhost')	$('#vm_loader').show();
 			$.get(new_url, function(data){
 				data=$vm.url(data);
@@ -76,7 +76,7 @@ $vm.install_module=function(name,slot,input,callback){
 			});
 		}
 		else{
-			console.log('%cloading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#055")
+			if($vm.loading_url_info==1)	console.log('%cloading from stotage. '+url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#055")
 			var current_all=txt;
 			if(current_all.indexOf('VmInclude:')==-1){
 				$vm.install_create_module_and_run_code(current_all,module_id,url,slot,m_name,callback);
@@ -175,7 +175,7 @@ $vm.install_load_include=function(lines,i,module_id,slot,url_0,m_name,callback){
 	if(ver!=$vm.ver[0] || http127_i==1 || txt==null || $vm.reload!=''){
 		var new_url=url+'?_v='+new Date().getTime();
 		if(url.indexOf('?')!==-1) new_url=url+'&_v='+($vm.ver[0]+$vm.reload).replace(/\./,'')+"&g="+_g_vm_chrom_loop++;
-		console.log('%cloading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#b55")
+		if($vm.loading_url_info==1) console.log('%cloading from url. '+new_url+" "+ver+"/"+$vm.ver[0]+" for "+m_name,"color:#b55")
 		$.get(new_url, function(data){
             data=$vm.url(data);
 			var c_m=$("<p>"+data+"</p>").filter('#D__ID').html();
